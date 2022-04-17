@@ -1,0 +1,13 @@
+{% extends 'helloworld/base.html' %}
+{% block content %}
+<div>
+  <h1>Simple Title For This Page</h1>
+  <p>
+    Name: {{ name|lower }} <br />
+    Address: {{address}}  <br />
+    {% if True %} 
+    Hello There. 
+    {% endif %}
+  </p>
+</div>
+{% endblock %}
