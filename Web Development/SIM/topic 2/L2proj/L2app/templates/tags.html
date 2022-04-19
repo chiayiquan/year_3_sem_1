@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head> </head>
+  <body>
+
+    {% comment %}
+    {% extends 'L2.html' %}
+
+    {% block mymessage %}
+    <p>Child page</p>
+    {% endblock %}
+    {% endcomment %}
+
+    {% if greeting == 1%}
+    <h1>Hello</h1>
+    {% else %}
+    <h1>Bye</h1>
+    {% endif %}
+
+    <p>************************</p>
+
+    <ul>
+      {% for name in names %}
+      <li>{{name}}</li>
+      {% endfor %}
+    </ul>
+
+    <p>************************</p>
+    {% if greeting == 1%}
+    <h1>Hello</h1>
+    {% elif greeting == 2 %}
+    <h1>Welcome</h1>
+    {% else %}
+    <h1>Bye</h1>
+    {% endif %} 
+    {% comment %}
+    <h1>Anything inside here will not be shown on browser</h1>
+    {% endcomment %}
+
+    <ul>
+      {% for name in names %}
+      <li style="background-color:{% cycle 'pink' 'yellow' 'blue' %}">
+        {{name}}
+      </li>
+      {% endfor %}
+    </ul>
+
+    {% include 'L2.html' %}
+
+    <ul>
+      {% for name in names %}
+      <li>{{name|length}}</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
