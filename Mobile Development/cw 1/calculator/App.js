@@ -70,18 +70,24 @@ export default function App() {
     setAnswerValue((state) => (parseFloat(state) * 0.01).toString());
   }
 
+  function roundToSixDP(num) {
+    return num % parseInt(num) === 0 ? num : num.toFixed(6);
+    // return Math.round(num * 1000000) / 1000000;
+  }
+
   function multiplyDivide(operationArr, memoryValueArr, index = 0) {
     // if there is no multiply and divide in the array, exit the recursion
     if (!operationArr.includes("*") && !operationArr.includes("/")) {
       return memoryValueArr;
     }
     if (operationArr[index] === "*" || operationArr[index] === "/") {
-      // operation will always be executed with current index number and operator with the next index number
-      memoryValueArr[index] =
-        operationArr[index] === "*"
-          ? memoryValueArr[index] * memoryValueArr[index + 1]
-          : memoryValueArr[index] / memoryValueArr[index + 1];
-
+      if (!isNaN(memoryValueArr[index + 1])) {
+        // operation will always be executed with current index number and operator with the next index number
+        memoryValueArr[index] =
+          operationArr[index] === "*"
+            ? memoryValueArr[index] * memoryValueArr[index + 1]
+            : memoryValueArr[index] / memoryValueArr[index + 1];
+      }
       // will mutate the variable from calculateTotal
       // remove the operator from the operationArr
       operationArr.splice(index, 1);
@@ -100,11 +106,13 @@ export default function App() {
       return memoryValueArr;
     }
     if (operationArr[index] === "+" || operationArr[index] === "-") {
-      // operation will always be executed with current index number and operator with the next index number
-      memoryValueArr[index] =
-        operationArr[index] === "+"
-          ? memoryValueArr[index] + memoryValueArr[index + 1]
-          : memoryValueArr[index] - memoryValueArr[index + 1];
+      if (!isNaN(memoryValueArr[index + 1])) {
+        // operation will always be executed with current index number and operator with the next index number
+        memoryValueArr[index] =
+          operationArr[index] === "+"
+            ? memoryValueArr[index] + memoryValueArr[index + 1]
+            : memoryValueArr[index] - memoryValueArr[index + 1];
+      }
 
       // will mutate the variable from calculateTotal
       // remove the operator from the operationArr
@@ -125,7 +133,7 @@ export default function App() {
     plusMinus(operationArr, tempMemoryValueArr);
 
     // return the total
-    return tempMemoryValueArr[0];
+    return roundToSixDP(tempMemoryValueArr[0]);
   }
 
   function calculateEquals() {
@@ -133,10 +141,10 @@ export default function App() {
     const memoryValueArr = [...memoryValue, parseFloat(answerValue)];
 
     const total = calculateTotal(operationArr, memoryValueArr);
-
     // set the displayEquation to be an equation
     setDisplayEquation(
       memoryValueArr.reduce((accumulator, currentValue, index) => {
+        if (isNaN(currentValue)) return accumulator;
         currentValue = formatNumber(currentValue);
         return index >= operatorValue.length
           ? `${accumulator}${currentValue}`
