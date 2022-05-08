@@ -1,0 +1,52 @@
+{% load bootstrap4 %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="description" content="Toy Gene Data Website" />
+    <meta name="keywords" content="HTML,gene,genes,advanced web dev" />
+    <meta name="author" content="D.Buchan" />
+    {% bootstrap_css %}
+    {% bootstrap_javascript jquery='full' %}
+    <link rel="stylesheet" href="../static/css/genedata.css" />
+    <script>
+        function exampleFunction(){
+        let x,y,z
+        x = 5;
+        y =6.6;
+        z='hello';
+        x = x+y*2;
+        z=z+" world";
+        // alert(x)
+        console.log(z) 
+        const test_array=[1,2,3]
+        const test_hash = {one:1,two:'this'}
+
+        while(true){
+            console.log(test_hash)
+            console.log("I'm in the loop")
+            break
+        }
+        test_array.forEach(element=> console.log(`array out: ${element}`))
+        if(test_array.length===3){
+            console.log('array is the right length')
+        }            
+        }
+        // exampleFunction()
+
+        function changePage(){
+            console.log('Changing Page');
+            const h1_elements=document.querySelectorAll('h1')
+            const list_panel=document.getElementById('gene_list')
+            console.log(list_panel.innerHTML)
+            // list_panel.innerHTML="<h2>Ooops, the are gone</h2>"
+            const nav_links=document.getElementsByClassName('nav_link')
+            for(let i=0; i< nav_links.length; i++){
+                nav_links[i].style.color='black'
+            }
+            h1_elements.forEach(element=>element.innerHTML="Organism Name: D.Bucheria")
+        }
+    </script>
+</head>
+  </body>
+</html>
