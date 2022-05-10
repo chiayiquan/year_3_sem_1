@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+  </head>
+  <body>
+    <h1>Display Database</h1>
+
+    <table border="1">
+      {% for data in allData %}
+      <tr>
+        <td>{{data.id}}</td>
+        <td>{{data.name}}</td>
+        <td>{{data.hobby}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <p>
+      <a href="deleteData">Delete Friends</a>
+    </p>
+
+    <p>
+      <a href="updateData">Update Friends details</a>
+    </p>
+  </body>
+</html>

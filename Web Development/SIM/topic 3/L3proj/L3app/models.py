@@ -25,3 +25,34 @@ class Principal(models.Model):
 
     def __str__(self):
         return str(self.name)
+
+
+class President(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return str(self.name)
+
+
+class Citizen(models.Model):
+    president = models.ForeignKey(President, on_delete=models.CASCADE)
+
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return str(self.name)
+
+
+class Topping(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
+class Pizza(models.Model):
+    name = models.CharField(max_length=50)
+    toppings = models.ManyToManyField(Topping)
+
+    def __str__(self):
+        return self.name
