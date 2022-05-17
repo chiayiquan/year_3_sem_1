@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'mystyles.css' %}" />
+    <script src="{% static 'externalScript.js' %}"></script>
+    <style>
+      ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        width: 210px;
+        background-color: #f2f2f2;
+      }
+
+      li a {
+        display: block;
+        color: #030;
+        padding: 9px 17px;
+        text-decoration: none;
+      }
+
+      li a:hover {
+        background-color: #888;
+        color: yellow;
+      }
+
+      h1 {
+        background-color: lightblue;
+        color: white;
+        text-align: center;
+        font-family: verdana;
+        font-size: 40px;
+      }
+
+      #mypara {
+        background-color: pink;
+        padding: 50px;
+        margin: 70px;
+        border: 10px solid #4caf50;
+        float: left;
+        width: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <ul>
+      <li><a href="#home">Home</a></li>
+      <li><a href="#news">News</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+
+    <br /><br /><br /><br /><br /><br /><br /><br />
+
+    <div class="try">
+      <p>{{name}}: I am fine</p>
+    </div>
+
+    <h1>Hello {{name}}, how are you?</h1>
+
+    <br /><br /><br /><br /><br /><br /><br /><br />
+
+    <div id="mypara">
+      <p>This is a paragraph for id selector using internal css</p>
+    </div>
+
+    <div id="mypara">
+      <p>This is 2nd paragraph for id selector using internal css</p>
+    </div>
+
+    <br /><br /><br /><br /><br /><br /><br /><br />
+    <p id="message">My first javascript.</p>
+    <button
+      type="button"
+      onclick="document.getElementById('message').innerHTML='Hello'"
+    >
+      Click Me!
+    </button>
+
+    <p id="secondJv"></p>
+
+    <p id="thirdJv">This is 3rd javascript</p>
+    <button type="button" onclick="externalJV()">Try it</button>
+
+    <p id="numbers"></p>
+
+    <p id="functionResult"></p>
+
+    <p id="person"></p>
+
+    <form
+      action=""
+      name="memberForm"
+      onsubmit="return validateForm()"
+      method=""
+    >
+      Name:<input type="text" name="name" />
+      <input type="submit" value="Submit" />
+    </form>
+
+    <p id="paracounter"></p>
+
+    <h1 id="timeclock"></h1>
+
+    <p id="cars"></p>
+
+    <p id="searchString"></p>
+
+    <p id="bikeInfo"></p>
+
+    <script defer>
+      // change content of component with id secondJv
+      document.getElementById("secondJv").innerHTML = "My 2nd Javascript";
+      // change content of component with id numbers
+      document.getElementById("numbers").innerHTML = 3 + 6;
+
+      // alert
+      // window.alert(6 + 6);
+
+      // let a, b, c;
+      // a = 30;
+      // b = 6;
+      // c = a / b;
+      // document.write(c);
+      // create variable
+      // let x,
+      //   y,
+      //   text = "Total:";
+
+      // use variables
+      // x = 10;
+      // y = 9;
+      // let z = x * y;
+      // document.write(`${text}${z}<br/>`);
+
+      function myFunction(p1, p2) {
+        return p1 * p2;
+      }
+
+      document.getElementById("functionResult").innerHTML = myFunction(2, 15);
+
+      const person = {
+        firstName: "Sam",
+        lastName: "Tan",
+        age: 30,
+        eyeColor: "brown",
+      };
+
+      document.getElementById(
+        "person"
+      ).innerHTML = `${person.firstName} is ${person.age} years old. His eye colour is ${person.eyeColor}`;
+      document.write(
+        `Read from id: ${document.getElementById("person").innerHTML}<br>`
+      );
+
+      function validateForm() {
+        const name = document.forms["memberForm"]["name"].value;
+        if (name.length < 1) {
+          alert("Kindly complete your name");
+          return false;
+        }
+        return true;
+      }
+
+      const myCollection = document.getElementsByTagName("p");
+      document.getElementById(
+        "paracounter"
+      ).innerHTML = `There are ${myCollection.length} paragraphs.`;
+
+      const time = new Date().getHours();
+      document.write(`time stamp: ${time}`);
+      let greetings;
+
+      if (time < 10) {
+        greetings = "Morning";
+      } else if (time < 20) {
+        greetings = "Afternoon";
+      } else {
+        greetings = "Evening";
+      }
+      document.getElementById("timeclock").innerHTML = greetings;
+
+      const vehicles = ["Benz", "Honda", "Toyota", "Tesla"];
+      const carResult = vehicles.join("<br>");
+      document.getElementById("cars").innerHTML = carResult;
+
+      const tempText = "It is as easy as + String(123)";
+      const searchText = tempText.search("123");
+      document.getElementById("searchString").innerHTML = searchText;
+
+      class Bike {
+        constructor(brand, year) {
+          this.brand = brand;
+          this.year = year;
+        }
+
+        make() {
+          const date = new Date();
+          return date.getFullYear() - this.year;
+        }
+      }
+
+      const myBike = new Bike("Shimano", 2022);
+      document.getElementById("bikeInfo").innerHTML = `${myBike.brand} ${
+        myBike.year
+      }. My bike is ${myBike.make()} years old`;
+    </script>
+  </body>
+</html>

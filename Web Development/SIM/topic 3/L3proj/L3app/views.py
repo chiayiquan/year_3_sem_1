@@ -153,3 +153,8 @@ def displayDatabase(request):
         'allData': allData
     }
     return HttpResponse(template.render(context, request))
+
+
+def mycss(request):
+    template = loader.get_template('mycss.html')
+    return HttpResponse(template.render({'name': 'Tom'}, request))

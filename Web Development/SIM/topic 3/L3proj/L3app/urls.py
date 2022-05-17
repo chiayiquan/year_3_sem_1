@@ -10,4 +10,5 @@ urlpatterns = [
     path('writeMultipleData', views.writeMultipleData, name='writeMultipleData'),
     path('displayName', views.displayName, name='displayName'),
     path('displayDatabase', views.displayDatabase, name='displayDatabase'),
+    path('mycss', views.mycss, name='mycss'),
 ]
