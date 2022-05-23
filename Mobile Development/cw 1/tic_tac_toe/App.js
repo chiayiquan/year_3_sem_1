@@ -4,7 +4,6 @@ import { StyleSheet, Text, View } from "react-native";
 export default function App() {
   return (
     <View style={styles.container}>
-      <View style={styles.gridContainer}></View>
       <View style={styles.gridContainer}>
         <View style={styles.rowContainer}>
           <View style={[styles.boxContainer, styles.bottomBorder]}>
@@ -66,7 +65,6 @@ export default function App() {
           </View>
         </View>
       </View>
-      <View style={styles.gridContainer}></View>
       <StatusBar style="auto" />
     </View>
   );
@@ -80,7 +78,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   gridContainer: {
-    flex: 1,
+    height: "30%",
+    width: "100%",
     justifyContent: "space-evenly",
     paddingHorizontal: "2%",
   },
