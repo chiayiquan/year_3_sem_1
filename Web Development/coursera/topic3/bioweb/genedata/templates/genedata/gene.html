@@ -1,5 +1,5 @@
-{% load bootstrap4 %}
 {% extends "./base.html" %} 
+{% load bootstrap4 %}
 
 {% block content %}
 
@@ -25,6 +25,7 @@
              {% endfor %}
          {% endwith %}
     </table>
+    <a href="/update/{{gene.pk}}">UPDATE RECORD</a> <br/>
     <a href="/delete/{{gene.pk}}">DELETE RECORD</a>
 
 {% endblock %}
