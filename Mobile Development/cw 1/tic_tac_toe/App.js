@@ -13,18 +13,12 @@ export default function App() {
             style={[
               styles.boxContainer,
               styles.bottomBorder,
-              styles.leftBorder,
+              styles.leftRightBorder,
             ]}
           >
             <Text style={styles.text}>O</Text>
           </View>
-          <View
-            style={[
-              styles.boxContainer,
-              styles.bottomBorder,
-              styles.leftBorder,
-            ]}
-          >
+          <View style={[styles.boxContainer, styles.bottomBorder]}>
             <Text style={styles.text}>X</Text>
           </View>
         </View>
@@ -37,18 +31,12 @@ export default function App() {
             style={[
               styles.boxContainer,
               styles.bottomBorder,
-              styles.leftBorder,
+              styles.leftRightBorder,
             ]}
           >
             <Text style={styles.text}>O</Text>
           </View>
-          <View
-            style={[
-              styles.boxContainer,
-              styles.bottomBorder,
-              styles.leftBorder,
-            ]}
-          >
+          <View style={[styles.boxContainer, styles.bottomBorder]}>
             <Text style={styles.text}>O</Text>
           </View>
         </View>
@@ -57,10 +45,10 @@ export default function App() {
           <View style={[styles.boxContainer]}>
             <Text style={styles.text}>X</Text>
           </View>
-          <View style={[styles.boxContainer, styles.leftBorder]}>
+          <View style={[styles.boxContainer, styles.leftRightBorder]}>
             <Text style={styles.text}>X</Text>
           </View>
-          <View style={[styles.boxContainer, styles.leftBorder]}>
+          <View style={[styles.boxContainer]}>
             <Text style={styles.text}>O</Text>
           </View>
         </View>
@@ -92,9 +80,11 @@ const styles = StyleSheet.create({
     width: "31%",
     height: "100%",
   },
-  leftBorder: {
+  leftRightBorder: {
     borderLeftColor: "black",
     borderLeftWidth: 3,
+    borderRightColor: "black",
+    borderRightWidth: 3,
   },
   bottomBorder: {
     borderBottomColor: "black",
