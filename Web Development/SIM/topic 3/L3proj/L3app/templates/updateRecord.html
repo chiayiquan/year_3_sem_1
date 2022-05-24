@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head> </head>
+  <body>
+    <h1>Update Friends</h1>
+
+    <form action="../updateRecordConfirmation/{{myFriendId.id}}" method="post">
+      {% csrf_token %} First Name<br />
+      <input type="text" name="name" value="{{myFriendId.name}}" />
+      <br /><br />
+      Hobby <br />
+      <input type="text" name="hobby" value="{{myFriendId.hobby}}" />
+      <br /><br />
+      <input type="submit" value="Submit" />
+    </form>
+  </body>
+</html>

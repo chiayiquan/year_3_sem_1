@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head> </head>
+  <body>
+    <h1>Add Data Into Database</h1>
+
+    <form action="addRecord" method="post">
+      {% csrf_token %} Name:<br />
+      <input type="text" name="name" /> <br /><br />
+      Hobby:<br />
+      <input type="text" name="hobby" /><br /><br />
+      <input type="submit" value="Submit" />
+    </form>
+  </body>
+</html>

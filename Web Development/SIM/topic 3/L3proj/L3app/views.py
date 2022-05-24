@@ -9,6 +9,8 @@ from django.template import loader
 from .models import Citizen, L3app, Pizza, President, School, Principal, Topping
 from django.urls import reverse
 
+from .forms import ImageForm
+
 
 def writeData(request):
     template = loader.get_template('writeData.html')
@@ -158,3 +160,72 @@ def displayDatabase(request):
 def mycss(request):
     template = loader.get_template('mycss.html')
     return HttpResponse(template.render({'name': 'Tom'}, request))
+
+
+def addData(request):
+    template = loader.get_template('addData.html')
+    return HttpResponse(template.render({}, request))
+
+
+def addRecord(request):
+    name = request.POST['name']
+    hobby = request.POST['hobby']
+    insertData = L3app(name=name, hobby=hobby)
+    insertData.save()
+    return HttpResponseRedirect(reverse('displayDatabase'))
+
+
+def deleteRecord(request, id):
+    friendToDelete = L3app.objects.get(id=id)
+    friendToDelete.delete()
+    return HttpResponseRedirect(reverse('displayDatabase'))
+
+
+def deleteData(request):
+    myFriend = L3app.objects.all().values()
+    template = loader.get_template('deleteData.html')
+    context = {
+        'myFriend': myFriend
+    }
+    return HttpResponse(template.render(context, request))
+
+
+def updateData(request):
+    myFriends = L3app.objects.all().values()
+    template = loader.get_template('updateData.html')
+    context = {
+        'myFriends': myFriends
+    }
+    return HttpResponse(template.render(context, request))
+
+
+def updateRecord(request, id):
+    myFriendId = L3app.objects.get(id=id)
+    template = loader.get_template('updateRecord.html')
+    context = {
+        'myFriendId': myFriendId
+    }
+    return HttpResponse(template.render(context, request))
+
+
+def updateRecordConfirmation(request, id):
+    name = request.POST['name']
+    hobby = request.POST['hobby']
+    friends = L3app.objects.get(id=id)
+    friends.name = name
+    friends.hobby = hobby
+    friends.save()
+    return HttpResponseRedirect(reverse('displayDatabase'))
+
+
+def image_upload_view(request):
+    """Process images uploaded by users"""
+    if request.method == 'POST':
+        form = ImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            img_obj = form.instance
+            return render(request, 'uploadImages.html', {'form': form, 'img_obj': img_obj})
+    else:
+        form = ImageForm()
+    return render(request, 'uploadImages.html', {'form': form})

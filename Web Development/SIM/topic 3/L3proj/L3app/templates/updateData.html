@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head> </head>
+  <body>
+    <h1>Update Database</h1>
+
+    <table border="1">
+      {% for friend in myFriends %}
+      <tr>
+        <td><a href="../updateRecord/{{friend.id}}">{{friend.id}}</a></td>
+        <td>{{friend.name}}</td>
+        <td>{{friend.hobby}}</td>
+        <td><a href="../deleteRecord/{{friend.id}}">delete</a></td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <p>
+      <a href="../addData">Add Friends</a>
+    </p>
+  </body>
+</html>
