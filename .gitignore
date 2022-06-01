@@ -1,6 +1,6 @@
 # Ignore
 node_modules/
-env/
+**/env/env/
 cw_env/
 
 # Allow

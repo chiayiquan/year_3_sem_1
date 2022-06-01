@@ -1,0 +1,3 @@
+py -m venv env_name -> Create a new virtal env 
+env_name\Scripts\activate.bat -> Activate the env
+pip install -r path/to/requirements.txt -> Install all the requirements

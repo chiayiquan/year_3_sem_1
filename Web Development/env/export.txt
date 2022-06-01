@@ -1,0 +1,2 @@
+env_name\Scripts\activate.bat -> Activate the env
+pip freeze > requirements.txt -> Export list of library installed of current env
