@@ -74,7 +74,8 @@ for domain_id, entry in pfam.items():
 
 for entry in domain:
     row = Domain.objects.create(
-        domain_id=pfam_rows[entry[1]], domain_description=entry[0], start=entry[2], end=entry[3])
+         domain_description=entry[0], start=entry[2], end=entry[3])
+    row.update('domain_id',pfam_rows[entry[1]])
     row.save()
     domain_rows[entry] = row
 
