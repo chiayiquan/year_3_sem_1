@@ -37,6 +37,7 @@ class GeneSerialiserTest(APITestCase):
         data = self.geneserializer.data
         self.assertEqual(data['gene_id'], "gene1")
 
+
 class GeneTest(APITestCase):
 
     gene1 = None
