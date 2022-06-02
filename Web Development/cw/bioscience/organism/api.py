@@ -12,8 +12,8 @@ from rest_framework import mixins
 
 class ProteinDetail(mixins.RetrieveModelMixin,
                     generics.GenericAPIView):
-    queryset = ProteinDomain.objects.all()
-    serializer_class = ProteinDomainSerializer
+    queryset = Protein.objects.all()
+    serializer_class = ProteinSerializer
     lookup_field = 'protein_id'
 
     def get(self, request, *args, **kwargs):

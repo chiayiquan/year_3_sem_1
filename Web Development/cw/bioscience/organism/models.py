@@ -12,6 +12,14 @@ class Taxonomy(models.Model):
         max_length=256, null=False, blank=False)
 
 
+# class Protein(models.Model):
+#     protein_id = models.CharField(max_length=256, null=False, blank=False)
+#     sequence = models.CharField(
+#         max_length=40000, null=True, blank=True)
+#     taxonomy = models.ForeignKey(Taxonomy, on_delete=models.DO_NOTHING)
+#     length = models.IntegerField(null=False, blank=True)
+
+
 class Pfam(models.Model):
     domain_id = models.CharField(max_length=256, null=False, blank=False)
     family_description = models.CharField(
@@ -25,12 +33,20 @@ class Domain(models.Model):
         max_length=256, null=False, blank=False)
     start = models.IntegerField(null=False, blank=True)
     end = models.IntegerField(null=False, blank=True)
+    # protein = models.ManyToManyField(
+    #     Protein, through='ProteinDomainLink', through_fields=('domains', 'protein'))
 
 
-class ProteinDomain(models.Model):
+class Protein(models.Model):
     protein_id = models.CharField(max_length=256, null=False, blank=False)
     sequence = models.CharField(
         max_length=40000, null=True, blank=True)
     taxonomy = models.ForeignKey(Taxonomy, on_delete=models.DO_NOTHING)
     length = models.IntegerField(null=False, blank=True)
-    domains = models.ForeignKey(Domain, on_delete=models.DO_NOTHING)
+    domains = models.ManyToManyField(
+        Domain, through='ProteinDomainLink', through_fields=('protein', 'domain'))
+
+
+class ProteinDomainLink(models.Model):
+    protein = models.ForeignKey(Protein, on_delete=models.DO_NOTHING)
+    domain = models.ForeignKey(Domain, on_delete=models.DO_NOTHING)

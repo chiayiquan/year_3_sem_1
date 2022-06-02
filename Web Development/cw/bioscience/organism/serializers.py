@@ -22,15 +22,16 @@ class DomainSerializer(serializers.ModelSerializer):
         fields = ['pfam_id', 'domain_description', 'start', 'end']
 
 
-class ProteinDomainSerializer(serializers.ModelSerializer):
+class ProteinSerializer(serializers.ModelSerializer):
     taxonomy = TaxonomySerializer()
-    # domains = DomainSerializer
-    domains = serializers.SerializerMethodField()
+    domains = DomainSerializer(many=True)
 
     class Meta:
-        model = ProteinDomain
-        fields = ['protein_id', 'sequence', 'taxonomy', 'domains', 'length']
+        model = Protein
+        fields = ['protein_id', 'sequence', 'taxonomy', 'length', 'domains']
 
-    def get_domains(self, instance):
-        domains = instance.domains.all()
-        return DomainSerializer([domains], many=True).data
+
+class ViewProteinSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProteinDomainLink
+        fields = ['protein', 'domains']
