@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from .models import *
 
-from django.db.models import Sum, F
-
 
 class TaxonomySerializer(serializers.ModelSerializer):
     class Meta:
@@ -44,13 +42,39 @@ class CreateProteinSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         taxonomy_data = self.initial_data.get('taxonomy')
         domains_data = self.initial_data.get('domains')
-        print([Domain.objects.get(pk=domain['id'])
-              for domain in domains_data.keys()])
-        protein = Protein(**{**validated_data,
-                             'taxonomy': Taxonomy.objects.get(taxa_id=taxonomy_data['taxa_id']),
-                             'domains': [Domain.objects.get(pfam_id=domain['pfam_id']) for domain in domains_data]
-                             }
-                          )
+        taxonomy = None
+        domains_list = []
+
+        if len(Taxonomy.objects.filter(taxa_id=taxonomy_data['taxa_id'])) > 1:
+            taxonomy = Taxonomy.objects.filter(
+                taxa_id=taxonomy_data['taxa_id'])[0]
+        else:
+            taxonomy = Taxonomy.objects.create(
+                taxa_id=taxonomy_data['taxa_id'], clade=taxonomy_data['clade'], genus=taxonomy_data['genus'], species=taxonomy_data['species'])
+
+        for domain in domains_data:
+            pfam = Pfam.objects.filter(
+                domain_id=domain['pfam_id']['domain_id'])
+
+            if len(pfam) < 1:
+                pfam = Pfam.objects.create(domain_id=domain['pfam_id']['domain_id'],
+                                           domain_description=domain['pfam_id']['domain_description'])
+            else:
+                pfam = pfam[0]
+            domain_obj = Domain.objects.create(
+                pfam_id=pfam, description=domain['description'], start=domain['start'], stop=domain['stop'])
+            domains_list.append(domain_obj)
+
+        del validated_data['domains']
+        protein = Protein.objects.create(protein_id=validated_data['protein_id'],
+                                         sequence=validated_data['sequence'],
+                                         taxonomy=taxonomy,
+                                         length=validated_data['length']
+                                         )
+
+        for domain_obj in domains_list:
+            protein.domains.add(domain_obj)
+
         protein.save()
         return protein
 
@@ -67,15 +91,3 @@ class ListPfamsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Domain
         fields = ['id', 'pfam_id']
-
-
-class CoverageSerializer(serializers.ModelSerializer):
-    coverage = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Protein
-        fields = ['coverage']
-
-    def get_coverage(self, instance):
-        return Domain.objects.filter(
-            protein=instance).annotate(start_total=Sum('start')).annotate(stop_total=Sum('stop')).annotate(coverage=(F('start_total') - F('stop_total'))/instance.length)

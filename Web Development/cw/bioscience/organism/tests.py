@@ -16,6 +16,8 @@ class ProteinTest(APITestCase):
     def setUp(self):
         self.protein = ProteinFactory.create(
         ).domains.set([DomainFactory.create()])
+        self.protein.save()
+        print(self.protein)
         self.good_url = reverse('protein_detail_api', kwargs={
             'protein_id': 'W5N0U1'})
         self.bad_url = "/api/protein/123/"

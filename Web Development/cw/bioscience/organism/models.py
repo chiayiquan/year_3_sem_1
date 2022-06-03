@@ -13,7 +13,7 @@ class Taxonomy(models.Model):
 
 class Pfam(models.Model):
     domain_id = models.CharField(
-        max_length=256, null=False, blank=False, unique=True)
+        max_length=256, null=False, blank=False)
     domain_description = models.CharField(
         max_length=256, null=False, blank=False)
 

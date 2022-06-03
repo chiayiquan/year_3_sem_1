@@ -54,10 +54,15 @@ class PfamsList(generics.ListAPIView):
         return Domain.objects.filter(protein__in=protein)
 
 
-class Coverage(mixins.RetrieveModelMixin, generics.GenericAPIView):
-    queryset = Protein.objects.all()
-    serializer_class = CoverageSerializer
-    lookup_field = 'protein_id'
+@api_view(['GET'])
+def coverage(request, protein_id):
+    if request.method == 'GET':
+        startTotal = 0
+        stopTotal = 0
+        protein = Protein.objects.filter(protein_id=protein_id)[0]
+        domains = Domain.objects.filter(protein=protein)
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+        for domain in domains:
+            startTotal += domain.start
+            stopTotal += domain.stop
+        return Response({'coverage': (stopTotal-startTotal)/protein.length})
