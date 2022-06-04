@@ -42,7 +42,7 @@ class ProteinList(generics.ListAPIView):
     serializer_class = ListProteinSerializer
 
     def get_queryset(self):
-        return Protein.objects.filter(taxonomy_id=Taxonomy.objects.filter(taxa_id=self.kwargs['taxa_id'])[0])
+        return Protein.objects.filter(taxonomy_id__in=Taxonomy.objects.filter(taxa_id=self.kwargs['taxa_id']))
 
 
 class PfamsList(generics.ListAPIView):
@@ -59,7 +59,10 @@ def coverage(request, protein_id):
     if request.method == 'GET':
         startTotal = 0
         stopTotal = 0
-        protein = Protein.objects.filter(protein_id=protein_id)[0]
+        protein = Protein.objects.filter(protein_id=protein_id)
+        if len(protein) == 0:
+            return Response({'status': 'protein not found'}, status=status.HTTP_404_NOT_FOUND)
+        protein = protein[0]
         domains = Domain.objects.filter(protein=protein)
 
         for domain in domains:
