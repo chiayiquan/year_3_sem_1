@@ -38,6 +38,8 @@ def tearDown():
     Taxonomy.objects.all().delete()
     Pfam.objects.all().delete()
 
+########################## Api Test Case ##########################
+
 
 class CreateProteinTest(APITestCase):
     url = reverse('create_protein_api')
@@ -244,31 +246,163 @@ class CoverageTest(APITestCase):
         response.render()
         self.assertEqual(response.status_code, 404)
 
+########################## Serializer Test Case ##########################
 
-# class ProteinSerializerTest(APITestCase):
-#     protein = None
-#     proteinserializer = None
 
-#     def setUp(self):
-#         self.protein = ProteinFactory.create(protein_id="W5N4R6").domains.set([
-#             DomainFactory.create()])
-#         print(self.protein)
-#         self.proteinserializer = ProteinSerializer(
-#             instance=self.protein)
+class TaxonomySerializerTest(APITestCase):
+    taxonomy = None
+    taxonomy_serializer = None
 
-#     def tearDown(self):
-#         ProteinDomainLink.objects.all().delete()
-#         Domain.objects.all().delete()
-#         Protein.objects.all().delete()
-#         Taxonomy.objects.all().delete()
-#         Pfam.objects.all().delete()
+    def setUp(self):
+        self.taxonomy = TaxonomyFactory.create()
+        self.taxonomy_serializer = TaxonomySerializer(
+            instance=self.taxonomy)
 
-#     def test_proteinSerilaiserHasCorrectFields(self):
-#         data = self.proteinserializer.data
-#         print(data)
-#         self.assertEqual(set(data.keys()), set(['protein_id', 'sequence',
-#                                                 'taxonomy', 'length', 'domains']))
+    def tearDown(self):
+        tearDown()
 
-#     def test_proteinSerilaiserGeneIDIsHasCorrectData(self):
-#         data = self.proteinserializer.data
-#         self.assertEqual(data['protein_id'], "W5N4R6")
+    def test_taxnomy_serializer_has_correct_field(self):
+        data = self.taxonomy_serializer.data
+        self.assertEqual(set(data.keys()), set(
+            ['taxa_id', 'clade', 'genus', 'species']))
+
+    def test_taxonomy_serializer_has_correct_data(self):
+        data = self.taxonomy_serializer.data
+        self.assertDictEqual(data, default_data['taxonomy'])
+
+
+class PfamSerializerTest(APITestCase):
+    pfam = None
+    pfam_serializer = None
+
+    def setUp(self):
+        self.pfam = PfamFactory.create()
+        self.pfam_serializer = PfamSerializer(
+            instance=self.pfam)
+
+    def tearDown(self):
+        tearDown()
+
+    def test_pfam_serializer_has_correct_field(self):
+        data = self.pfam_serializer.data
+        self.assertEqual(set(data.keys()), set(
+            ['domain_id', 'domain_description']))
+
+    def test_pfam_serializer_has_correct_data(self):
+        data = self.pfam_serializer.data
+        self.assertDictEqual(data, default_data['domains'][0]['pfam_id'])
+
+
+class DomainSerializerTest(APITestCase):
+    domain = None
+    domain_serializer = None
+
+    def setUp(self):
+        self.domain = DomainFactory.create()
+        self.domain_serializer = DomainSerializer(
+            instance=self.domain)
+
+    def tearDown(self):
+        tearDown()
+
+    def test_domain_serializer_has_correct_field(self):
+        data = self.domain_serializer.data
+        self.assertEqual(set(data.keys()), set(
+            ['pfam_id', 'description', 'start', 'stop']
+        ))
+
+    def test_domain_serializer_has_correct_data(self):
+        data = self.domain_serializer.data
+        self.assertDictEqual(data, default_data['domains'][0])
+
+
+class ProteinSerializerTest(APITestCase):
+    protein = None
+    protein_serializer = None
+
+    def setUp(self):
+        self.protein = ProteinFactory.create()
+        self.protein.domains.set([DomainFactory.create()])
+        self.protein_serializer = ProteinSerializer(
+            instance=self.protein)
+
+    def tearDown(self):
+        tearDown()
+
+    def test_protein_serializer_has_correct_field(self):
+        data = self.protein_serializer.data
+        self.assertEqual(set(data.keys()), set(['protein_id', 'sequence',
+                                                'taxonomy', 'length', 'domains']))
+
+    def test_protein_serializer_has_correct_data(self):
+        data = self.protein_serializer.data
+        self.assertDictEqual(data, default_data)
+
+
+class CreateProteinSerializerTest(APITestCase):
+    protein = None
+    create_protein_serializer = None
+
+    def setUp(self):
+        self.protein = ProteinFactory.create()
+        self.protein.domains.set([DomainFactory.create()])
+        self.create_protein_serializer = CreateProteinSerializer(
+            instance=self.protein)
+
+    def tearDown(self):
+        tearDown()
+
+    def test_create_protein_serializer_has_correct_field(self):
+        data = self.create_protein_serializer.data
+        self.assertEqual(set(data.keys()), set(['protein_id', 'sequence',
+                                                'taxonomy', 'length', 'domains']))
+
+    def test_create_protein_serializer_has_correct_data(self):
+        data = self.create_protein_serializer.data
+        self.assertDictEqual(data, default_data)
+
+
+class ListProteinSerializerTest(APITestCase):
+    protein = None
+    list_protein_serializer = None
+
+    def setUp(self):
+        self.protein = ProteinFactory.create()
+        self.protein.domains.set([DomainFactory.create()])
+        self.list_protein_serializer = ListProteinSerializer(
+            instance=self.protein)
+
+    def tearDown(self):
+        tearDown()
+
+    def test_list_protein_serializer_has_correct_field(self):
+        data = self.list_protein_serializer.data
+        self.assertEqual(set(data.keys()), set(['id', 'protein_id']))
+
+    def test_list_protein_serializer_has_correct_data(self):
+        data = self.list_protein_serializer.data
+        self.assertDictEqual(data, {'id': 1, 'protein_id': 'W5N0U1'})
+
+
+class ListPfamsSerializerTest(APITestCase):
+    domain = None
+    list_pfam_serializer = None
+
+    def setUp(self):
+        self.domain = DomainFactory.create()
+        self.list_pfam_serializer = ListPfamsSerializer(
+            instance=self.domain)
+
+    def tearDown(self):
+        tearDown()
+
+    def test_list_pfams_serializer_has_correct_field(self):
+        data = self.list_pfam_serializer.data
+        self.assertEqual(set(data.keys()), set(['id', 'pfam_id']))
+
+    def test_list_pfams_serializer_has_correct_data(self):
+        data = self.list_pfam_serializer.data
+        self.assertDictEqual(data, {'id': 1, 'pfam_id': {
+            'domain_id': 'PF00520',
+            'domain_description': 'Iontransportprotein'
+        }})
