@@ -83,6 +83,7 @@ for data in protein_domain:
     row.save()
 print('Protein inserted')
 
+print('All records have been inserted')
 
 
 
