@@ -45,7 +45,8 @@ class CreateProteinSerializer(serializers.ModelSerializer):
         taxonomy = None
         domains_list = []
 
-        if len(Taxonomy.objects.filter(taxa_id=taxonomy_data['taxa_id'])) > 1:
+        print(len(Taxonomy.objects.filter(taxa_id=taxonomy_data['taxa_id'])))
+        if len(Taxonomy.objects.filter(taxa_id=taxonomy_data['taxa_id'])) > 0:
             taxonomy = Taxonomy.objects.filter(
                 taxa_id=taxonomy_data['taxa_id'])[0]
         else:
@@ -61,6 +62,7 @@ class CreateProteinSerializer(serializers.ModelSerializer):
                                            domain_description=domain['pfam_id']['domain_description'])
             else:
                 pfam = pfam[0]
+
             domain_obj = Domain.objects.create(
                 pfam_id=pfam, description=domain['description'], start=domain['start'], stop=domain['stop'])
             domains_list.append(domain_obj)
