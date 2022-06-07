@@ -1,0 +1,8 @@
+{
+    "name":"yi quan",
+    "age":26,
+    "subject":[
+        {"name":"Module A", "grade":"B"},
+        {"name":"Module B", "grade":"C"}
+    ]
+}
