@@ -139,9 +139,9 @@ class ProteinTest(APITestCase):
 
 class PFamTest(APITestCase):
     good_url = reverse('pfam_detail_api', kwargs={
-        'domain_id': 'PF00520'})
+        'pfam_id': 'PF00520'})
     bad_url = reverse('pfam_detail_api', kwargs={
-        'domain_id': 'A0A066X4Z8'})
+        'pfam_id': 'A0A066X4Z8'})
 
     def setUp(self):
         setUp()

@@ -33,6 +33,7 @@ class PFamDetail(mixins.RetrieveModelMixin,
     queryset = Pfam.objects.all()
     serializer_class = PfamSerializer
     lookup_field = 'domain_id'
+    lookup_url_kwarg = 'pfam_id'
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
