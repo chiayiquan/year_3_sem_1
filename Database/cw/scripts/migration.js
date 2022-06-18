@@ -1,6 +1,10 @@
 const mysql = require("mysql");
-const connectionConfig = require("../setting");
+const connectionConfig = require("../dbconfig");
 const util = require("util");
+const data = require("fs").readFileSync(
+  "./scripts/owid-covid-data.csv",
+  "utf8"
+);
 
 const connection = mysql.createConnection(connectionConfig);
 connection.connect();
@@ -9,10 +13,15 @@ const query = util.promisify(connection.query).bind(connection);
 
 // run once to create table
 async function createTable() {
+  const createContinentTable = `CREATE TABLE IF NOT EXISTS \`Continent\` (
+  \`id\` int AUTO_INCREMENT PRIMARY KEY,
+  \`continent\` varchar(255)
+);`;
+
   const createCountryTable = `CREATE TABLE IF NOT EXISTS \`Country\` (
   \`iso_code\` varchar(255) PRIMARY KEY,
   \`location\` varchar(255),
-  \`continent\` varchar(255)
+  \`continent_id\` int
 );`;
 
   const createCaseTable = `CREATE TABLE IF NOT EXISTS \`NewCase\` (
@@ -46,7 +55,6 @@ async function createTable() {
   \`date\` datetime,
   \`new_vaccinations_smoothed\` int,
   \`new_people_vaccinated_smoothed\` int,
-  \`total_boosters\` int,
   \`iso_code\` varchar(255)
 );`;
 
@@ -67,6 +75,7 @@ async function createTable() {
 );`;
 
   await Promise.all([
+    query(createContinentTable),
     query(createCountryTable),
     query(createCaseTable),
     query(createHospitalizeTable),
@@ -76,8 +85,10 @@ async function createTable() {
     query(createFacilitiesTable),
   ]);
 
-  console.log("Tables created");
+  console.log("Tables Created");
 
+  const addFKToCountry =
+    "ALTER TABLE `Country` ADD FOREIGN KEY (`continent_id`) REFERENCES `Continent` (`id`);";
   const addFKToCase =
     "ALTER TABLE `NewCase` ADD FOREIGN KEY (`iso_code`) REFERENCES `Country` (`iso_code`);";
   const addFKToHospitalize =
@@ -92,6 +103,7 @@ async function createTable() {
     "ALTER TABLE `Facilities` ADD FOREIGN KEY (`iso_code`) REFERENCES `Country` (`iso_code`);";
 
   await Promise.all([
+    query(addFKToCountry),
     query(addFKToCase),
     query(addFKToHospitalize),
     query(addFKToTest),
@@ -100,31 +112,33 @@ async function createTable() {
     query(addFKToFacilities),
   ]);
 
-  return console.log("Foreign Key added");
+  return console.log("Foreign Key Added");
 }
 
-async function deleteTableData() {
-  const deleteTableQuery =
-    "SELECT table_name FROM information_schema.tables WHERE table_schema ='covid';";
-  const results = await query(deleteTableQuery);
+async function deleteTable() {
+  const selectTableQuery =
+    "SELECT table_name FROM information_schema.tables WHERE table_schema ='Covid';";
+  const results = await query(selectTableQuery);
+
   await Promise.all([
     results.forEach((table) => {
-      if (table["TABLE_NAME"] === "country") return;
-      query(`DELETE FROM ${table["TABLE_NAME"]}`);
+      if (
+        table["TABLE_NAME"] === "country" ||
+        table["TABLE_NAME"] === "continent"
+      )
+        return;
+      query(`DROP TABLE IF EXISTS ${table["TABLE_NAME"]}`);
     }),
   ]);
-  query(`DELETE FROM Country`);
-  return console.log("Data has been deleted.");
+  await query("DROP TABLE IF EXISTS Country");
+  await query("DROP TABLE IF EXISTS Continent");
+  return console.log("Tables Deleted");
 }
-
 async function run() {
+  await deleteTable();
   await createTable();
-  await deleteTableData();
 
-  const data = require("fs").readFileSync(
-    "./scripts/owid-covid-data.csv",
-    "utf8"
-  );
+  const continents = new Set();
   let countryData = {};
   const caseData = [];
   const hospitalizeData = [];
@@ -143,6 +157,9 @@ async function run() {
 
     // skip all the contient data
     if (entryColumn[0].includes("OWID_")) return;
+
+    continents.add(entryColumn[1]);
+
     countryData[entryColumn[0]] = [
       entryColumn[0],
       entryColumn[2],
@@ -173,7 +190,6 @@ async function run() {
       new Date(entryColumn[3]),
       parseInt(entryColumn[39]) || 0,
       parseInt(entryColumn[45]) || 0,
-      parseInt(entryColumn[37]) || 0,
       entryColumn[0],
     ]);
 
@@ -192,12 +208,25 @@ async function run() {
     ];
   });
 
-  const countryInsertQuery =
-    "INSERT INTO Country(iso_code, location, continent) VALUES ?";
+  const continentsArr = Array.from(continents).map((continent) => [continent]);
 
-  const countryDataWithoutKey = Object.keys(countryData).map(
-    (key) => countryData[key]
-  );
+  const continentInsertQuery = "INSERT INTO Continent(continent) VALUES ?";
+
+  await query(continentInsertQuery, [continentsArr]);
+
+  const continentIdArr = await query("SELECT * FROM Continent");
+  const continentObject = continentIdArr.reduce((accumulator, currentValue) => {
+    accumulator[currentValue.continent] = currentValue.id;
+    return accumulator;
+  }, {});
+
+  const countryInsertQuery =
+    "INSERT INTO Country(iso_code, location, continent_id) VALUES ?";
+
+  const countryDataWithoutKey = Object.keys(countryData).map((key) => {
+    countryData[key][2] = continentObject[countryData[key][2]];
+    return countryData[key];
+  });
 
   // insert all country first because of foreign key used in other table
   await query(countryInsertQuery, [countryDataWithoutKey]);
@@ -210,7 +239,7 @@ async function run() {
   const testInsertQuery =
     "INSERT INTO Test(date, new_tests, positive_rate, iso_code) VALUES ?";
   const vaccinationInsertQuery =
-    "INSERT INTO Vaccination(date, new_vaccinations_smoothed, new_people_vaccinated_smoothed, total_boosters, iso_code) VALUES ?";
+    "INSERT INTO Vaccination(date, new_vaccinations_smoothed, new_people_vaccinated_smoothed, iso_code) VALUES ?";
   const populationInsertQuery =
     "INSERT INTO Population(population, population_density, aged_65_older, life_expectancy, iso_code) VALUES ?";
   const facilitiesInsertQuery =
@@ -240,7 +269,7 @@ async function run() {
   // date[3], new_vaccinations_smoothed[39], new_people_vaccinated_smoothed[45],total_boosters[37], country pk -> Vaccinated Table
   // population[48], population_density[49], aged_65_older[51], life_expectancy[61], country pk -> Population Table
   // handwashing_facilities[59], hospital_beds_per_thousand[60], country pk-> Facilities Table
-  connection.end();
+  return connection.end();
 }
 
 run();

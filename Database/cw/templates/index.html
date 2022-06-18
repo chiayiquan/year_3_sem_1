@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>World</title>
+    <link href="./templates/style.css" rel="stylesheet" type="text/css" />
+  </head>
+
+  <style>
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .pagination li:hover{
+    cursor: pointer;
+}
+  </style>
+
+  <script src="./templates/components/nav.js" type="text/javascript" defer></script>
+  <script src="./templates/components/pagination.js" type="text/javascript" defer></script>
+
+  <script defer>
+    function loadPage(){
+      createPagination('tablePagination',10)
+    }
+
+    function createPagination(paginationId, totalPage){
+      const mainContainer=document.getElementById(paginationId)
+      const paginationDiv=document.createElement('div')
+      paginationDiv.setAttribute('class','pagination')
+      const leftButton = createButton('<')
+      leftButton.addEventListener('click',e=>handlePrevious('<',totalPage))
+      paginationDiv.appendChild(leftButton)
+      mainContainer.appendChild(paginationDiv)
+    }
+
+    function createButton(value, buttonOnClick){
+      const hyperlink =document.createElement('a')
+      hyperlink.textContent=value
+      return hyperlink
+    }
+
+    function handlePrevious(value,length){
+      console.log(length)
+    }
+
+    function handleNext(event,value){
+      console.log(value.textContent)
+    }
+  </script>
+  <body onload="loadPage()">
+    <div id="myNav"></div>
+    <div class="container">
+      <h1>World Data</h1>
+      <h3>Total Population: {{totalPopulation.total_population}}</h3>
+
+      <div id="tablePagination"></div>
+</div>
+    </div>
+  </body>
+</html>
