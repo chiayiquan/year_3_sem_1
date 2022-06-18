@@ -31,7 +31,9 @@ export default function App() {
       setReadyToReplace(false);
       return buttonValue;
     } else {
-      return parseFloat(currentValue) > 0 && currentValue.length < 30
+      if (currentValue.includes(".")) return currentValue + buttonValue;
+      else if (currentValue == "0") return buttonValue;
+      return currentValue.length < 30
         ? currentValue + buttonValue
         : currentValue;
     }
@@ -70,9 +72,8 @@ export default function App() {
     setAnswerValue((state) => (parseFloat(state) * 0.01).toString());
   }
 
-  function roundToSixDP(num) {
-    return num % parseInt(num) === 0 ? num : num.toFixed(6);
-    // return Math.round(num * 1000000) / 1000000;
+  function removeDecimalFromWholeNumber(num) {
+    return num % parseInt(num) === 0 ? num : parseFloat(num);
   }
 
   function multiplyDivide(operationArr, memoryValueArr, index = 0) {
@@ -133,7 +134,7 @@ export default function App() {
     plusMinus(operationArr, tempMemoryValueArr);
 
     // return the total
-    return roundToSixDP(tempMemoryValueArr[0]);
+    return removeDecimalFromWholeNumber(tempMemoryValueArr[0]);
   }
 
   function calculateEquals() {
