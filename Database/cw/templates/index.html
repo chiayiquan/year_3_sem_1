@@ -5,56 +5,115 @@
     <link href="./templates/style.css" rel="stylesheet" type="text/css" />
   </head>
 
-  <style>
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .pagination li:hover{
-    cursor: pointer;
-}
-  </style>
-
   <script src="./templates/components/nav.js" type="text/javascript" defer></script>
-  <script src="./templates/components/pagination.js" type="text/javascript" defer></script>
+  <script src="./templates/components/table.js" type="text/javascript" defer></script>
+  <script src="./templates/components/select.js" type="text/javascript" defer></script>
 
   <script defer>
-    function loadPage(){
-      createPagination('tablePagination',10)
+    function selectCasesByMonth(){
+      const selectedDate=document.getElementById('totalCovidDate').value
+      return fetch(`/api/covid/world?date=${selectedDate}`)
+                      .then(response=>response.json())
+                      .then(({covid,totalCovid})=>{
+                        covid.push({date:'<b>Total</b>',...totalCovid})
+                        loadTable(covid,['Date','Total Case','Total Death'],'covid')})
     }
 
-    function createPagination(paginationId, totalPage){
-      const mainContainer=document.getElementById(paginationId)
-      const paginationDiv=document.createElement('div')
-      paginationDiv.setAttribute('class','pagination')
-      const leftButton = createButton('<')
-      leftButton.addEventListener('click',e=>handlePrevious('<',totalPage))
-      paginationDiv.appendChild(leftButton)
-      mainContainer.appendChild(paginationDiv)
+    function selectVaccinationByMonth(){
+      const selectedDate=document.getElementById('totalVaccinationDate').value
+       return fetch(`/api/vaccination/world?date=${selectedDate}`)
+                      .then(response=>response.json())
+                      .then(({vaccination,totalVaccination})=>{
+                        vaccination.push({date:'<b>Total</b>',...totalVaccination})
+                        loadTable(vaccination,['Date','Total Vaccination','Total Unique Vaccinated People'],'vaccination')})
     }
 
-    function createButton(value, buttonOnClick){
-      const hyperlink =document.createElement('a')
-      hyperlink.textContent=value
-      return hyperlink
-    }
 
-    function handlePrevious(value,length){
-      console.log(length)
-    }
-
-    function handleNext(event,value){
-      console.log(value.textContent)
-    }
   </script>
-  <body onload="loadPage()">
+  <body>
     <div id="myNav"></div>
     <div class="container">
       <h1>World Data</h1>
-      <h3>Total Population: {{totalPopulation.total_population}}</h3>
+      <h3>Total Population: {{population.total_population}}</h3>
+      <div class="row">
+        <div class="container" style="margin-right:50px;">
+          <div class="titleContainer">
+            <h3>Covid Cases</h3>
+            <div>
+              Filter:
+            <select name="Filter By Date" id="totalCovidDate" onchange="selectCasesByMonth()">
+              <option value="all">All</option>
+              {{#covid}}
+                <option value="{{date}}">{{date}}</option>
+              {{/covid}}
+            </select>
+            </div>
+          </div>
+        
+          <table id="covid" border="solid" >
+          <tr>
+            <th>Date</th>
+            <th>Total Case</th>
+            <th>Total Death</th>
+          </tr>
 
-      <div id="tablePagination"></div>
+          {{#covid}}
+          <tr>
+            <td>{{date}}</td>
+            <td>{{total_case}}</td>
+            <td>{{total_death}}</td>
+          </tr>
+          {{/covid}}
+
+          <tr>
+            <td><b>Total</b></td>
+            <td>{{totalCovid.total_case}}</td>
+            <td>{{totalCovid.total_death}}</td>
+          </tr>
+
+        </table>
+        </div>
+        
+    <div class="container">
+      <div class="titleContainer">
+            <h3>Vaccination</h3>
+            <div>
+              Filter:
+            <select name="Filter By Date" id="totalVaccinationDate" onchange="selectVaccinationByMonth()">
+              <option value="all">All</option>
+              {{#vaccination}}
+                <option value="{{date}}">{{date}}</option>
+              {{/vaccination}}
+            </select>
+            </div>
+          </div>
+      
+          <table id="vaccination" border="solid">
+          <tr>
+            <th>Date</th>
+            <th>Total Vaccination</th>
+            <th>Total Unique Vaccinated People</th>
+          </tr>
+
+          {{#vaccination}}
+          <tr>
+            <td>{{date}}</td>
+            <td>{{total_vaccinations}}</td>
+            <td>{{total_unique_vaccinated_people}}</td>
+          </tr>
+          {{/vaccination}}
+
+          <tr>
+            <td><b>Total</b></td>
+            <td>{{totalVaccination.total_vaccinations}}</td>
+            <td>{{totalVaccination.total_unique_vaccinated_people}}</td>
+          </tr>
+
+        </table>
+      </div>
+
+  </div>
+      
 </div>
     </div>
   </body>

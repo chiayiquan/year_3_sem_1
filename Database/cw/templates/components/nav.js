@@ -72,10 +72,10 @@ const navbar = `
             <a href="/">World</a>
             </li>
             <li>
-            <a href="/continent">Continent</a>
+            <a href="continent">Continent</a>
             </li>
-              <li>
-            <a href="/country">Country</a>
+            <li>
+            <a href="country">Country</a>
             </li>
         </ul>
     </nav>
@@ -92,9 +92,9 @@ function setNavigation() {
       menu_items[i].getAttribute("href") === "/"
     ) {
       menu_items[i].classList.add("focus");
-    } else if (menu_items[i].getAttribute("href") === "continent") {
+    } else if (menu_items[i].getAttribute("href") === current_location) {
       menu_items[i].classList.add("focus");
-    } else if (menu_items[i].getAttribute("href") === "country") {
+    } else if (menu_items[i].getAttribute("href") === current_location) {
       menu_items[i].classList.add("focus");
     }
   }
