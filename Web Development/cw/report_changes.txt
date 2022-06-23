@@ -1,4 +1,0 @@
-In the terminal, for windows change the directory to the Scripts folder which in my case will be cd bioscience_env/Scripts and type in the following command
-activate.bat
-For unix system, change the directory to the bin folder which in my case will be cd bioscience_env/bin and type in the following command
-source activate -> For unix system
