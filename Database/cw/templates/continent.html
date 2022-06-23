@@ -1,105 +1,108 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Continent</title>
-    <link href="./templates/style.css" rel="stylesheet" type="text/css" />
-  </head>
+
+<head>
+  <title>Continent</title>
+  <link href="./templates/style.css" rel="stylesheet" type="text/css" />
+</head>
 
 
-  <script src="./templates/components/nav.js" type="text/javascript" defer></script>
-  <script src="./templates/components/table.js" type="text/javascript" defer></script>
-  <script src="./templates/components/select.js" type="text/javascript" defer></script>
+<script src="./templates/components/nav.js" type="text/javascript" defer></script>
+<script src="./templates/components/table.js" type="text/javascript" defer></script>
+<script src="./templates/components/select.js" type="text/javascript" defer></script>
 
-  <style>
-    .continentContainer{
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        padding: 20px;
-      }
-    
-    #continent{
-        padding:10px;
-    }
-  </style>
+<style>
+  .continentContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+  }
 
-  <script defer>
-    function filterCase(){
-        const selectedDate=document.getElementById('covidDate').value
-        const selectedContinent=document.getElementById('continent').value
+  #continent {
+    padding: 10px;
+  }
+</style>
 
-        return fetch(`/api/covid/continent?date=${selectedDate}&continentId=${selectedContinent}`)
-        .then((response)=>response.json())
-        .then(({covid,totalCovid})=>{
-            covid.push({date:'<b>Total</b>',...totalCovid})
-            loadTable(covid,['Date','Total Case','Total Death'],'covid')
+<script defer>
+  function filterCase() {
+    const selectedDate = document.getElementById('covidDate').value
+    const selectedContinent = document.getElementById('continent').value
+
+    return fetch(`/api/covid/continent?date=${selectedDate}&continentId=${selectedContinent}`)
+      .then((response) => response.json())
+      .then(({ covid, totalCovid }) => {
+        covid.push({ date: '<b>Total</b>', ...totalCovid })
+        loadTable(covid, ['Date', 'Total Case', 'Total Death'], 'covid')
+      })
+
+  }
+
+  function filterVaccination() {
+    const selectedDate = document.getElementById('totalVaccinationDate').value
+    const selectedContinent = document.getElementById('continent').value
+
+    return fetch(`/api/vaccination/continent?date=${selectedDate}&continentId=${selectedContinent}`)
+      .then(response => response.json())
+      .then(({ vaccination, totalVaccination }) => {
+        vaccination.push({ date: '<b>Total</b>', ...totalVaccination })
+        loadTable(vaccination, ['Date', 'Total Vaccination', 'Total Unique Vaccinated People'], 'vaccination')
+      })
+  }
+
+  function filterByContinent() {
+    const selectedContinent = document.getElementById('continent')
+
+    return Promise.all([
+      filterCase(),
+      filterVaccination(),
+
+      fetch(`/api/population/continent?continentId=${selectedContinent.value}`)
+        .then(response => response.json())
+        .then(({ population }) => {
+          const selectedContinentText = selectedContinent.options[selectedContinent.selectedIndex].textContent
+          const populationText = document.getElementById('population')
+          populationText.textContent = `${selectedContinentText} Population: ${population.total_population}`
         })
+    ])
+  }
 
-    }
+</script>
 
-    function filterVaccination(){
-        const selectedDate=document.getElementById('totalVaccinationDate').value
-        const selectedContinent=document.getElementById('continent').value
-        
-        return fetch(`/api/vaccination/continent?date=${selectedDate}&continentId=${selectedContinent}`)
-        .then(response=>response.json())
-        .then(({vaccination,totalVaccination})=>{
-            vaccination.push({date:'<b>Total</b>',...totalVaccination})
-            loadTable(vaccination,['Date','Total Vaccination','Total Unique Vaccinated People'],'vaccination')})
-    }
+<body>
+  <div id="myNav"></div>
+  <div class="container">
+    <h1>Continent Data</h1>
 
-    function filterByContinent(){
-        const selectedContinent=document.getElementById('continent')
+    <div class="continentContainer">
+      <h1>Continents:<h1>
+          <select name="Continents" id="continent" onchange="filterByContinent()">
+            {{#continents}}
+            <option value="{{id}}">{{continent}}</option>
+            {{/continents}}
+          </select>
+    </div>
 
-        return Promise.all([
-        filterCase(),
-        filterVaccination(),
+    <h3 id="population">{{continents.0.continent}} Population: {{population.total_population}}</h3>
 
-        fetch(`/api/population/continent?continentId=${selectedContinent.value}`)
-        .then(response=>response.json())
-        .then(({population})=>{
-            const selectedContinentText= selectedContinent.options[selectedContinent.selectedIndex].textContent
-            const populationText=document.getElementById('population')
-            populationText.textContent=`${selectedContinentText} Population: ${population.total_population}`
-        })
-        ])
-    }
-
-  </script>
-  <body>
-    <div id="myNav"></div>
-    <div class="container">
-      <h1>Continent Data</h1>
-
-      <div class="continentContainer">
-          <h1>Continents:<h1>
-        <select name="Continents" id="continent" onchange="filterByContinent()">
-        {{#continents}}
-        <option value="{{id}}">{{continent}}</option>
-        {{/continents}}
-        </select>
-      </div>
-
-      <h3 id="population">{{continents.0.continent}} Population: {{population.total_population}}</h3>
-        
-      <div class="row">
-        <div class="container" style="margin-right:50px;">
-          <div class="titleContainer">
-            <h3>Covid Cases</h3>
-            <div>
-              Filter:
+    <div class="row">
+      <div class="container" style="margin-right:50px;">
+        <div class="titleContainer">
+          <h3>Covid Cases</h3>
+          <div>
+            Filter:
             <select name="Filter By Date" id="covidDate" onchange="filterCase()">
               <option value="all">All</option>
               {{#covid}}
-                <option value="{{date}}">{{date}}</option>
+              <option value="{{date}}">{{date}}</option>
               {{/covid}}
             </select>
-            </div>
           </div>
-        
-          <table id="covid" border="solid" >
+        </div>
+
+        <table id="covid" border="solid">
           <tr>
             <th>Date</th>
             <th>Total Case</th>
@@ -121,23 +124,23 @@
           </tr>
 
         </table>
-        </div>
-        
-    <div class="container">
-      <div class="titleContainer">
-            <h3>Vaccination</h3>
-            <div>
-              Filter:
+      </div>
+
+      <div class="container">
+        <div class="titleContainer">
+          <h3>Vaccination</h3>
+          <div>
+            Filter:
             <select name="Filter By Date" id="totalVaccinationDate" onchange="filterVaccination()">
               <option value="all">All</option>
               {{#vaccination}}
-                <option value="{{date}}">{{date}}</option>
+              <option value="{{date}}">{{date}}</option>
               {{/vaccination}}
             </select>
-            </div>
           </div>
-      
-          <table id="vaccination" border="solid">
+        </div>
+
+        <table id="vaccination" border="solid">
           <tr>
             <th>Date</th>
             <th>Total Vaccination</th>
@@ -161,9 +164,9 @@
         </table>
       </div>
 
-  </div>
-      
-</div>
     </div>
-  </body>
+
+  </div>
+</body>
+
 </html>

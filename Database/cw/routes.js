@@ -13,26 +13,31 @@ module.exports = function (app) {
       "SELECT FORMAT(SUM(new_case),0) as total_case, FORMAT(SUM(new_death),0) as total_death FROM NewCase;";
     const selectWorldTotalVaccinationQuery =
       "SELECT FORMAT(SUM(new_vaccinations_smoothed),0) as total_vaccinations, FORMAT(SUM(new_people_vaccinated_smoothed),0) as total_unique_vaccinated_people FROM Vaccination;";
+    const selectFacilitiesQuery =
+      "SELECT Country.location, Facilities.handwashing_facilities, Facilities.hospital_beds_per_thousand FROM Facilities INNER JOIN Country ON Facilities.iso_code = Country.iso_code ORDER BY Country.location;";
     const [
       worldPopulation,
       worldCovid,
       worldVaccination,
       totalCovid,
       totalVaccination,
+      facilities,
     ] = await Promise.all([
       query(selectWorldTotalPopulationQuery),
       query(selectWorldCovidQuery),
       query(selectWorldVaccinationQuery),
       query(selectWorldTotalCovidQuery),
       query(selectWorldTotalVaccinationQuery),
+      query(selectFacilitiesQuery),
     ]);
-
+    console.log(facilities);
     res.render("index.html", {
       population: worldPopulation[0],
       covid: worldCovid,
       vaccination: worldVaccination,
       totalCovid: totalCovid[0],
       totalVaccination: totalVaccination[0],
+      facilities,
     });
   });
 
@@ -89,18 +94,26 @@ module.exports = function (app) {
       "SELECT FORMAT(SUM(new_case),0) as total_case, FORMAT(SUM(new_death),0) as total_death FROM NewCase WHERE iso_code = ?;";
     const selectCountryTotalVaccinationQuery =
       "SELECT FORMAT(SUM(new_vaccinations_smoothed),0) as total_vaccinations, FORMAT(SUM(new_people_vaccinated_smoothed),0) as total_unique_vaccinated_people FROM Vaccination WHERE iso_code = ?;";
+    const selectCountryTestQuery =
+      "SELECT DATE_FORMAT(`date`,'%Y-%m-%d') as date,new_tests, positive_rate FROM Test WHERE iso_code = ? AND DATE_FORMAT(`date`,'%Y-%m')=? ORDER BY date;";
+    const selectCountryTestDateListQuery =
+      "SELECT DATE_FORMAT(`date`,'%Y-%m') as date FROM Test WHERE iso_code = ? GROUP BY DATE_FORMAT(`date`,'%Y-%m') ORDER BY date;";
     const [
       countryPopulation,
       countryCovid,
       countryVaccination,
       totalCovid,
       totalVaccination,
+      test,
+      testDateList,
     ] = await Promise.all([
       query(selectCountryPopulationQuery, [countries[0].iso_code]),
       query(selectCountryCovidQuery, [countries[0].iso_code]),
       query(selectCountryVaccinationQuery, [countries[0].iso_code]),
       query(selectCountryTotalCovidQuery, [countries[0].iso_code]),
       query(selectCountryTotalVaccinationQuery, [countries[0].iso_code]),
+      query(selectCountryTestQuery, [countries[0].iso_code, "2020-02"]),
+      query(selectCountryTestDateListQuery, [countries[0].iso_code]),
     ]);
 
     res.render("country.html", {
@@ -110,6 +123,8 @@ module.exports = function (app) {
       vaccination: countryVaccination,
       totalCovid: totalCovid[0],
       totalVaccination: totalVaccination[0],
+      test,
+      testDateList,
     });
   });
 
@@ -280,5 +295,17 @@ module.exports = function (app) {
     );
 
     res.status(200).json({ population: population[0] });
+  });
+
+  app.get("/api/test/", async function (req, res) {
+    const selectCountryTestQuery =
+      "SELECT DATE_FORMAT(`date`,'%Y-%m-%d') as date,new_tests, positive_rate FROM Test WHERE DATE_FORMAT(`date`,'%Y-%m')=? AND iso_code = ? ORDER BY date;";
+
+    const test = await query(
+      selectCountryTestQuery,
+      Object.values(req.query).map((value) => value)
+    );
+
+    res.status(200).json({ test });
   });
 };

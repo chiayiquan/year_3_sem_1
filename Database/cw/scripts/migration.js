@@ -38,7 +38,6 @@ async function createTable() {
   \`date\` datetime,
   \`icu_patient\` int,
   \`hosp_patients\` int,
-  \`weekly_hosp_admissions\` int,
   \`iso_code\` varchar(255)
 );`;
 
@@ -177,7 +176,6 @@ async function run() {
       new Date(entryColumn[3]),
       parseInt(entryColumn[17]) || 0,
       parseInt(entryColumn[19]) || 0,
-      parseInt(entryColumn[23]) || 0,
       entryColumn[0],
     ]);
     testData.push([
@@ -230,12 +228,12 @@ async function run() {
 
   // insert all country first because of foreign key used in other table
   await query(countryInsertQuery, [countryDataWithoutKey]);
-  console.log("Country inserted");
+  console.log("Country Inserted");
 
   const caseInsertQuery =
     "INSERT INTO NewCase(date, new_case, new_death, stringency_index, iso_code) VALUES ?";
   const hospitalizeInsertQuery =
-    "INSERT INTO Hospitalize(date, icu_patient, hosp_patients, weekly_hosp_admissions, iso_code) VALUES ?";
+    "INSERT INTO Hospitalize(date, icu_patient, hosp_patients, iso_code) VALUES ?";
   const testInsertQuery =
     "INSERT INTO Test(date, new_tests, positive_rate, iso_code) VALUES ?";
   const vaccinationInsertQuery =
@@ -262,9 +260,16 @@ async function run() {
     query(facilitiesInsertQuery, [facilitiesDataWithoutKey]),
   ]);
 
+  console.log("Case Inserted");
+  console.log("Hospitalize Inserted");
+  console.log("Test Inserted");
+  console.log("Vaccination Inserted");
+  console.log("Population Inserted");
+  console.log("Facilities Inserted");
+
   // iso_code[0], location[2], cotinent[1] -> Country table
   // date[3],  new_case[5], new_death[8], stringency_index[47], iso_code[0] -> Cases table
-  // date[3], icu_patient[17], hosp_patients[19], weekly_hosp_admissions[23], country pk -> Hospitalize table
+  // date[3], icu_patient[17], hosp_patients[19], country pk -> Hospitalize table
   // date[3], new_tests[26], positive_rate[32], country pk -> Test table
   // date[3], new_vaccinations_smoothed[39], new_people_vaccinated_smoothed[45],total_boosters[37], country pk -> Vaccinated Table
   // population[48], population_density[49], aged_65_older[51], life_expectancy[61], country pk -> Population Table
