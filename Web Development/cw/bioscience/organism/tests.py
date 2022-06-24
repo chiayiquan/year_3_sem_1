@@ -339,29 +339,6 @@ class ProteinSerializerTest(APITestCase):
         self.assertDictEqual(data, default_data)
 
 
-class CreateProteinSerializerTest(APITestCase):
-    protein = None
-    create_protein_serializer = None
-
-    def setUp(self):
-        self.protein = ProteinFactory.create()
-        self.protein.domains.set([DomainFactory.create()])
-        self.create_protein_serializer = CreateProteinSerializer(
-            instance=self.protein)
-
-    def tearDown(self):
-        tearDown()
-
-    def test_create_protein_serializer_has_correct_field(self):
-        data = self.create_protein_serializer.data
-        self.assertEqual(set(data.keys()), set(['protein_id', 'sequence',
-                                                'taxonomy', 'length', 'domains']))
-
-    def test_create_protein_serializer_has_correct_data(self):
-        data = self.create_protein_serializer.data
-        self.assertDictEqual(data, default_data)
-
-
 class ListProteinSerializerTest(APITestCase):
     protein = None
     list_protein_serializer = None

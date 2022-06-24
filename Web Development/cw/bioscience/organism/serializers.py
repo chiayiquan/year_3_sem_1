@@ -30,15 +30,6 @@ class ProteinSerializer(serializers.ModelSerializer):
         model = Protein
         fields = ['protein_id', 'sequence', 'taxonomy', 'length', 'domains']
 
-
-class CreateProteinSerializer(serializers.ModelSerializer):
-    taxonomy = TaxonomySerializer()
-    domains = DomainSerializer(many=True)
-
-    class Meta:
-        model = Protein
-        fields = ['protein_id', 'sequence', 'taxonomy', 'length', 'domains']
-
     def create(self, validated_data):
         taxonomy_data = self.initial_data.get('taxonomy')
         domains_data = self.initial_data.get('domains')

@@ -22,7 +22,7 @@ class ProteinDetail(mixins.RetrieveModelMixin,
 
 class CreateProtein(mixins.CreateModelMixin,
                     generics.GenericAPIView):
-    serializer_class = CreateProteinSerializer
+    serializer_class = ProteinSerializer
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
