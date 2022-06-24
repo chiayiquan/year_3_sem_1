@@ -52,13 +52,25 @@
       })
   }
 
+  function filterHospitalize(){
+     const selectedDate = document.getElementById('hospitalizeDate').value
+    const selectedContinent = document.getElementById('continent').value
+
+    return fetch(`/api/hospitalize/continent?date=${selectedDate}&continentId=${selectedContinent}`)
+      .then(response => response.json())
+      .then(({ hospitalize,totalHospitalize }) => {
+        hospitalize.push({ date: '<b>Total</b>', ...totalHospitalize })
+        loadTable(hospitalize, ['Date', 'Hospital Patients', 'ICU Patients'], 'hospitalize')
+      })
+  }
+
   function filterByContinent() {
     const selectedContinent = document.getElementById('continent')
 
     return Promise.all([
       filterCase(),
       filterVaccination(),
-
+      filterHospitalize(),
       fetch(`/api/population/continent?continentId=${selectedContinent.value}`)
         .then(response => response.json())
         .then(({ population }) => {
@@ -163,7 +175,46 @@
 
         </table>
       </div>
+    </div>
 
+    <div class="row" style="margin-top:20px;">
+      <div class="container">
+        <div class="titleContainer">
+          <h3>Hospitalize</h3>
+          <div>
+            Filter:
+            <select name="Filter By Date" id="hospitalizeDate" onchange="filterHospitalize()">
+              <option value="all">All</option>
+              {{#hospitalize}}
+              <option value="{{date}}">{{date}}</option>
+              {{/hospitalize}}
+            </select>
+          </div>
+        </div>
+
+        <table id="hospitalize" border="solid">
+          <tr>
+            <th>Date</th>
+            <th>Hospital Patients</th>
+            <th>ICU Patients</th>
+          </tr>
+
+          {{#hospitalize}}
+          <tr>
+            <td>{{date}}</td>
+            <td>{{total_icu_patient}}</td>
+            <td>{{total_hosp_patients}}</td>
+          </tr>
+          {{/hospitalize}}
+
+          <tr>
+            <td><b>Total</b></td>
+            <td>{{totalHospitalize.total_icu_patient}}</td>
+            <td>{{totalHospitalize.total_hosp_patients}}</td>
+          </tr>
+
+        </table>
+      </div>
     </div>
 
   </div>

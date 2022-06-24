@@ -6,9 +6,9 @@ module.exports = function (app) {
     const selectWorldTotalPopulationQuery =
       "SELECT FORMAT(SUM(population),0) as total_population FROM Population;";
     const selectWorldCovidQuery =
-      "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(new_case),0) as total_case, FORMAT(SUM(new_death),0) as total_death FROM NewCase GROUP BY CONCAT(YEAR(date),'-', MONTH(date)) ORDER BY date;";
+      "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(new_case),0) as total_case, FORMAT(SUM(new_death),0) as total_death FROM NewCase GROUP BY DATE_FORMAT(`date`,'%Y-%m') ORDER BY date;";
     const selectWorldVaccinationQuery =
-      "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(new_vaccinations_smoothed),0) as total_vaccinations, FORMAT(SUM(new_people_vaccinated_smoothed),0) as total_unique_vaccinated_people FROM Vaccination GROUP BY CONCAT(YEAR(date),'-', MONTH(date)) ORDER BY date;";
+      "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(new_vaccinations_smoothed),0) as total_vaccinations, FORMAT(SUM(new_people_vaccinated_smoothed),0) as total_unique_vaccinated_people FROM Vaccination GROUP BY DATE_FORMAT(`date`,'%Y-%m') ORDER BY date;";
     const selectWorldTotalCovidQuery =
       "SELECT FORMAT(SUM(new_case),0) as total_case, FORMAT(SUM(new_death),0) as total_death FROM NewCase;";
     const selectWorldTotalVaccinationQuery =
@@ -30,7 +30,7 @@ module.exports = function (app) {
       query(selectWorldTotalVaccinationQuery),
       query(selectFacilitiesQuery),
     ]);
-    console.log(facilities);
+
     res.render("index.html", {
       population: worldPopulation[0],
       covid: worldCovid,
@@ -48,25 +48,33 @@ module.exports = function (app) {
     const selectContinentPopulationQuery =
       "SELECT FORMAT(SUM(population),0) as total_population FROM Population WHERE iso_code IN (SELECT iso_code FROM Country WHERE continent_id=?);";
     const selectContinentCovidQuery =
-      "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(new_case),0) as total_case, FORMAT(SUM(new_death),0) as total_death FROM NewCase WHERE iso_code IN (SELECT iso_code FROM Country WHERE continent_id=?) GROUP BY CONCAT(YEAR(date),'-', MONTH(date)) ORDER BY date;";
+      "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(new_case),0) as total_case, FORMAT(SUM(new_death),0) as total_death FROM NewCase WHERE iso_code IN (SELECT iso_code FROM Country WHERE continent_id=?) GROUP BY DATE_FORMAT(`date`,'%Y-%m') ORDER BY date;";
     const selectContinentVaccinationQuery =
-      "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(new_vaccinations_smoothed),0) as total_vaccinations, FORMAT(SUM(new_people_vaccinated_smoothed),0) as total_unique_vaccinated_people FROM Vaccination WHERE iso_code IN (SELECT iso_code FROM Country WHERE continent_id=?) GROUP BY CONCAT(YEAR(date),'-', MONTH(date)) ORDER BY date;";
+      "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(new_vaccinations_smoothed),0) as total_vaccinations, FORMAT(SUM(new_people_vaccinated_smoothed),0) as total_unique_vaccinated_people FROM Vaccination WHERE iso_code IN (SELECT iso_code FROM Country WHERE continent_id=?) GROUP BY DATE_FORMAT(`date`,'%Y-%m') ORDER BY date;";
     const selectContinentTotalCovidQuery =
       "SELECT FORMAT(SUM(new_case),0) as total_case, FORMAT(SUM(new_death),0) as total_death FROM NewCase WHERE iso_code IN (SELECT iso_code FROM Country WHERE continent_id=?);";
     const selectContinentTotalVaccinationQuery =
       "SELECT FORMAT(SUM(new_vaccinations_smoothed),0) as total_vaccinations, FORMAT(SUM(new_people_vaccinated_smoothed),0) as total_unique_vaccinated_people FROM Vaccination WHERE iso_code IN (SELECT iso_code FROM Country WHERE continent_id=?);";
+    const selectHospitalizeQuery =
+      "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(icu_patient),0) as total_icu_patient, FORMAT(SUM(hosp_patients),0) as total_hosp_patients FROM Hospitalize WHERE iso_code IN (SELECT iso_code FROM Country WHERE continent_id=?) GROUP BY DATE_FORMAT(`date`,'%Y-%m') ORDER BY date;";
+    const selectTotalHospitalizeQuery =
+      "SELECT FORMAT(SUM(icu_patient),0) as total_icu_patient, FORMAT(SUM(hosp_patients),0) as total_hosp_patients FROM Hospitalize WHERE iso_code IN (SELECT iso_code FROM Country WHERE continent_id=?);";
     const [
       continentPopulation,
       continentCovid,
       continentVaccination,
       totalCovid,
       totalVaccination,
+      hospitalize,
+      totalHospitalize,
     ] = await Promise.all([
       query(selectContinentPopulationQuery, [continents[0].id]),
       query(selectContinentCovidQuery, [continents[0].id]),
       query(selectContinentVaccinationQuery, [continents[0].id]),
       query(selectContinentTotalCovidQuery, [continents[0].id]),
       query(selectContinentTotalVaccinationQuery, [continents[0].id]),
+      query(selectHospitalizeQuery, [continents[0].id]),
+      query(selectTotalHospitalizeQuery, [continents[0].id]),
     ]);
 
     res.render("continent.html", {
@@ -76,6 +84,8 @@ module.exports = function (app) {
       vaccination: continentVaccination,
       totalCovid: totalCovid[0],
       totalVaccination: totalVaccination[0],
+      hospitalize,
+      totalHospitalize: totalHospitalize[0],
     });
   });
 
@@ -85,11 +95,11 @@ module.exports = function (app) {
     const countries = await query(selectCountryQuery);
 
     const selectCountryPopulationQuery =
-      "SELECT FORMAT(SUM(population),0) as total_population FROM Population WHERE iso_code = ?;";
+      "SELECT FORMAT((population),0) as total_population, population_density, aged_65_older, life_expectancy FROM Population WHERE iso_code = ?;";
     const selectCountryCovidQuery =
-      "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(new_case),0) as total_case, FORMAT(SUM(new_death),0) as total_death FROM NewCase WHERE iso_code = ? GROUP BY CONCAT(YEAR(date),'-', MONTH(date)) ORDER BY date;";
+      "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(new_case),0) as total_case, FORMAT(SUM(new_death),0) as total_death FROM NewCase WHERE iso_code = ? GROUP BY DATE_FORMAT(`date`,'%Y-%m') ORDER BY date;";
     const selectCountryVaccinationQuery =
-      "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(new_vaccinations_smoothed),0) as total_vaccinations, FORMAT(SUM(new_people_vaccinated_smoothed),0) as total_unique_vaccinated_people FROM Vaccination WHERE iso_code = ? GROUP BY CONCAT(YEAR(date),'-', MONTH(date)) ORDER BY date;";
+      "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(new_vaccinations_smoothed),0) as total_vaccinations, FORMAT(SUM(new_people_vaccinated_smoothed),0) as total_unique_vaccinated_people FROM Vaccination WHERE iso_code = ? GROUP BY DATE_FORMAT(`date`,'%Y-%m') ORDER BY date;";
     const selectCountryTotalCovidQuery =
       "SELECT FORMAT(SUM(new_case),0) as total_case, FORMAT(SUM(new_death),0) as total_death FROM NewCase WHERE iso_code = ?;";
     const selectCountryTotalVaccinationQuery =
@@ -98,6 +108,12 @@ module.exports = function (app) {
       "SELECT DATE_FORMAT(`date`,'%Y-%m-%d') as date,new_tests, positive_rate FROM Test WHERE iso_code = ? AND DATE_FORMAT(`date`,'%Y-%m')=? ORDER BY date;";
     const selectCountryTestDateListQuery =
       "SELECT DATE_FORMAT(`date`,'%Y-%m') as date FROM Test WHERE iso_code = ? GROUP BY DATE_FORMAT(`date`,'%Y-%m') ORDER BY date;";
+    const selectFacilitiesQuery =
+      "SELECT handwashing_facilities, hospital_beds_per_thousand FROM Facilities WHERE iso_code = ?;";
+    const selectHospitalizeQuery =
+      "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(icu_patient),0) as total_icu_patient, FORMAT(SUM(hosp_patients),0) as total_hosp_patients FROM Hospitalize WHERE iso_code=? GROUP BY DATE_FORMAT(`date`,'%Y-%m') ORDER BY date;";
+    const selectTotalHospitalizeQuery =
+      "SELECT FORMAT(SUM(icu_patient),0) as total_icu_patient, FORMAT(SUM(hosp_patients),0) as total_hosp_patients FROM Hospitalize WHERE iso_code = ?;";
     const [
       countryPopulation,
       countryCovid,
@@ -106,6 +122,9 @@ module.exports = function (app) {
       totalVaccination,
       test,
       testDateList,
+      facilities,
+      hospitalize,
+      totalHospitalize,
     ] = await Promise.all([
       query(selectCountryPopulationQuery, [countries[0].iso_code]),
       query(selectCountryCovidQuery, [countries[0].iso_code]),
@@ -114,6 +133,9 @@ module.exports = function (app) {
       query(selectCountryTotalVaccinationQuery, [countries[0].iso_code]),
       query(selectCountryTestQuery, [countries[0].iso_code, "2020-02"]),
       query(selectCountryTestDateListQuery, [countries[0].iso_code]),
+      query(selectFacilitiesQuery, [countries[0].iso_code]),
+      query(selectHospitalizeQuery, [countries[0].iso_code]),
+      query(selectTotalHospitalizeQuery, [countries[0].iso_code]),
     ]);
 
     res.render("country.html", {
@@ -125,6 +147,9 @@ module.exports = function (app) {
       totalVaccination: totalVaccination[0],
       test,
       testDateList,
+      facilities: facilities[0],
+      hospitalize,
+      totalHospitalize: totalHospitalize[0],
     });
   });
 
@@ -137,7 +162,7 @@ module.exports = function (app) {
       case "world":
         if (param.date === "all") {
           selectCovidQuery =
-            "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(new_case),0) as total_case, FORMAT(SUM(new_death),0) as total_death FROM NewCase GROUP BY CONCAT(YEAR(date),'-', MONTH(date)) ORDER BY date;";
+            "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(new_case),0) as total_case, FORMAT(SUM(new_death),0) as total_death FROM NewCase GROUP BY DATE_FORMAT(`date`,'%Y-%m') ORDER BY date;";
           selectTotalCovidQuery =
             "SELECT FORMAT(SUM(new_case),0) as total_case, FORMAT(SUM(new_death),0) as total_death FROM NewCase;";
         } else {
@@ -151,7 +176,7 @@ module.exports = function (app) {
       case "continent":
         if (param.date === "all") {
           selectCovidQuery =
-            "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(new_case),0) as total_case, FORMAT(SUM(new_death),0) as total_death FROM NewCase WHERE iso_code IN (SELECT iso_code FROM Country WHERE continent_id=?) GROUP BY CONCAT(YEAR(date),'-', MONTH(date)) ORDER BY date;";
+            "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(new_case),0) as total_case, FORMAT(SUM(new_death),0) as total_death FROM NewCase WHERE iso_code IN (SELECT iso_code FROM Country WHERE continent_id=?) GROUP BY DATE_FORMAT(`date`,'%Y-%m') ORDER BY date;";
           selectTotalCovidQuery =
             "SELECT FORMAT(SUM(new_case),0) as total_case, FORMAT(SUM(new_death),0) as total_death FROM NewCase WHERE iso_code IN (SELECT iso_code FROM Country WHERE continent_id=?);";
         } else {
@@ -165,7 +190,7 @@ module.exports = function (app) {
       case "country":
         if (param.date === "all") {
           selectCovidQuery =
-            "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(new_case),0) as total_case, FORMAT(SUM(new_death),0) as total_death FROM NewCase WHERE iso_code = ? GROUP BY CONCAT(YEAR(date),'-', MONTH(date)) ORDER BY date;";
+            "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(new_case),0) as total_case, FORMAT(SUM(new_death),0) as total_death FROM NewCase WHERE iso_code = ? GROUP BY DATE_FORMAT(`date`,'%Y-%m') ORDER BY date;";
           selectTotalCovidQuery =
             "SELECT FORMAT(SUM(new_case),0) as total_case, FORMAT(SUM(new_death),0) as total_death FROM NewCase WHERE iso_code = ?;";
         } else {
@@ -208,7 +233,7 @@ module.exports = function (app) {
       case "world":
         if (param.date === "all") {
           selectVaccinationQuery =
-            "SELECT DATE_FORMAT(`date`,'%Y-%m-%d') as date, FORMAT(SUM(new_vaccinations_smoothed),0) as total_vaccinations, FORMAT(SUM(new_people_vaccinated_smoothed),0) as total_unique_vaccinated_people FROM Vaccination GROUP BY CONCAT(YEAR(date),'-', MONTH(date)) ORDER BY date;";
+            "SELECT DATE_FORMAT(`date`,'%Y-%m-%d') as date, FORMAT(SUM(new_vaccinations_smoothed),0) as total_vaccinations, FORMAT(SUM(new_people_vaccinated_smoothed),0) as total_unique_vaccinated_people FROM Vaccination GROUP BY DATE_FORMAT(`date`,'%Y-%m') ORDER BY date;";
           selectSumVaccinationQuery =
             "SELECT FORMAT(SUM(new_vaccinations_smoothed),0) as total_vaccinations, FORMAT(SUM(new_people_vaccinated_smoothed),0) as total_unique_vaccinated_people FROM Vaccination;";
         } else {
@@ -222,7 +247,7 @@ module.exports = function (app) {
       case "continent":
         if (param.date === "all") {
           selectVaccinationQuery =
-            "SELECT DATE_FORMAT(`date`,'%Y-%m-%d') as date, FORMAT(SUM(new_vaccinations_smoothed),0) as total_vaccinations, FORMAT(SUM(new_people_vaccinated_smoothed),0) as total_unique_vaccinated_people FROM Vaccination WHERE iso_code IN (SELECT iso_code FROM Country WHERE continent_id=?) GROUP BY CONCAT(YEAR(date),'-', MONTH(date)) ORDER BY date;";
+            "SELECT DATE_FORMAT(`date`,'%Y-%m-%d') as date, FORMAT(SUM(new_vaccinations_smoothed),0) as total_vaccinations, FORMAT(SUM(new_people_vaccinated_smoothed),0) as total_unique_vaccinated_people FROM Vaccination WHERE iso_code IN (SELECT iso_code FROM Country WHERE continent_id=?) GROUP BY DATE_FORMAT(`date`,'%Y-%m') ORDER BY date;";
           selectSumVaccinationQuery =
             "SELECT FORMAT(SUM(new_vaccinations_smoothed),0) as total_vaccinations, FORMAT(SUM(new_people_vaccinated_smoothed),0) as total_unique_vaccinated_people FROM Vaccination WHERE iso_code IN (SELECT iso_code FROM Country WHERE continent_id=?);";
         } else {
@@ -236,7 +261,7 @@ module.exports = function (app) {
       case "country":
         if (param.date === "all") {
           selectVaccinationQuery =
-            "SELECT DATE_FORMAT(`date`,'%Y-%m-%d') as date, FORMAT(SUM(new_vaccinations_smoothed),0) as total_vaccinations, FORMAT(SUM(new_people_vaccinated_smoothed),0) as total_unique_vaccinated_people FROM Vaccination WHERE iso_code = ? GROUP BY CONCAT(YEAR(date),'-', MONTH(date)) ORDER BY date;";
+            "SELECT DATE_FORMAT(`date`,'%Y-%m-%d') as date, FORMAT(SUM(new_vaccinations_smoothed),0) as total_vaccinations, FORMAT(SUM(new_people_vaccinated_smoothed),0) as total_unique_vaccinated_people FROM Vaccination WHERE iso_code = ? GROUP BY DATE_FORMAT(`date`,'%Y-%m') ORDER BY date;";
           selectSumVaccinationQuery =
             "SELECT FORMAT(SUM(new_vaccinations_smoothed),0) as total_vaccinations, FORMAT(SUM(new_people_vaccinated_smoothed),0) as total_unique_vaccinated_people FROM Vaccination WHERE iso_code = ?;";
         } else {
@@ -249,7 +274,7 @@ module.exports = function (app) {
 
       default:
         selectVaccinationQuery =
-          "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(new_vaccinations_smoothed),0) as total_vaccinations, FORMAT(SUM(new_people_vaccinated_smoothed),0) as total_unique_vaccinated_people FROM Vaccination GROUP BY CONCAT(YEAR(date),'-', MONTH(date)) ORDER BY date;";
+          "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(new_vaccinations_smoothed),0) as total_vaccinations, FORMAT(SUM(new_people_vaccinated_smoothed),0) as total_unique_vaccinated_people FROM Vaccination GROUP BY DATE_FORMAT(`date`,'%Y-%m') ORDER BY date;";
         selectSumVaccinationQuery =
           "SELECT FORMAT(SUM(new_vaccinations_smoothed),0) as total_vaccinations, FORMAT(SUM(new_people_vaccinated_smoothed),0) as total_unique_vaccinated_people FROM Vaccination;";
         break;
@@ -281,7 +306,7 @@ module.exports = function (app) {
         break;
       case "country":
         selectPopulationQuery =
-          "SELECT FORMAT(SUM(population),0) as total_population FROM Population WHERE iso_code=?;";
+          "SELECT FORMAT((population),0) as total_population, population_density, aged_65_older, life_expectancy FROM Population WHERE iso_code=?;";
         break;
       default:
         selectPopulationQuery =
@@ -307,5 +332,78 @@ module.exports = function (app) {
     );
 
     res.status(200).json({ test });
+  });
+
+  app.get("/api/facility/:iso_code", async function (req, res) {
+    const selectFacilityQuery =
+      "SELECT handwashing_facilities, hospital_beds_per_thousand FROM Facilities WHERE iso_code = ?;";
+
+    const facilities = await query(selectFacilityQuery, [req.params.iso_code]);
+
+    res.status(200).json({ facilities: facilities[0] });
+  });
+
+  app.get("/api/hospitalize/:type", async function (req, res) {
+    const param = req.query;
+    let selectHospitalizeQuery = "";
+    let selectTotalHospitalizeQuery = "";
+    switch (req.params.type) {
+      case "continent":
+        if (param.date === "all") {
+          selectHospitalizeQuery =
+            "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(icu_patient),0) as total_icu_patient, FORMAT(SUM(hosp_patients),0) as total_hosp_patients FROM Hospitalize WHERE iso_code IN (SELECT iso_code FROM Country WHERE continent_id=?) GROUP BY DATE_FORMAT(`date`,'%Y-%m') ORDER BY date;";
+          selectTotalHospitalizeQuery =
+            "SELECT FORMAT(SUM(icu_patient),0) as total_icu_patient, FORMAT(SUM(hosp_patients),0) as total_hosp_patients FROM Hospitalize WHERE iso_code IN (SELECT iso_code FROM Country WHERE continent_id=?);";
+        } else {
+          selectHospitalizeQuery =
+            "SELECT DATE_FORMAT(`date`,'%Y-%m-%d') as date, FORMAT(SUM(icu_patient),0) as total_icu_patient, FORMAT(SUM(hosp_patients),0) as total_hosp_patients FROM Hospitalize WHERE DATE_FORMAT(`date`,'%Y-%m')=? AND iso_code IN (SELECT iso_code FROM Country WHERE continent_id=?) GROUP BY DATE_FORMAT(`date`,'%Y-%m-%d') ORDER BY date;";
+          selectTotalHospitalizeQuery =
+            "SELECT FORMAT(SUM(icu_patient),0) as total_icu_patient, FORMAT(SUM(hosp_patients),0) as total_hosp_patients FROM Hospitalize WHERE DATE_FORMAT(`date`,'%Y-%m')=? AND iso_code IN (SELECT iso_code FROM Country WHERE continent_id=?);";
+        }
+        break;
+
+      case "country":
+        if (param.date === "all") {
+          selectHospitalizeQuery =
+            "SELECT DATE_FORMAT(`date`,'%Y-%m') as date, FORMAT(SUM(icu_patient),0) as total_icu_patient, FORMAT(SUM(hosp_patients),0) as total_hosp_patients FROM Hospitalize WHERE iso_code = ? GROUP BY DATE_FORMAT(`date`,'%Y-%m') ORDER BY date;";
+          selectTotalHospitalizeQuery =
+            "SELECT FORMAT(SUM(icu_patient),0) as total_icu_patient, FORMAT(SUM(hosp_patients),0) as hosp_patients FROM Hospitalize WHERE iso_code = ?;";
+        } else {
+          selectHospitalizeQuery =
+            "SELECT DATE_FORMAT(`date`,'%Y-%m-%d') as date, FORMAT((icu_patient),0) as icu_patient, FORMAT((hosp_patients),0) as hosp_patients FROM Hospitalize WHERE DATE_FORMAT(`date`,'%Y-%m')=? AND iso_code=? ORDER BY date;";
+          selectTotalHospitalizeQuery =
+            "SELECT FORMAT(SUM(icu_patient),0) as total_icu_patient, FORMAT(SUM(hosp_patients),0) as total_hosp_patients FROM Hospitalize WHERE DATE_FORMAT(`date`,'%Y-%m')=? AND iso_code = ?;";
+        }
+        break;
+      default:
+        if (param.date === "all") {
+          selectHospitalizeQuery =
+            "SELECT DATE_FORMAT(`date`,'%Y-%m-%d') as date, FORMAT(SUM(icu_patient),0) as total_icu_patient, FORMAT(SUM(hosp_patients),0) as total_hosp_patients FROM Hospitalize GROUP BY DATE_FORMAT(`date`,'%Y-%m') ORDER BY date;";
+          selectTotalHospitalizeQuery =
+            "SELECT FORMAT(SUM(icu_patient),0) as total_icu_patient, FORMAT(SUM(hosp_patients),0) as total_hosp_patients FROM Hospitalize;";
+        } else {
+          selectHospitalizeQuery =
+            "SELECT DATE_FORMAT(`date`,'%Y-%m-%d') as date, FORMAT(SUM(icu_patient),0) as total_icu_patient, FORMAT(SUM(hosp_patients),0) as total_hosp_patients FROM Hospitalize WHERE DATE_FORMAT(`date`,'%Y-%m')=? GROUP BY DATE_FORMAT(`date`,'%Y-%m-%d') ORDER BY date;";
+          selectTotalHospitalizeQuery =
+            "SELECT FORMAT(SUM(icu_patient),0) as total_icu_patient, FORMAT(SUM(hosp_patients),0) as total_hosp_patients FROM Hospitalize WHERE DATE_FORMAT(`date`,'%Y-%m')=?;";
+        }
+        break;
+    }
+
+    if (param.date === "all") delete param["date"];
+    const [hospitalize, totalHospitalize] = await Promise.all([
+      query(
+        selectHospitalizeQuery,
+        Object.values(param).map((value) => value)
+      ),
+      query(
+        selectTotalHospitalizeQuery,
+        Object.values(param).map((value) => value)
+      ),
+    ]);
+
+    res
+      .status(200)
+      .json({ hospitalize, totalHospitalize: totalHospitalize[0] });
   });
 };

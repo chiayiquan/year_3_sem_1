@@ -21,7 +21,7 @@ body {
   flex-direction: row;
   justify-content: space-around;
   width: 100%;
-  padding: 50px;
+  padding: 0px 50px;
 }
 
 table {

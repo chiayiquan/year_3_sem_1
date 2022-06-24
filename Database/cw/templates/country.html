@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Continent</title>
+  <title>Country</title>
   <link href="./templates/style.css" rel="stylesheet" type="text/css" />
 </head>
 
@@ -38,7 +38,6 @@
         const header = selectedDate !== 'all' ? ['Date', 'Total Case', 'Total Death', 'Stringency Index'] : ['Date', 'Total Case', 'Total Death']
         loadTable(covid, header, 'covid')
       })
-
   }
 
   function filterVaccination() {
@@ -63,22 +62,49 @@
         loadTable(test, ['Date', 'Daily Test', 'Positive Rate'], 'test')
       })
   }
+  
+  function filterHospitalize(){
+     const selectedDate = document.getElementById('hospitalizeDate').value
+    const selectedCountry = document.getElementById('country').value
+
+    return fetch(`/api/hospitalize/country?date=${selectedDate}&iso_code=${selectedCountry}`)
+      .then(response => response.json())
+      .then(({ hospitalize,totalHospitalize }) => {
+        hospitalize.push({ date: '<b>Total</b>', ...totalHospitalize })
+        loadTable(hospitalize, ['Date', 'Hospital Patients', 'ICU Patients'], 'hospitalize')
+      })
+  }
 
   function filterByCountry() {
     const selectedCountry = document.getElementById('country')
-
     return Promise.all([
       filterCase(),
       filterVaccination(),
       filterTest(),
-
+      filterHospitalize(),
       fetch(`/api/population/country?iso_code=${selectedCountry.value}`)
         .then(response => response.json())
         .then(({ population }) => {
-          const selectedCountryText = selectedCountry.options[selectedCountry.selectedIndex].textContent
           const populationText = document.getElementById('population')
-          populationText.textContent = `${selectedCountryText} Population: ${population.total_population}`
-        })
+          const populationDensityText = document.getElementById('populationDensity')
+          const seniorPopulationText = document.getElementById('seniorPopulation')
+          const lifeExpectancyText = document.getElementById('lifeExpectancy')
+          
+          populationText.textContent = `Population: ${population.total_population}`
+          populationDensityText.textContent = `Population Density: ${population.population_density}`
+          seniorPopulationText.textContent = `Age 65 And Above Population: ${population.aged_65_older}`
+          lifeExpectancyText.textContent = `Life Expectancy: ${population.life_expectancy}`
+
+        }),
+      fetch(`/api/facility/${selectedCountry.value}`)
+        .then(response=>response.json())
+        .then(({facilities})=>{
+          const handwashFacilitiesText = document.getElementById('handwashFacilities')
+          const hospitalBedText = document.getElementById('hospitalBed')
+
+          handwashFacilitiesText.textContent = `Handwash Facility: ${facilities.handwashing_facilities}`
+          hospitalBedText.textContent = `Hospital Beds Per Thousands: ${facilities.hospital_beds_per_thousand}`
+        }),
     ])
   }
 
@@ -98,8 +124,17 @@
           </select>
     </div>
 
-    <h3 id="population">{{countries.0.location}} Population: {{population.total_population}}</h3>
-
+    <div class="row" style="padding-bottom:10px; justify-content: space-between;">
+      <h3 id="population">Population: {{population.total_population}}</h3>
+      <h3 id="populationDensity">Population Density: {{population.population_density}}</h3>
+      <h3 id="seniorPopulation">Age 65 And Above Population: {{population.aged_65_older}}</h3>
+      <h3 id="lifeExpectancy">Life Expectancy: {{population.life_expectancy}}</h3>
+    </div>
+    
+    <div class="row" style="padding-bottom:10px; justify-content:space-between;">
+      <h3 id="handwashFacilities">Handwash Facility: {{facilities.handwashing_facilities}}</h3>
+      <h3 id="hospitalBed">Hospital Beds Per Thousands: {{facilities.hospital_beds_per_thousand}}</h3>
+    </div>
     <div class="row">
       <div class="container" style="margin-right:50px;">
         <div class="titleContainer">
@@ -178,8 +213,46 @@
       </div>
     </div>
 
-    <div class="row">
+    <div class="row" style="margin-top:20px;">
       <div class="container" style="margin-right:50px;">
+        <div class="titleContainer">
+          <h3>Hospitalize</h3>
+          <div>
+            Filter:
+            <select name="Filter By Date" id="hospitalizeDate" onchange="filterHospitalize()">
+              <option value="all">All</option>
+              {{#hospitalize}}
+              <option value="{{date}}">{{date}}</option>
+              {{/hospitalize}}
+            </select>
+          </div>
+        </div>
+
+        <table id="hospitalize" border="solid">
+          <tr>
+            <th>Date</th>
+            <th>Hospital Patients</th>
+            <th>ICU Patients</th>
+          </tr>
+
+          {{#hospitalize}}
+          <tr>
+            <td>{{date}}</td>
+            <td>{{total_icu_patient}}</td>
+            <td>{{total_hosp_patients}}</td>
+          </tr>
+          {{/hospitalize}}
+
+          <tr>
+            <td><b>Total</b></td>
+            <td>{{totalHospitalize.total_icu_patient}}</td>
+            <td>{{totalHospitalize.total_hosp_patients}}</td>
+          </tr>
+
+        </table>
+      </div>
+
+      <div class="container">
         <div class="titleContainer">
           <h3>Test</h3>
           <div>
