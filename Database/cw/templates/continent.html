@@ -27,50 +27,59 @@
 </style>
 
 <script defer>
-  function filterCase() {
-    const selectedDate = document.getElementById('covidDate').value
-    const selectedContinent = document.getElementById('continent').value
+  function selectCasesByMonth() {
+      const selectedDate = document.getElementById("covidVaccinationDate").value;
+       const selectedContinent = document.getElementById('continent').value
+      return fetch(`/api/covidVaccination/continent?date=${selectedDate}&continentId=${selectedContinent}`)
+        .then((response) => response.json())
+        .then(({ covidVaccination, totalCovid, totalVaccination }) => {
+          covidVaccination.push({ date: "<b>Total</b>", ...totalCovid,...totalVaccination });
+          const header = selectedDate !== 'all' ? ["Date", "Daily Case", "Daily Death", "Daily Vaccination", "Daily Unique Vaccinated People"]:  ["Date", "Total Case", "Total Death", "Total Vaccination", "Total Unique Vaccinated People"]
+          loadTable(covidVaccination, header, "covidVaccination");
+        });
+    }
 
-    return fetch(`/api/covid/continent?date=${selectedDate}&continentId=${selectedContinent}`)
-      .then((response) => response.json())
-      .then(({ covid, totalCovid }) => {
-        covid.push({ date: '<b>Total</b>', ...totalCovid })
-        loadTable(covid, ['Date', 'Total Case', 'Total Death'], 'covid')
-      })
 
-  }
-
-  function filterVaccination() {
-    const selectedDate = document.getElementById('totalVaccinationDate').value
-    const selectedContinent = document.getElementById('continent').value
-
-    return fetch(`/api/vaccination/continent?date=${selectedDate}&continentId=${selectedContinent}`)
-      .then(response => response.json())
-      .then(({ vaccination, totalVaccination }) => {
-        vaccination.push({ date: '<b>Total</b>', ...totalVaccination })
-        loadTable(vaccination, ['Date', 'Total Vaccination', 'Total Unique Vaccinated People'], 'vaccination')
-      })
-  }
-
-  function filterHospitalize(){
-     const selectedDate = document.getElementById('hospitalizeDate').value
-    const selectedContinent = document.getElementById('continent').value
-
-    return fetch(`/api/hospitalize/continent?date=${selectedDate}&continentId=${selectedContinent}`)
-      .then(response => response.json())
-      .then(({ hospitalize,totalHospitalize }) => {
-        hospitalize.push({ date: '<b>Total</b>', ...totalHospitalize })
-        loadTable(hospitalize, ['Date', 'Hospital Patients', 'ICU Patients'], 'hospitalize')
-      })
-  }
+  function selectCovidHospitalizeByMonth() {
+      const selectedDate = document.getElementById(
+        "covidHospitalizeDate"
+      ).value;
+      const selectedContinent = document.getElementById('continent').value
+      return fetch(`/api/hospitalize/continent?date=${selectedDate}&continentId=${selectedContinent}`)
+        .then((response) => response.json())
+        .then(({ covidHospitalize, totalCovid, totalCovidHospitalize }) => {
+          covidHospitalize.push({
+            date: "<b>Total</b>",
+            ...totalCovid,
+            ...totalCovidHospitalize,
+          });
+           const header = selectedDate !== 'all' ? [
+              "Date",
+              "Daily Case",
+              "Daily Death",
+              "Daily ICU Patient",
+              "Daily Hospitalize Patient",
+            ]:[
+              "Date",
+              "Total Case",
+              "Total Death",
+              "Total ICU Patient",
+              "Total Hospitalize Patient",
+            ]
+          loadTable(
+            covidHospitalize,
+            header,
+            "covidHospitalize"
+          );
+        });
+      }
 
   function filterByContinent() {
     const selectedContinent = document.getElementById('continent')
 
     return Promise.all([
-      filterCase(),
-      filterVaccination(),
-      filterHospitalize(),
+      selectCasesByMonth(),
+      selectCovidHospitalizeByMonth(),
       fetch(`/api/population/continent?continentId=${selectedContinent.value}`)
         .then(response => response.json())
         .then(({ population }) => {
@@ -99,123 +108,105 @@
 
     <h3 id="population">{{continents.0.continent}} Population: {{population.total_population}}</h3>
 
-    <div class="row">
-      <div class="container" style="margin-right:50px;">
-        <div class="titleContainer">
-          <h3>Covid Cases</h3>
-          <div>
-            Filter:
-            <select name="Filter By Date" id="covidDate" onchange="filterCase()">
-              <option value="all">All</option>
-              {{#covid}}
-              <option value="{{date}}">{{date}}</option>
-              {{/covid}}
-            </select>
+     <div class="row">
+        <div class="container">
+          <div class="titleContainer">
+            <h3>Covid Cases And Vaccination</h3>
+            <div>
+              Filter:
+              <select
+                name="Filter By Date"
+                id="covidVaccinationDate"
+                onchange="selectCasesByMonth()"
+              >
+                <option value="all">All</option>
+                {{#covidVaccination}}
+                <option value="{{date}}">{{date}}</option>
+                {{/covidVaccination}}
+              </select>
+            </div>
           </div>
+
+          <table id="covidVaccination" border="solid">
+            <tr>
+              <th>Date</th>
+              <th>Total Case</th>
+              <th>Total Death</th>
+              <th>Total Vaccination</th>
+              <th>Total Unique Vaccinated People</th>
+            </tr>
+
+            {{#covidVaccination}}
+            <tr>
+              <td>{{date}}</td>
+              <td>{{total_case}}</td>
+              <td>{{total_death}}</td>
+                 <td>{{total_vaccinations}}</td>
+              <td>{{total_unique_vaccinated_people}}</td>
+            </tr>
+            {{/covidVaccination}}
+
+            <tr>
+              <td><b>Total</b></td>
+              <td>{{totalCovid.total_case}}</td>
+              <td>{{totalCovid.total_death}}</td>
+              <td>{{totalVaccination.total_vaccinations}}</td>
+              <td>{{totalVaccination.total_unique_vaccinated_people}}</td>
+            </tr>
+          </table>
         </div>
 
-        <table id="covid" border="solid">
-          <tr>
-            <th>Date</th>
-            <th>Total Case</th>
-            <th>Total Death</th>
-          </tr>
-
-          {{#covid}}
-          <tr>
-            <td>{{date}}</td>
-            <td>{{total_case}}</td>
-            <td>{{total_death}}</td>
-          </tr>
-          {{/covid}}
-
-          <tr>
-            <td><b>Total</b></td>
-            <td>{{totalCovid.total_case}}</td>
-            <td>{{totalCovid.total_death}}</td>
-          </tr>
-
-        </table>
-      </div>
-
-      <div class="container">
-        <div class="titleContainer">
-          <h3>Vaccination</h3>
-          <div>
-            Filter:
-            <select name="Filter By Date" id="totalVaccinationDate" onchange="filterVaccination()">
-              <option value="all">All</option>
-              {{#vaccination}}
-              <option value="{{date}}">{{date}}</option>
-              {{/vaccination}}
-            </select>
-          </div>
         </div>
 
-        <table id="vaccination" border="solid">
-          <tr>
-            <th>Date</th>
-            <th>Total Vaccination</th>
-            <th>Total Unique Vaccinated People</th>
-          </tr>
 
-          {{#vaccination}}
-          <tr>
-            <td>{{date}}</td>
-            <td>{{total_vaccinations}}</td>
-            <td>{{total_unique_vaccinated_people}}</td>
-          </tr>
-          {{/vaccination}}
-
-          <tr>
-            <td><b>Total</b></td>
-            <td>{{totalVaccination.total_vaccinations}}</td>
-            <td>{{totalVaccination.total_unique_vaccinated_people}}</td>
-          </tr>
-
-        </table>
-      </div>
-    </div>
-
-    <div class="row" style="margin-top:20px;">
-      <div class="container">
-        <div class="titleContainer">
-          <h3>Hospitalize</h3>
-          <div>
-            Filter:
-            <select name="Filter By Date" id="hospitalizeDate" onchange="filterHospitalize()">
-              <option value="all">All</option>
-              {{#hospitalize}}
-              <option value="{{date}}">{{date}}</option>
-              {{/hospitalize}}
-            </select>
+    <div class="row" style="margin-top: 20px">
+        <div class="container">
+          <div class="titleContainer">
+            <h3>Covid Cases And Hospitalization</h3>
+            <div>
+              Filter:
+              <select
+                name="Filter By Date"
+                id="covidHospitalizeDate"
+                onchange="selectCovidHospitalizeByMonth()"
+              >
+                <option value="all">All</option>
+                {{#covidHospitalize}}
+                <option value="{{date}}">{{date}}</option>
+                {{/covidHospitalize}}
+              </select>
+            </div>
           </div>
+
+          <table id="covidHospitalize" border="solid">
+            <tr>
+              <th>Date</th>
+              <th>Total Case</th>
+              <th>Total Death</th>
+              <th>Total ICU Patient</th>
+              <th>Total Hospitalize Patient</th>
+            </tr>
+
+            {{#covidHospitalize}}
+            <tr>
+              <td>{{date}}</td>
+              <td>{{total_case}}</td>
+              <td>{{total_death}}</td>
+              <td>{{total_icu_patient}}</td>
+              <td>{{total_hosp_patients}}</td>
+            </tr>
+            {{/covidHospitalize}}
+
+            <tr>
+              <td><b>Total</b></td>
+              <td>{{totalCovid.total_case}}</td>
+              <td>{{totalCovid.total_death}}</td>
+              <td>{{totalCovidHospitalize.total_icu_patient}}</td>
+              <td>{{totalCovidHospitalize.total_hosp_patients}}</td>
+            </tr>
+          </table>
         </div>
-
-        <table id="hospitalize" border="solid">
-          <tr>
-            <th>Date</th>
-            <th>Hospital Patients</th>
-            <th>ICU Patients</th>
-          </tr>
-
-          {{#hospitalize}}
-          <tr>
-            <td>{{date}}</td>
-            <td>{{total_icu_patient}}</td>
-            <td>{{total_hosp_patients}}</td>
-          </tr>
-          {{/hospitalize}}
-
-          <tr>
-            <td><b>Total</b></td>
-            <td>{{totalHospitalize.total_icu_patient}}</td>
-            <td>{{totalHospitalize.total_hosp_patients}}</td>
-          </tr>
-
-        </table>
       </div>
-    </div>
 
   </div>
 </body>

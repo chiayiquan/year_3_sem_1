@@ -29,7 +29,6 @@ async function createTable() {
   \`date\` datetime,
   \`new_case\` int,
   \`new_death\` int,
-  \`stringency_index\` double,
   \`iso_code\` varchar(255)
 );`;
 
@@ -45,7 +44,7 @@ async function createTable() {
   \`id\` int AUTO_INCREMENT PRIMARY KEY,
   \`date\` datetime,
   \`new_tests\` int,
-  \`positive_rate\` int,
+  \`positive_rate\` double,
   \`iso_code\` varchar(255)
 );`;
 
@@ -66,10 +65,10 @@ async function createTable() {
   \`iso_code\` varchar(255)
 );`;
 
-  const createFacilitiesTable = `CREATE TABLE IF NOT EXISTS \`Facilities\` (
+  const createStringencyTable = `CREATE TABLE \`Stringency\` (
   \`id\` int AUTO_INCREMENT PRIMARY KEY,
-  \`handwashing_facilities\` double,
-  \`hospital_beds_per_thousand\` double,
+  \`date\` datetime,
+  \`stringency_index\` double,
   \`iso_code\` varchar(255)
 );`;
 
@@ -81,7 +80,7 @@ async function createTable() {
     query(createTestTable),
     query(createVaccinationTable),
     query(createPopulationTable),
-    query(createFacilitiesTable),
+    query(createStringencyTable),
   ]);
 
   console.log("Tables Created");
@@ -98,8 +97,8 @@ async function createTable() {
     "ALTER TABLE `Vaccination` ADD FOREIGN KEY (`iso_code`) REFERENCES `Country` (`iso_code`);";
   const addFKToPopulation =
     "ALTER TABLE `Population` ADD FOREIGN KEY (`iso_code`) REFERENCES `Country` (`iso_code`);";
-  const addFKToFacilities =
-    "ALTER TABLE `Facilities` ADD FOREIGN KEY (`iso_code`) REFERENCES `Country` (`iso_code`);";
+  const addFKToStringency =
+    "ALTER TABLE `Stringency` ADD FOREIGN KEY (`iso_code`) REFERENCES `Country` (`iso_code`);";
 
   await Promise.all([
     query(addFKToCountry),
@@ -108,7 +107,7 @@ async function createTable() {
     query(addFKToTest),
     query(addFKToVaccination),
     query(addFKToPopulation),
-    query(addFKToFacilities),
+    query(addFKToStringency),
   ]);
 
   return console.log("Foreign Key Added");
@@ -143,8 +142,8 @@ async function run() {
   const hospitalizeData = [];
   const testData = [];
   const vaccinationData = [];
+  const stringencyData = [];
   let populationData = {};
-  let facilitiesData = {};
 
   data.split("\n").forEach((entry, index) => {
     // ignore header row and last row
@@ -169,7 +168,6 @@ async function run() {
       new Date(entryColumn[3]),
       parseInt(entryColumn[5]) || 0,
       parseInt(entryColumn[8]) || 0,
-      parseFloat(entryColumn[47]) || 0,
       entryColumn[0],
     ]);
     hospitalizeData.push([
@@ -178,10 +176,11 @@ async function run() {
       parseInt(entryColumn[19]) || 0,
       entryColumn[0],
     ]);
+
     testData.push([
       new Date(entryColumn[3]),
       parseInt(entryColumn[26]) || 0,
-      parseInt(entryColumn[32]) || 0,
+      parseFloat(entryColumn[31]) || 0,
       entryColumn[0],
     ]);
     vaccinationData.push([
@@ -199,11 +198,11 @@ async function run() {
       entryColumn[0],
     ];
 
-    facilitiesData[entryColumn[0]] = [
-      parseFloat(entryColumn[59]) || 0,
-      parseFloat(entryColumn[60]) || 0,
+    stringencyData.push([
+      new Date(entryColumn[3]),
+      parseFloat(entryColumn[47]) || 0,
       entryColumn[0],
-    ];
+    ]);
   });
 
   const continentsArr = Array.from(continents).map((continent) => [continent]);
@@ -231,7 +230,7 @@ async function run() {
   console.log("Country Inserted");
 
   const caseInsertQuery =
-    "INSERT INTO NewCase(date, new_case, new_death, stringency_index, iso_code) VALUES ?";
+    "INSERT INTO NewCase(date, new_case, new_death, iso_code) VALUES ?";
   const hospitalizeInsertQuery =
     "INSERT INTO Hospitalize(date, icu_patient, hosp_patients, iso_code) VALUES ?";
   const testInsertQuery =
@@ -240,15 +239,11 @@ async function run() {
     "INSERT INTO Vaccination(date, new_vaccinations_smoothed, new_people_vaccinated_smoothed, iso_code) VALUES ?";
   const populationInsertQuery =
     "INSERT INTO Population(population, population_density, aged_65_older, life_expectancy, iso_code) VALUES ?";
-  const facilitiesInsertQuery =
-    "INSERT INTO Facilities(handwashing_facilities, hospital_beds_per_thousand, iso_code) VALUES ?";
+  const stringencyInsertQuery =
+    "INSERT INTO Stringency(date, stringency_index, iso_code) VALUES ?";
 
   const populationDataWithoutKey = Object.keys(populationData).map(
     (key) => populationData[key]
-  );
-
-  const facilitiesDataWithoutKey = Object.keys(facilitiesData).map(
-    (key) => facilitiesData[key]
   );
 
   await Promise.all([
@@ -257,7 +252,7 @@ async function run() {
     query(testInsertQuery, [testData]),
     query(vaccinationInsertQuery, [vaccinationData]),
     query(populationInsertQuery, [populationDataWithoutKey]),
-    query(facilitiesInsertQuery, [facilitiesDataWithoutKey]),
+    query(stringencyInsertQuery, [stringencyData]),
   ]);
 
   console.log("Case Inserted");
@@ -265,7 +260,7 @@ async function run() {
   console.log("Test Inserted");
   console.log("Vaccination Inserted");
   console.log("Population Inserted");
-  console.log("Facilities Inserted");
+  console.log("Stringency Inserted");
 
   // iso_code[0], location[2], cotinent[1] -> Country table
   // date[3],  new_case[5], new_death[8], stringency_index[47], iso_code[0] -> Cases table
