@@ -14,7 +14,7 @@ from genedata.models import *
 # up 2 directory
 data_file = '../../example_data_to_load.csv'
 genes = defaultdict(list)
-sequencing = set()
+sequencing = set() 
 ec = set()
 products = defaultdict(dict)
 attributes = defaultdict(dict)
