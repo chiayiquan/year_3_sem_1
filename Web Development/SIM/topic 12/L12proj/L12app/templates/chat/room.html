@@ -15,12 +15,18 @@
         document.getElementById("room-name").textContent
       );
       const chatSocket = new WebSocket(
-        `ws://${window.location.host}/ws/L2App/${roomName}/`
+        `ws://${window.location.host}/ws/L12app/${roomName}/`
       );
+
+      // const chatSocket = new WebSocket(
+      //   'ws://'
+      //   + window.location.host
+      //   +'/ws/L12app/'
+      // );
 
       chatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
-        document.querySelector("#chat-log").value += `${data.message}\m`;
+        document.querySelector("#chat-log").value += `${data.message}\n`;
       };
 
       chatSocket.onclose = function (e) {
