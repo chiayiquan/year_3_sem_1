@@ -1,0 +1,1 @@
+/usr/lib/postgresql/10/bin/postgres "-D" "/home/dbuchan/Course_Dev/docker_containers/adv_web_dev_topic_6_docker/files/tmp_db"
