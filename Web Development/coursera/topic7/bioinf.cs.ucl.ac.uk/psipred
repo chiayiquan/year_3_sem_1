@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+        <title>PSIPRED Workbench</title>
+    
+
+    
+    <meta charset="utf-8">
+    <meta name="description" content="PSIPRED Protein Analysis Workbench">
+    <meta name="keywords" content="Protein Folding,Bioinformatics,Secondary Structure,Homology Modelling,Proteins,amino acids,UCL,contact prediction,transmembrane helix prediction,fold recognition,binding side prediction,protein disorder">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="UCL Computer Science Department Bioinformatics Group">
+
+
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link href="http://bioinf.cs.ucl.ac.uk/psipred_new/static/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
+    <link href="http://bioinf.cs.ucl.ac.uk/psipred_new/static/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="http://bioinf.cs.ucl.ac.uk/psipred_new/static/css/ionicons.min.css" rel="stylesheet" type="text/css" />
+    <link href="http://bioinf.cs.ucl.ac.uk/psipred_new/static/css/_all-skins.min.css" rel="stylesheet" type="text/css" />
+
+    <link href="http://bioinf.cs.ucl.ac.uk/psipred_new/static/css/psipred.css" rel="stylesheet" type="text/css" />
+    <link href="http://bioinf.cs.ucl.ac.uk/psipred_new/static/css/biod3.css" rel="stylesheet" type="text/css" />
+    <link href="http://bioinf.cs.ucl.ac.uk/psipred_new/static/css/dataTables.bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-6345502-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-6345502-1');
+    </script>
+
+
+    
+</head>
+<body class="hold-transition skin-blue sidebar-mini 
+    skin-blue-light
+">
+
+
+    <div class="wrapper">
+        
+            
+<header class="main-header">
+    <!-- Logo -->
+    
+    <a href="/" class="logo">
+        <!-- mini logo for sidebar mini 50x50 pixels -->
+        <span class="logo-mini">
+      <img src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/images/psipred_logomark.svg" alt="PSIPRED logomark"/>
+</span>
+        <!-- logo for regular state and mobile devices -->
+        <span class="logo-lg">
+      <img src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/images/psipred_logo.svg" alt="PSIPRED"/>
+</span>
+    </a>
+    
+
+    <!-- Header Navbar: style can be found in header.less -->
+    
+<nav class="navbar navbar-static-top" role="navigation">
+        <!-- Sidebar toggle button-->
+    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button" style="padding-top: 18px">
+        <span class="sr-only">Toggle navigation</span>
+    </a>
+    <div class="container-fluid">
+          <div class="navbar-header" style="padding-top: 5px">
+            <h4 class="psipred_title" ><b>UCL Department of Computer Science: Bioinformatics Group</b></h4>
+          </div>
+          <div class="collapse navbar-collapse" id="navbar-collapse">
+            <div class="nav navbar-nav navbar-right">
+              <a href="https://www.ucl.ac.uk/" alt="UCL"><img height="50px" src="http://cms.cs.ucl.ac.uk/typo3/fileadmin/bioinf/templates/images/ucl-logo.svg" /></a>
+            </div>
+          </div>
+    </div>
+</nav>
+
+</header>
+
+        
+
+        
+            
+<!-- Left side column. contains the sidebar -->
+<aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <!-- Sidebar user panel -->
+        
+
+        
+
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        
+        <ul class="sidebar-menu">
+            
+            <li class="header">MAIN NAVIGATION</li>
+
+            
+<section class="sidebar">
+  <!-- Sidebar Menu -->
+  <ul class="sidebar-menu tree" data-widget="tree">
+    <!-- Optionally, you can add icons to the links -->
+<ul class="sidebar-menu">
+  <li class="treeview">
+
+<ul class="treeview-menu" style="display: block">
+  <li>
+      <a href="http://bioinfadmin.cs.ucl.ac.uk/index.html">
+          <i class="fa fa-info"></i><span><b>Introduction</b></span>
+      </a>
+  </li>
+    <li>
+        <a href="http://bioinfadmin.cs.ucl.ac.uk/UCL-CS_Bioinformatics_Contact.html">
+            <i class="fa fa-keyboard-o"></i> <span>Contact</span>
+        </a>
+    </li>
+    <li>
+        <a href="http://bioinfadmin.cs.ucl.ac.uk/UCL-CS_Bioinformatics_Software_Downloads.html">
+            <i class="fa fa-download"></i> <span>Downloads &amp; Branding</span>
+        </a>
+    </li>
+    <li>
+        <a href="https://twitter.com/psipred">
+            <i class="fa fa-twitter"></i> <span>Twitter/News</span>
+        </a>
+    </li>
+  </ul>
+      <a href="#"><i class="fa fa-th"></i> <span>PSIPRED Team Links</span>
+          <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+          </span>
+      </a>
+  <ul class="treeview-menu" style="display: block">
+
+    <li>
+        <a href="http://bioinfadmin.cs.ucl.ac.uk/UCL-CS_Bioinformatics_People.html">
+            <i class="fa fa-users"></i> <span>People</span>
+        </a>
+    </li>
+    <li>
+        <a href="http://bioinfadmin.cs.ucl.ac.uk/UCL-CS_Bioinformatics_ProCovar.html">
+            <i class="fa fa-archive"></i> <span>ProCovar</span>
+        </a>
+    </li>
+    <li>
+        <a href="http://bioinfadmin.cs.ucl.ac.uk/UCL-CS_Bioinformatics_Publications.html">
+            <i class="fa fa-book"></i> <span>Publications</span>
+        </a>
+    </li>
+
+
+    <li>
+        <a href="http://bioinfadmin.cs.ucl.ac.uk/UCL-CS_Bioinformatics_Vacancies.html">
+            <i class="fa fa-envelope-square"></i> <span>Vacancies</span>
+        </a>
+    </li>
+
+    </ul>
+   </li>
+  </ul>
+
+<ul class="sidebar-menu">
+  <li class="treeview">
+      <a href="#"><i class="fa fa-th"></i> <span>PSIPRED Workbench Links</span>
+          <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+          </span>
+      </a>
+  <ul class="treeview-menu" style="display: block">
+  <li>
+      <a href="http://bioinf.cs.ucl.ac.uk/psipred/">
+          <i class="fa fa-dashboard"></i> <span>PSIPRED Workbench</span>
+      </a>
+  </li>
+  <li>
+      <a href="http://bioinfadmin.cs.ucl.ac.uk/UCL-CS_Bioinformatics_methods_overview.html">
+          <i class="fa fa-list-ul"></i> <span>Workbench Overview</span>
+      </a>
+  </li>
+  <li>
+      <a href="http://bioinfadmin.cs.ucl.ac.uk/UCL-CS_Bioinformatics_PSIPRED_citation.html">
+          <i class="fa fa-file-text-o"></i> <span>Workbench Citation</span>
+      </a>
+  </li>
+  <li>
+      <a href="http://bioinfadmin.cs.ucl.ac.uk/UCL-CS_Bioinformatics_Server_Tutorial.html">
+          <i class="fa fa-question-circle-o"></i> <span>Help & Tutorials</span>
+      </a>
+  </li>
+  <li>
+      <a href="http://bioinfadmin.cs.ucl.ac.uk/UCL-CS_Bioinformatics_Web_Services.html">
+          <i class="fa fa-server"></i> <span>REST API</span>
+      </a>
+  </li>
+
+  <li>
+      <a href="https://github.com/psipred">
+          <i class="fa fa-github"></i> <span>PSIPRED Github</span>
+      </a>
+  </li>
+
+  </ul>
+   </li>
+  </ul>
+</ul>
+<!-- /.sidebar-menu -->
+
+</section>
+
+            
+        </ul>
+        
+    </section>
+    <!-- /.sidebar -->
+</aside>
+
+        
+
+        
+        <div class="content-wrapper">
+             
+
+
+            
+            <section class="content">
+                
+                    
+
+                
+
+                
+                    
+
+
+ 
+
+    <!-- Default box -->
+<div id="psipred_site">
+<script id='form_template' type='text/ractive'>
+    <div class="row">
+    {{#if results_visible === 1 }}
+
+    <div class="col-md-9">
+
+    <div class="box box-primary" id="main_form">
+      <div class="box-header with-border">
+        <p>The PSIPRED Workbench provides a range of protein structure prediction
+        methods. The site can be used interactively via a web browser or programmatically
+        via our REST API. For high-throughput analyses,
+        downloads of all the algorithms are available.</p>
+        <p><b>Amino acid</b> sequences enable: secondary structure prediction,
+        including regions of disorder and transmembrane helix packing;
+        contact analysis; fold recognition; structure modelling; and prediction of
+        domains and function. In addition <b>PDB Structure files</b> allow prediction of protein-metal ion
+        contacts, protein-protein hotspot residues, and membrane protein orientation.</p>
+        <hr style="width:100%; margin: auto">
+      </div>
+        <div class="box-header with-border">
+            <h5 class="box-title">Data Input</h5>
+        </div>
+
+        <div class="box-body">
+
+          <div class="form-group">
+            <div class="col-md-12 form-header">
+              <div class='row form-header-row'>
+                <h5 class="float-header">Select input data type</h5>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class='row form-header-row'>
+                <div class="funkyradio">
+                  <div class="funkyradio-primary">
+                    <input on-click='sequence_active' type="radio" name="radio" id="radio1" checked/>
+                    <label for="radio1"><b>Sequence Data&nbsp;&nbsp;</b></label>
+                  </div>&nbsp;&nbsp;
+                  <div class="funkyradio-danger">
+                    <input on-click='structure_active' type="radio" name="radio" id="radio2"/>
+                    <label for="radio2"><b>PDB Structure Data&nbsp;&nbsp;</b></label>
+                  </div>
+                </div><br />
+              </div>
+            </div>
+          </div>
+
+        <div class="form-group">
+          <div class="col-md-12 form-header">
+            <div class='row form-header-row'>
+                 <h5 class="float-header">Choose prediction methods (hover for short description)</h5>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-md-12">
+             <div class='row form-header-row'>
+                
+
+
+<br />
+
+<form name="main_form" id="main_form" method="Post" class="form" intro="slide" outro="slide" on-submit="submit">
+<input type="hidden" name="csrfmiddlewaretoken" value="C4cWKzSevFRjpS7fUTxCTB0p2OtwrEBJ2G2BcJ6LhtdH09R2Q51MBAVIFfB2fOhp">
+{{#if sequence_form_visible === 1 }}
+<div class="form-group">
+  <tr><td colspan="2"><h4>Popular Analyses</h4></td></tr>
+    <table class="full-width-table">
+
+    
+        <tr>
+        <td data-toggle="tool-tip"
+        title="Predict helices, beta sheets and coils from AA sequence" >
+        
+        <input type="checkbox" name="psipred_job" value="{{psipred_job}}" checked="{{psipred_checked}}" id="id_psipred_job">&nbsp;<label for="id_psipred_job">PSIPRED 4.0 (Predict Secondary Structure)</label>
+        </td>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+        <td data-toggle="tool-tip"
+        title="Detect intrinsically disordered regions in proteins" >
+        <input type="checkbox" name="disopred_job" value="{{disopred_job}}" checked="{{disopred_checked}}" id="id_disopred_job">&nbsp;<label for="id_disopred_job">DISOPRED3 (Disopred Prediction)</label>
+        </td>
+        </tr>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+        <tr>
+        <td data-toggle="tool-tip"
+        title="Calculate length, location and topology of transmembrane helices">
+        <input type="checkbox" name="memsatsvm_job" value="{{memsatsvm_job}}" checked="{{memsatsvm_checked}}" id="id_memsatsvm_job">&nbsp;<label for="id_memsatsvm_job">MEMSAT-SVM (Membrane Helix Prediction)</label>
+        </td>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+        <td data-toggle="tool-tip"
+        title="Protein fold recognition with protein templates of known structure.">
+        <input type="checkbox" name="pgenthreader_job" value="{{pgenthreader_job}}" checked="{{pgenthreader_checked}}" id="id_pgenthreader_job">&nbsp;<label for="id_pgenthreader_job">pGenTHREADER (Profile Based Fold Recognition)</label>
+        </td>
+        </tr>
+        <tr><td colspan="2" class="input_table"><hr></td></tr>
+        <tr><td colspan="2"><h4>Contact Analysis</h4></td></tr>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+        <tr>
+        <td data-toggle="tool-tip"
+        title="Predict interresidue contacts using a convolutional neural network">
+        <input type="checkbox" name="dmp_job" value="{{dmp_job}}" checked="{{dmp_checked}}" id="id_dmp_job">&nbsp;<label for="id_dmp_job">DeepMetaPSICOV 1.0 (Structural Contact Prediction)</label>
+        </td>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+        <td data-toggle="tool-tip"
+        title="Predict packing membrane helices">
+        <input type="checkbox" name="mempack_job" value="{{mempack_job}}" checked="{{mempack_checked}}" id="id_mempack_job">&nbsp;<label for="id_mempack_job">MEMPACK (TM Topology and Helix Packing)</label>
+        </td>
+        </tr>
+        <tr><td colspan="2" class="input_table"><hr></td></tr>
+        <tr><td><h4>Fold Recognition</h4></td><td></td></tr>
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <tr>
+        <td data-toggle="tool-tip"
+        title="Fast fold recognition method using template structures">
+        <input type="checkbox" name="genthreader_job" value="{{genthreader_job}}" checked="{{genthreader_checked}}" id="id_genthreader_job">&nbsp;<label for="id_genthreader_job">GenTHREADER (Rapid Fold Recognition)</label>
+        </td>
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+        <td data-toggle="tool-tip"
+        title = "Fast protein domain fold recognition using domain templates">
+        <input type="checkbox" name="pdomthreader_job" value="{{pdomthreader_job}}" checked="{{pdomthreader_checked}}" id="id_pdomthreader_job">&nbsp;<label for="id_pdomthreader_job">pDomTHREADER (Protein Domain Fold Recognition)</label>
+        </td>
+        </tr>
+        <tr><td colspan="2" class="input_table"><hr></td></tr>
+        <tr><td><h4>Structure Modelling</h4></td><td></td></tr>
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <tr>
+        <td data-toggle="tool-tip"
+        title = "Fully automated homology modelling">
+        <input type="checkbox" name="bioserf_job" value="{{bioserf_job}}" checked="{{bioserf_checked}}" on-click="@this.fire('show_bioserf')" id="id_bioserf_job">&nbsp;<label for="id_bioserf_job">Bioserf 2.0 (Automated Homology Modelling)</label>
+        </td>
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <td data-toggle="tool-tip"
+        title = "Fully automated structural domain homology modelling">
+        <input type="checkbox" name="domserf_job" value="{{domserf_job}}" checked="{{domserf_checked}}" on-click="@this.fire('show_domserf')" id="id_domserf_job">&nbsp;<label for="id_domserf_job">Domserf 2.1 (Automated Domain Homology Modelling)</label>
+        </td>
+        </tr>
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <tr>
+        <td data-toggle="tool-tip"
+        title = "Accurate structure prediction using residue-residue contacts.">
+        <input type="checkbox" name="dmpfold_job" value="{{dmpfold_job}}" checked="{{dmpfold_checked}}" onclick="dmpfoldAlert();" id="id_dmpfold_job">&nbsp;<label for="id_dmpfold_job">DMPfold 1.0 Fast Mode (Protein Structure Prediction)</label>
+        </td>
+        <td></td></tr>
+        <tr><td colspan="2" class="input_table"><hr></td></tr>
+        <tr><td><h4>Domain Prediction</h4></td><td></td></tr>
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <tr>
+        <td data-toggle="tool-tip"
+        title = "Predict protein structural domain boundaries.">
+        <input type="checkbox" name="dompred_job" value="{{dompred_job}}" checked="{{dompred_checked}}" on-click="@this.fire("show_dompred")" id="id_dompred_job">&nbsp;<label for="id_dompred_job">DomPred (Protein Domain Prediction)</label>
+        </td>
+        <td></td></tr>
+        <tr><td colspan="2" class="input_table"><hr></td></tr>
+        <tr><td><h4>Function Prediction</h4></td><td></td></tr>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <tr>
+        <td data-toggle="tool-tip"
+        title = "Predict protein function, using Gene Ontology annotations">
+        <input type="checkbox" name="ffpred_job" value="{{ffpred_job}}" checked="{{ffpred_checked}}" on-click="@this.fire("show_ffpred")" id="id_ffpred_job">&nbsp;<label for="id_ffpred_job">FFPred 3 (Eurkaryotic Function Prediction)</label>
+        <td></td></tr>
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    <tr><td colspan=2><a class="form-link" href="http://bioinfadmin.cs.ucl.ac.uk/UCL-CS_Bioinformatics_Server_Tutorial.html">Help...</a><br /></td></tr>
+    </table>
+</div>
+<div class="col-sm-12 form-header">
+  <div class='row form-header-row'>
+    <h5 class="float-header">Submission details</h5>
+  </div>
+</div>
+
+<br />
+<br />
+<p class="form_error">{{{ form_error }}}</p>
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+      <div class="form-group">
+        <div class="form-group"><label class="control-label" for="id_input_data">Protein Sequence</label><textarea name="input_data" cols="40" rows="3" value="{{sequence}}" class="form-control" placeholder="Protein Sequence" title="" required id="id_input_data">
+Input Sequence</textarea></div>
+      </div>
+    <a class="form-link" href="http://bioinfadmin.cs.ucl.ac.uk/UCL-CS_Bioinformatics_Server_Tutorial.html">Help...</a><br />
+    If you wish to test these services follow this link to retrieve <a class="form-link" href="http://www.uniprot.org/uniprot/B0R5N9.fasta">a test fasta sequence</a>.<br /><br />
+    
+
+    
+    <div class="form-group">
+      <div class="form-group"><label class="control-label" for="id_job_name">Job name</label><input type="text" name="job_name" value="{{name}}" class="form-control" placeholder="Job name" title="" required id="id_job_name"></div>
+    </div>
+    
+
+    
+    <div class="form-group">
+      <div class="form-group"><label class="control-label" for="id_email">Email (optional)</label><input type="email" name="email" value="{{email}}" class="form-control" placeholder="Email (optional)" title="" id="id_email"></div>
+    </div>
+    
+
+    
+    
+
+{{/if}}
+
+{{#if structure_form_visible === 1 }}
+<div class="form-group">
+    <table class="full-width-table">
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+        <tr>
+        <td data-toggle="tool-tip"
+        title = "Detects metal-binding residues from protein structure">
+        <input type="checkbox" name="metsite_job" value="{{metsite_job}}" checked="{{metsite_checked}}" on-click="@this.fire("show_metsite")" id="id_metsite_job">&nbsp;<label for="id_metsite_job">Metsite (Protein-metal Ion Contact Prediction)</label>
+        </td>
+    
+    
+    
+    
+
+    
+    
+        <td data-toggle="tool-tip"
+        title = "Predicts protein-protein interaction hotspot residues">
+        <input type="checkbox" name="hspred_job" value="{{hspred_job}}" checked="{{hspred_checked}}" on-click="@this.fire("show_hspred")" id="id_hspred_job">&nbsp;<label for="id_hspred_job">HSPred (Protein-Protein Hotspot Residue Prediction)</label>
+        </td>
+        </tr>
+    
+    
+    
+
+    
+    
+    
+        <tr>
+        <td data-toggle="tool-tip"
+        title = "Orientate membrane proteins within the lipid bilayer">
+        <input type="checkbox" name="memembed_job" value="{{memembed_job}}" checked="{{memembed_checked}}" on-click="@this.fire("show_memembed")" id="id_memembed_job">&nbsp;<label for="id_memembed_job">MEMEMBED (Membrane Protein Orientation Prediction)</label>
+        </td>
+    
+    
+
+    
+    
+    
+    
+        <td data-toggle="tool-tip"
+        title = "Generate TDB file from structure for use with genTHREADER, pGenTHREADER and pDomTHREADER">
+        <input type="checkbox" name="gentdb_job" value="{{gentdb_job}}" checked="{{gentdb_checked}}" id="id_gentdb_job">&nbsp;<label for="id_gentdb_job">Generate TDB (Custom Generated Threading File)</label>
+        </td>
+        </tr>
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    <tr><td colspan=2><a class="form-link" href="http://bioinfadmin.cs.ucl.ac.uk/UCL-CS_Bioinformatics_Server_Tutorial.html">Help...</a><br /></td></tr>
+    </table>
+</div>
+<div class="col-sm-12 form-header-structure">
+  <div class='row form-header-row'>
+    <h5 class="float-header">Submission details</h5>
+  </div>
+</div>
+<p class="form_error">{{{ form_error }}}</p>
+
+<br /><br /><br />
+Select PDB file<br />
+<input type=file  name="pdbFile" id="pdbFile" /><br /><br />
+<a class="form-link" href="http://bioinfadmin.cs.ucl.ac.uk/UCL-CS_Bioinformatics_Server_Tutorial.html">Help...</a><br />
+If you wish to Metsite or HSPred follow this link to retrieve <a class="form-link" href="http://www.rcsb.org/pdb/download/downloadFile.do?fileFormat=pdb&compression=NO&structureId=1IAR">a test pdb file.</a><br /><br />
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    <div class="form-group">
+      <div class="form-group"><label class="control-label" for="id_job_name">Job name</label><input type="text" name="job_name" value="{{name}}" class="form-control" placeholder="Job name" title="" required id="id_job_name"></div>
+    </div>
+      
+
+    
+    <div class="form-group">
+      <div class="form-group"><label class="control-label" for="id_email">Email (optional)</label><input type="email" name="email" value="{{email}}" class="form-control" placeholder="Email (optional)" title="" id="id_email"></div>
+    </div>
+      
+
+    
+    
+
+
+{{/if}}
+
+
+
+    <div class="form-group">
+         <input class="btn btn-danger" type="reset" value="Reset" />
+         <input value="Submit" type="submit" class="btn btn-primary" />
+    </div>
+
+</form>
+
+              </div>
+            </div>
+        </div>
+
+
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+   </div>
+
+  <div class="col-md-3">
+  <div class="box box-primary" id="main_form">
+      <div class="box-header with-border">
+          <h5 class="box-title">Required Options</h5>
+      </div>
+      <div class="box-body">
+          <div class="col-md-12">
+          <div class="row form-header-row">
+            
+
+
+
+{{#if bioserf_advanced === 1 }}
+  <h4>Bioserf</h4>
+  <strong>MODELLER Key:</strong>
+  <input type="text" id="bioserf_modeller_key" name="bioserf_modeller_key">
+{{/if}}
+
+{{#if domserf_advanced === 1 }}
+  <h4>Domserf</h4>
+  <strong>MODELLER Key:</strong>
+  <input type='text' id="domserf_modeller_key" name="domserf_modeller_key">
+{{/if}}
+
+{{#if dompred_advanced === 1 }}
+  <h4>Dompred</h4>
+  <strong>PSI-BLAST e-value cutoff:</strong>
+  <input type='text' id="dompred_e_value_cutoff" name="dompred_e_value_cutoff" value="0.01"><br /><br />
+  <strong>PSI-BLAST Iterations:</strong>
+  <input type='text' id="dompred_psiblast_iterations" name="dompred_psiblast_iterations" value="5">
+{{/if}}
+
+{{#if ffpred_advanced === 1 }}
+  <h4>FFpred</h4>
+  <input type="radio" name="ffpred_selection" id="ffpred_human" value="human" checked> <label for="ffpred_human">Human Prediction</label><br />
+  <input type="radio" name="ffpred_selection" id="ffpred_fly" value="fly"> <label for="ffpred_fly">Fly Prediction</label>
+{{/if}}
+
+{{#if metsite_advanced === 1 }}
+  <h4>Metsite</h4>
+  <strong>Select Metal:</strong><br />
+  <select id="metsite_metal_type" name="metsite_metal_type" size="6">
+    <option value="CA" selected="selected">Calcium</option>
+    <option value="ZN">Zinc</option>
+    <option value="MG">Magnesium</option>
+    <option value="FE">Iron</option>
+    <option value="CU">Copper</option>
+    <option value="MN">Manganese</option>
+  </select><br /><br />
+  <strong>Chain ID:</strong>
+  <input type='text' id="metsite_chain_id" name="metsite_chain_id" value="A"><br /><br />
+  <strong>False Positive Rate:</strong>
+  <select id="metsite_fpr" name="metsite_fpr" size="1">
+    <option value="0">1%</option>
+    <option value="1" selected="selected">5%</option>
+    <option value="2">10%</option>
+    <option value="3">20%</option>
+  </select>
+{{/if}}
+
+{{#if hspred_advanced === 1 }}
+  <h4>HSPred</h4>
+  <strong>Protein 1:</strong>
+  <input type='text' id="hspred_protein_1" name="hspred_protein_1" value="A"><br /><br />
+  <strong>Protein 2:</strong>
+  <input type='text' id="hspred_protein_2" name="hspred_protein_2" value="B">
+{{/if}}
+
+{{#if memembed_advanced === 1 }}
+  <h4>Memembed</h4>
+  <strong>Search Type:</strong>
+  <select id="memembed_algorithm" name="memembed_algorithm" size="1">
+    <option value="0" selected="selected">Genetic Algorithm</option>
+    <option value="1">Grid Search</option>
+    <option value="2">Direct</option>
+    <option value="3">GA x 5</option>
+  </select><br /><br />
+  <strong>Target is Beta Barrel:</strong><br />
+  <input type="radio" name="memembed_barrel" id="memembed_barrel_yes" value="true"> <label for="memembed_barrel_yes">Yes</label><br />
+  <input type="radio" name="memembed_barrel" id="memembed_barrel_no" value="false" checked> <label for="memembed_barrel_no">No</label><br /><br />
+  <strong>N-Terminal Location:</strong><br />
+  <input type="radio" name="memembed_terminal" id="memembed_terminal_in" value="in"> <label for="memembed_terminal_in">Cytoplasmic</label><br />
+  <input type="radio" name="memembed_terminal" id="memembed_terminal_out" value="out" checked> <label for="memembed_terminal_out">Extra Cellular</label><br /><br />
+  <!--Helix boundaries:
+  <input type='text' id="memembed_boundaries" name="memembed_boundaries">-->
+{{/if}}
+
+          </div>
+          </div>
+      </div>
+      <!-- /.box-body -->
+  </div>
+  <!-- /.box -->
+  </div>
+  {{/if}}
+  </div> <!-- /.row for forms -->
+
+  <div class="row"> <!-- seq plot, resubmission and downloads -->
+    <div class="col-md-9">
+    {{#if results_visible > 1 }}
+    <div class="info-box bg-default job_info">
+        <span class="info-box-icon job_info"><i class="fa fa-line-chart job_info_icon"></i></span>
+              <div class="info-box-content">
+                  <div class="job_info_text job_info_text_left"><p class="name_text">Name : {{ name }}</p></div><!--
+               --><div class="job_info_text box-tools pull-right job_info_text_right">Copy Link:
+                    
+                      <input id="retrievalLink" width="160" value="http://bioinf.cs.ucl.ac.uk/psipred/&psipred_uuid={{ batch_uuid }}"><!--
+                      --><button class="copyButton" type="button" data-clipboard-action="copy" data-clipboard-target="#retrievalLink">
+                      <img src="http://bioinf.cs.ucl.ac.uk/psipred/static/images/clippy.svg" alt="Copy to clipboard" width="16">
+                    
+                    </button>
+                  </div>
+             </div><!-- /.info-box-content -->
+    </div>
+    {{/if}}
+    {{#if results_visible === 2 }}
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h5 class="box-title">Sequence Plot</h5>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                        title="Collapse">
+                    <i class="fa fa-minus"></i></button>
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="sequence_plot" id="sequence_plot"></div><br />
+        </div>
+        <div class="overlay processing">
+              <i class="fa fa-refresh fa-spin"></i>
+        </div>
+        <!-- /.box-body -->
+    </div>
+    {{/if}}
+
+    {{#if results_visible > 1 }}
+    
+
+
+
+
+  {{#if psipred_results_visible || pgenthreader_results_visible || dompred_results_visible || pdomthreader_results_visible || bioserf_results_visible || domserf_results_visible || ffpred_results_visible || dmp_results_visible }}
+  <div class="box box-primary collapsed-box" id="psipred_cartoon">
+      <div class="box-header with-border">
+          <h5 class="box-title">PSIPRED Cartoon</h5>
+
+          <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                      title="Collapse">
+                  <i class="fa fa-plus"></i></button>
+          </div>
+      </div>
+      <div class="box-body">
+          <div class='error'>{{{ error_message }}}</div>
+          <div class='psipred_cartoon'></div>
+          <div class="waiting" intro="slide" outro="slide">{{{ psipred_waiting_message }}}</div>
+          <div class="waiting_icon" intro="slide" outro="slide">{{{ psipred_waiting_icon }}}</div>
+
+      <!-- /.box-body -->
+  </div>
+  {{/if}}
+
+<!-- PGENTHREADER TABLE: 3 -->
+{{#if pgenthreader_results_visible || bioserf_results_visible }}
+  <div class="box box-primary collapsed-box" id="pgenthreader_table">
+      <div class="box-header with-border">
+          <h5 class="box-title">pGenTHREADER Table</h5>
+
+          <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                      title="Collapse">
+                  <i class="fa fa-plus"></i></button>
+          </div>
+      </div>
+      <div class="box-body">
+          <div class='error'>{{{ error_message }}}</div>
+          <div class='text-right modeller-key'>Modeller Licence Key: <input class="text" value="{{ modeller_key }}"><br /><br /></div>
+          <div class="pgen_table">{{{ pgen_table }}}</div>
+          <div class="waiting" intro="slide" outro="slide">{{{ pgenthreader_waiting_message }}}</div>
+          <div class="waiting_icon" intro="slide" outro="slide">{{{ pgenthreader_waiting_icon }}}</div>
+      <!-- /.box-body -->
+  </div>
+{{/if}}
+
+<!-- METAPSICOV RESULTS: 4 -->
+{{#if dmp_results_visible }}
+  <div class="box box-primary collapsed-box" id="dmp_contact_map">
+      <div class="box-header with-border">
+          <h5 class="box-title">DeepMetaPSICOV Contact Map</h5>
+
+          <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                      title="Collapse">
+                  <i class="fa fa-plus"></i></button>
+          </div>
+      </div>
+      <div class="box-body">
+        <div class='error'>{{{ error_message }}}</div>
+        <div class='dmp_map'>{{{ dmp_map }}}</div>
+        <div class="waiting" intro="slide" outro="slide">{{{ dmp_waiting_message }}}</div>
+        <div class="waiting_icon" intro="slide" outro="slide">{{{ dmp_waiting_icon }}}</div>
+      <!-- /.box-body -->
+  </div>
+{{/if}}
+
+
+<!-- DISOPRED RESULTS: 5 -->
+{{#if disopred_results_visible }}
+  <div class="box box-primary collapsed-box" id="disopred_plot">
+      <div class="box-header with-border">
+          <h5 class="box-title">DISOPRED Plot</h5>
+
+          <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                      title="Collapse">
+                  <i class="fa fa-plus"></i></button>
+          </div>
+      </div>
+      <div class="box-body">
+          <div class='error'>{{{ error_message }}}</div>
+          <div class="comb_plot"></div>
+          <div class="waiting" intro="slide" outro="slide">{{{ disopred_waiting_message }}}</div>
+          <div class="waiting_icon" intro="slide" outro="slide">{{{ disopred_waiting_icon }}}</div>
+
+      <!-- /.box-body -->
+  </div>
+{{/if}}
+
+
+<!-- MEMPACK RESULTS: 6 -->
+{{#if mempack_results_visible }}
+  <div class="box box-primary collapsed-box" id="mempack_plot">
+      <div class="box-header with-border">
+          <h5 class="box-title">MEMPACK Plot</h5>
+
+          <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                      title="Collapse">
+                  <i class="fa fa-plus"></i></button>
+          </div>
+      </div>
+      <div class="box-body">
+        <div class='error'>{{{ error_message }}}</div>
+        <div class="mempack_cartoon">{{{ mempack_cartoon }}}</div>
+        <div class="waiting" intro="slide" outro="slide">{{{ mempack_waiting_message }}}</div>
+        <div class="waiting_icon" intro="slide" outro="slide">{{{ mempack_waiting_icon }}}</div>
+
+      <!-- /.box-body -->
+  </div>
+{{/if}}
+
+
+<!-- MEMSATSVM RESULTS: 7 -->
+{{#if memsatsvm_results_visible || mempack_results_visible }}
+  <div class="box box-primary collapsed-box" id="memsat_schematics">
+      <div class="box-header with-border">
+          <h5 class="box-title">MEMSAT-SVM Schematics</h5>
+
+          <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                      title="Collapse">
+                  <i class="fa fa-plus"></i></button>
+          </div>
+      </div>
+      <div class="box-body">
+        <div class='error'>{{{ error_message }}}</div>
+        <div class="memsat_schematic">{{{ memsatsvm_schematic }}}</div>
+        <div class="memsat_cartoon">{{{ memsatsvm_cartoon }}}</div>
+        <div class="waiting" intro="slide" outro="slide">{{{ memsatsvm_waiting_message }}}</div>
+        <div class="waiting_icon" intro="slide" outro="slide">{{{ memsatsvm_waiting_icon }}}</div>
+
+      <!-- /.box-body -->
+  </div>
+{{/if}}
+
+
+<!-- GENTHREADER RESULTS: 8 -->
+{{#if genthreader_results_visible }}
+  <div class="box box-primary collapsed-box" id="genthreader_table">
+      <div class="box-header with-border">
+          <h5 class="box-title">GenTHREADER Table</h5>
+
+          <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                      title="Collapse">
+                  <i class="fa fa-plus"></i></button>
+          </div>
+      </div>
+      <div class="box-body">
+        <div class='error'>{{{ error_message }}}</div>
+        <div class='text-right modeller-key'>Modeller Licence Key: <input class="text modeller-key" value="{{ modeller_key }}"><br /><br /></div>
+        <div class="gen_table">{{{ gen_table }}}</div>
+        <div class="waiting" intro="slide" outro="slide">{{{ genthreader_waiting_message }}}</div>
+        <div class="waiting_icon" intro="slide" outro="slide">{{{ genthreader_waiting_icon }}}</div>
+
+      <!-- /.box-body -->
+  </div>
+{{/if}}
+
+
+<!-- DOMPRED RESULTS: 9 -->
+{{#if dompred_results_visible }}
+  <div class="box box-primary collapsed-box" id="dompred_results">
+      <div class="box-header with-border">
+          <h5 class="box-title">DomPred Results</h5>
+
+          <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                      title="Collapse">
+                  <i class="fa fa-plus"></i></button>
+          </div>
+      </div>
+      <div class="box-body">
+        <div class='error'>{{{ error_message }}}</div>
+        <div class='parseds_png'>{{{ parseds_png }}}</div>
+        <div class='parseds_info'>{{{ parseds_info }}}</div>
+        <div class="waiting" intro="slide" outro="slide">{{{ dompred_waiting_message }}}</div>
+        <div class="waiting_icon" intro="slide" outro="slide">{{{ dompred_waiting_icon }}}</div>
+
+      <!-- /.box-body -->
+  </div>
+{{/if}}
+
+<!-- PDOMTHREADER RESULTS: 10 -->
+{{#if pdomthreader_results_visible || domserf_results_visible }}
+  <div class="box box-primary collapsed-box" id="pdomthreader_results">
+      <div class="box-header with-border">
+          <h5 class="box-title">pDomTHREADER Results</h5>
+
+          <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                      title="Collapse">
+                  <i class="fa fa-plus"></i></button>
+          </div>
+      </div>
+      <div class="box-body">
+        <div class='error'>{{{ error_message }}}</div>
+        <div class='text-right modeller-key'>Modeller Licence Key: <input class="text modeller-key" value="{{ modeller_key }}"><br /><br /></div>
+        <div class="dgen_table">{{{ dgen_table }}}</div>
+        <div class="waiting" intro="slide" outro="slide">{{{ pdomthreader_waiting_message }}}</div>
+        <div class="waiting_icon" intro="slide" outro="slide">{{{ pdomthreader_waiting_icon }}}</div>
+
+      <!-- /.box-body -->
+  </div>
+<!-- <div class='_cartoon'></div> -->
+{{/if}}
+
+      <!-- BIOSERF RESULTS: 11 -->
+{{#if bioserf_results_visible }}
+  <div class="box box-primary collapsed-box" id="bioserf_models">
+      <div class="box-header with-border">
+          <h5 class="box-title">Bioserf Model</h5>
+
+          <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                      title="Collapse">
+                  <i class="fa fa-plus"></i></button>
+          </div>
+      </div>
+      <div class="box-body">
+        <!-- <div class='_cartoon'></div> -->
+        <div class='error'>{{{ error_message }}}</div>
+        <div class='mol-container' id='bioserf_model'></div>
+        <div class="waiting" intro="slide" outro="slide">{{{ bioserf_waiting_message }}}</div>
+        <div class="waiting_icon" intro="slide" outro="slide">{{{ bioserf_waiting_icon }}}</div>
+
+      <!-- /.box-body -->
+  </div>
+{{/if}}
+
+<!-- DOMSERF RESULTS: 12 -->
+{{#if domserf_results_visible }}
+  <div class="box box-primary collapsed-box" id="domserf_models">
+      <div class="box-header with-border">
+          <h5 class="box-title">Domserf Models</h5>
+
+          <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                      title="Collapse">
+                  <i class="fa fa-plus"></i></button>
+          </div>
+      </div>
+      <div class="box-body">
+        <!-- <div class='_cartoon'></div> -->
+        <div class='error'>{{{ error_message }}}</div>
+        <div class='domserf_buttons'>{{{ domserf_buttons }}}</div>
+        <div class='mol-container' id='domserf_model'></div>
+        <div class="waiting" intro="slide" outro="slide">{{{ domserf_waiting_message }}}</div>
+        <div class="waiting_icon" intro="slide" outro="slide">{{{ domserf_waiting_icon }}}</div>
+
+      <!-- /.box-body -->
+  </div>
+{{/if}}
+
+<!-- FFPRED RESULTS: 13 -->
+{{#if ffpred_results_visible }}
+  <div class="box box-primary collapsed-box" id="ffpred_predictions">
+      <div class="box-header with-border">
+          <h5 class="box-title">FFPred Predictions</h5>
+
+          <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                      title="Collapse">
+                  <i class="fa fa-plus"></i></button>
+          </div>
+      </div>
+      <div class="box-body">
+        <div class='error'>{{{ error_message }}}</div>
+        <div class="function_tables">{{{ function_tables }}}</div>
+        <div class="sch_schematic center">{{{ sch_schematic }}}</div>
+        <div class="ffpred_cartoon center">{{{ ffpred_cartoon }}}</div>
+        <div class="aa_composition">{{{ aa_composition }}}</div>
+        <div class="global_features center">{{{ global_features }}}</div>
+        <div class="waiting" intro="slide" outro="slide">{{{ ffpred_waiting_message }}}</div>
+        <div class="waiting_icon" intro="slide" outro="slide">{{{ ffpred_waiting_icon }}}</div>
+
+      <!-- /.box-body -->
+  </div>
+{{/if}}
+
+
+<!-- METSITE RESULTS: 14 -->
+{{#if metsite_results_visible }}
+  <div class="box box-primary" id="metsite_predictions">
+      <div class="box-header with-border">
+          <h5 class="box-title">Metsite Predictions</h5>
+
+          <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                      title="Collapse">
+                  <i class="fa fa-minus"></i></button>
+          </div>
+      </div>
+      <div class="box-body">
+        <div class='error'>{{{ error_message }}}</div>
+        <div class='mol-container' id='metsite_model'></div>
+        <div class='metsite_table' >{{{ metsite_table }}}</div>
+        <div class="waiting" intro="slide" outro="slide">{{{ metsite_waiting_message }}}</div>
+        <div class="waiting_icon" intro="slide" outro="slide">{{{ metsite_waiting_icon }}}</div>
+
+      <!-- /.box-body -->
+  </div>
+{{/if}}
+
+<!-- HSPRED RESULTS: 15 -->
+{{#if hspred_results_visible }}
+  <div class="box box-primaryx" id="hspred_predictions">
+      <div class="box-header with-border">
+          <h5 class="box-title">HSPred Predictions</h5>
+
+          <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                      title="Collapse">
+                  <i class="fa fa-minus"></i></button>
+          </div>
+      </div>
+      <div class="box-body">
+        <!-- <div class='_cartoon'></div> -->
+        <div class='mol-container' id='hspred_initial_model'></div><div class='mol-container' id='hspred_second_model'></div>
+        <div style="clear: both;"></div>
+        <div class='error'>{{{ error_message }}}</div>
+        <div class='hspred_table' >{{{ hspred_table }}}</div>
+        <div class="waiting" intro="slide" outro="slide">{{{ hspred_waiting_message }}}</div>
+        <div class="waiting_icon" intro="slide" outro="slide">{{{ hspred_waiting_icon }}}</div>
+
+      <!-- /.box-body -->
+  </div>
+{{/if}}
+
+<!-- MEMEMBED RESULTS: 16 -->
+{{#if memembed_results_visible }}
+  <div class="box box-primary" id="memembed_predictions">
+      <div class="box-header with-border">
+          <h5 class="box-title">MEMEMBED Prediction</h5>
+
+          <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                      title="Collapse">
+                  <i class="fa fa-minus"></i></button>
+          </div>
+      </div>
+      <div class="box-body">
+        <div class='error'>{{{ error_message }}}</div>
+        <div class='mol-container' id='memembed_model'></div>
+        <div class="waiting" intro="slide" outro="slide">{{{ memembed_waiting_message }}}</div>
+        <div class="waiting_icon" intro="slide" outro="slide">{{{ memembed_waiting_icon }}}</div>
+
+      <!-- /.box-body -->
+  </div>
+{{/if}}
+
+<!-- GENTDB RESULTS: 17 -->
+{{#if gentdb_results_visible }}
+  <div class="box box-primary" id="gentdb_result">
+      <div class="box-header with-border">
+          <h5 class="box-title">TDB File</h5>
+
+          <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                      title="Collapse">
+                  <i class="fa fa-minus"></i></button>
+          </div>
+      </div>
+      <div class="box-body">
+        <div class='error'>{{{ error_message }}}</div>
+        <div class='tdb_file'>{{{ tdb_file }}}</div>
+        <div class="waiting" intro="slide" outro="slide">{{{ gentdb_waiting_message }}}</div>
+        <div class="waiting_icon" intro="slide" outro="slide">{{{ gentdb_waiting_icon }}}</div>
+
+      <!-- /.box-body -->
+  </div>
+{{/if}}
+
+<!-- METAPSICOV RESULTS: 18 -->
+{{#if dmpfold_results_visible }}
+  <div class="box box-primary collapsed-box" id="dmpfold_contact_map">
+      <div class="box-header with-border">
+          <h5 class="box-title">DMPFold Structure</h5>
+
+          <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                      title="Collapse">
+                  <i class="fa fa-plus"></i></button>
+          </div>
+      </div>
+      <div class="box-body">
+        <div class='error'>{{{ error_message }}}</div>
+        <div class='mol-container' id='dmpfold_model'></div>
+        <div class="waiting" intro="slide" outro="slide">{{{ dmpfold_waiting_message }}}</div>
+        <div class="waiting_icon" intro="slide" outro="slide">{{{ dmpfold_waiting_icon }}}</div>
+      <!-- /.box-body -->
+  </div>
+{{/if}}
+
+    {{/if}}
+  </div>
+    <!-- /.box -->
+
+ <!-- Submission widget -->
+    <div class="col-md-3">
+      {{#if results_visible > 1 }}
+        {{#if time_visible == 1 }}
+
+      <div class="info-box" style="overflow:hidden;">
+      <!-- Apply any bg-* class to to the icon to color it -->
+          <span class="info-box-icon bg-blue"><i class="fa fa-clock-o"></i></span>
+            <div class="info-box-content">
+            <span class="info-box-text">Average Processing Time</span><br />
+            <span class="info-box-number">{{{ loading_message }}}</span>
+            <span class="info-box-number">{{{ metapsicov_time }}}</span>
+            <span class="info-box-number">{{{ disopred_time }}}</span>
+            <span class="info-box-number">{{{ mempack_time }}}</span>
+            <span class="info-box-number">{{{ memsatsvm_time }}}</span>
+            <span class="info-box-number">{{{ genthreader_time }}}</span>
+            <span class="info-box-number">{{{ dompred_time }}}</span>
+            <span class="info-box-number">{{{ pdomthreader_time }}}</span>
+            <span class="info-box-number">{{{ bioserf_time }}}</span>
+            <span class="info-box-number">{{{ domserf_time }}}</span>
+            <span class="info-box-number">{{{ ffpred_time }}}</span>
+            <span class="info-box-number">{{{ metsite_time }}}</span>
+            <span class="info-box-number">{{{ hspred_time }}}</span>
+            <span class="info-box-number">{{{ memembed_time }}}</span>
+            <span class="info-box-number">{{{ gentdb_time }}}</span>
+            <span class="info-box-number">{{{ pgenthreader_time }}}</span>
+            <span class="info-box-number">{{{ psipred_time }}}</span>
+            <span class="info-box-number">{{{ dmp_time }}}</span>
+            <span class="info-box-number">{{{ dmpfold_time }}}</span>
+          </div>
+        <!-- /.info-box-content -->
+        </div>
+      <!-- /.info-box -->
+        {{/if}}
+    <div class="box box-warning" id="downloads_widget">
+        <div class="box-header with-border">
+            <h5 class="box-title">Downloads</h5>
+
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                        title="Collapse">
+                    <i class="fa fa-minus"></i></button>
+            </div>
+        </div>
+        <div class="box-body">
+            <h5>ZIP FILE</h5>
+            <a href="" on-click="@this.fire("get_zip"), false">Get Zip file</a><br /><br />
+            <h5>JOB CONFIGURATION</h5>
+            <a href="" on-click="@this.fire("get_job_details"), false">Get Job Details</a><br /><br />
+            {{{ download_links }}}
+        </div>
+        <div class="overlay processing">
+              <i class="fa fa-refresh fa-spin"></i>
+        </div>
+
+        <!-- /.box-body -->
+    </div>
+    {{/if}}
+    {{#if resubmission_visible === 1 }}
+    <div class="box box-success collapsed-box" id="resubmission_widget">
+        <div class="box-header with-border">
+            <h5 class="box-title">Segment Resubmission</h5>
+
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                        title="Collapse">
+                    <i class="fa fa-plus"></i></button>
+            </div>
+        </div>
+        <div class="box-body">
+            
+
+
+<br />
+<form method="Post" class="form" intro="slide" outro="slide" on-submit="resubmit">
+<input type="hidden" name="csrfmiddlewaretoken" value="C4cWKzSevFRjpS7fUTxCTB0p2OtwrEBJ2G2BcJ6LhtdH09R2Q51MBAVIFfB2fOhp">
+  <br />
+  <h5>Select subsequence region</h5>
+  Start Coordinate <input type="text" id="start_coord" class="sequence_coord" value="{{ subsequence_start }}"> - Stop Coordinate <input id="stop_coord" type="text" class="sequence_coord" value="{{ subsequence_stop }}">
+  <div class="form-group">
+    <div>
+      <br />
+      <h5>Choose prediction methods (hover for short description)</h5>
+      <table class="full-width-table">
+      <tr>
+      <td>
+        <input id="id_psipred_job" name="psipred_job" value="psipred_job" type="checkbox" checked="{{ psipred_checked }}">
+        <label for="id_psipred_job">PSIPRED 4.0</label>
+      </td>
+      <td>
+        <input id="id_disopred_job" name="disopred_job" value="disopred_job" type="checkbox" checked="{{ disopred_checked }}">
+        <label for="id_disopred_job">DISOPRED3</label>
+      </td>
+      </tr>
+
+      <tr>
+      <td>
+      <input id="id_memsat_job" name="memsat_job" value="memsat_job" type="checkbox" checked="{{ memsat_checked }}">
+      <label for="id_memsat_job">MEMSAT-SVM</label>
+      </td>
+      <td>
+      <input id="id_pgenthreader_job" name="pgenthreader_job" value="pgenthreader_job" type="checkbox" checked="{{ pgenthreader_checked }}">
+      <label for="id_pgenthreader_job">pGenTHREADER</label>
+      </td>
+      </tr>
+
+      <tr>
+      <td>
+        <input id="id_dmp_job" name="dmp_job" value="dmp_job" type="checkbox" checked="{{ dmp_checked }}">
+        <label for="id_dmp_job">DeepMetaPSICOV</label>
+      </td>
+      <td>
+        <input id="id_mempack_job" name="mempack_job" value="mempack_job" type="checkbox" checked="{{ mempack_checked }}">
+        <label for="id_mempack_job">MEMPACK</label>
+      </td>
+      </tr>
+
+      <tr>
+      <td>
+      <input id="id_genthreader_job" name="genthreader_job" value="genthreader_job" type="checkbox" checked="{{ genthreader_checked }}">
+      <label for="id_genthreader_job">GenTHREADER</label>
+      </td>
+      <td>
+      <input id="id_dompred_job" name="dompred_job" value="dompred_job" type="checkbox" checked="{{ dompred_checked }}">
+      <label for="id_dompred_job">DomPred</label>
+      </td>
+      </tr>
+
+      <tr>
+      <td>
+      <input id="id_pdomthreader_job" name="pdomthreader_job" value="pdomthreader_job" type="checkbox" checked="{{ pdomthreader_checked }}">
+      <label for="id_pdomthreader_job">pDomTHREADER</label>
+      </td>
+      <td>
+      <!--<i style="color:red" class="fa fa-times"></i>-->
+      <input id="id_bioserf_job" name="bioserf_job" value="bioserf_job" type="checkbox" checked="{{ bioserf_checked }}">
+      <label for="id_bioserf_job">Bioserf 2.0</label>
+      </td>
+      </tr>
+
+      <tr>
+      <td>
+      <input id="id_domserf_job" name="domserf_job" value="domserf_job" type="checkbox" checked="{{ domserf_checked }}">
+      <label for="id_domserf_job">Domserf 2.1</label>
+      </td>
+      <td>
+      <input id="id_ffpred_job" name="ffpred_job" value="ffpred_job" type="checkbox" checked="{{ ffpred_checked }}">
+      <label for="id_ffpred_job">FFPred 3</label>
+      </td>
+      </tr>
+
+      <tr>
+      <td>
+      <input id="id_dmpfold_job" name="dmpfold_job" value="dmpfold_job" type="checkbox" checked="{{ dmpfold_checked }}">
+      <label for="id_dmpfold_job">DMPfold</label>
+      </td>
+      <td>
+      </td>
+      </tr>
+
+      </table>
+      <h5>Bioserf/Domserf MODELLER KEY</h5>
+      <input type="text" id="bioserf_domserf_modeller_key" name="bioserf_domserf_modeller_key">
+    </div>
+  </div>
+  <div class="text-right">
+    <input value="Resubmit" type="submit" class="btn btn-primary" />
+  </div>
+  <br />
+</form>
+
+        </div>
+        <div class="overlay processing">
+                <i class="fa fa-refresh fa-spin"></i>
+        </div>
+        <!-- /.box-body -->
+    </div>
+        {{/if}}
+  </div>
+</div> <!--Form row-->
+  <div class="helixy"><img src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/images/helixy_png_blank.png"></div>
+</script>
+
+</div>
+
+                
+            </section>
+            
+
+        </div>
+        
+
+        
+            <footer class="main-footer">
+    <div class="pull-right hidden-xs">
+        
+    <strong>Copyright &copy; 2022.<br /></strong>
+    
+    </div>
+
+    &nbsp;
+</footer>
+
+        
+
+    </div>
+
+
+
+    
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/jquery.min.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/jquery-ui.min.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/bootstrap.min.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/app.min.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/popper.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/ractive.min.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/ractive-events-tap.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/ractive-transitions-slide.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/biod3.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/clipboard.min.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/jszip.min.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/jszip-utils.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/FileSaver.min.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/msa.min.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/konami_code.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/jquery.dataTables.min.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/dataTables.bootstrap.min.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/data_tables_helper.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/jquery.slimscroll.min.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/fastclick.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/adminlte.min.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/alerts.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/3Dmol-nojquery.js"></script>
+    <script src="http://bioinf.cs.ucl.ac.uk/psipred_new/static/js/psipred.js"></script>
+
+
+
+
+</body>
+</html>
