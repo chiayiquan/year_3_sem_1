@@ -25,7 +25,11 @@ SECRET_KEY = 'f90!s%zy*pn-n-@um187n*5ihnya8c&9nq)*uj(o2u#ha9+62&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+STATIC_ROOT = '/demo/static/'
+STATIC_URL = 'demo/media/'
+MEDIA_URL = '/media/'
+DEBUG = False
 
 
 # Application definition
@@ -37,6 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'allauth',
+    'allauth.account',
+    'mod_wsgi.server',
 ]
 
 MIDDLEWARE = [
