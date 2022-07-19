@@ -1,0 +1,8 @@
+{
+    "name":"Yi Quan",
+    "classes":["CM3050","CM3035"],
+    "grades":{
+        "CM3050":80,
+        "CM3035":75
+    }
+}

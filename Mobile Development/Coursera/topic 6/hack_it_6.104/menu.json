@@ -1,0 +1,20 @@
+{
+  "menu_items": [
+    {
+      "title": "Home",
+      "page": "Home"
+    },
+    {
+      "title": "Office",
+      "page": "Office"
+    },
+    {
+      "title": "Kitchen",
+      "page": "Kitchen"
+    },
+    {
+      "title": "Bedroom",
+      "page": "Bedroom"
+    }
+  ]
+}
