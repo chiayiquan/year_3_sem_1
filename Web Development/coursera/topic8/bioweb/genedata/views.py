@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
-from django.urls import is_valid_path
 from .models import *
 from .forms import *
 from django.views.generic import ListView
