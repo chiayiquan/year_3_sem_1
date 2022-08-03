@@ -1,3 +1,25 @@
+{% block javascript %}
+<script>
+  function login() {
+    (async () => {
+      const email = document.getElementById("login_email").value;
+      const password = document.getElementById("login_password").value;
+
+      const response = await fetch("api/login/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      console.log(data);
+    })();
+  }
+</script>
+{% endblock javascript %}
+
 <nav class="navbar navbar-expand-lg nav">
   <a class="navbar-brand whiteText" href="#../">FriendBook</a>
   <button
@@ -12,14 +34,26 @@
     <span class="navbar-toggler-icon"></span>
   </button>
 
+  {% if user.is_authenticated %}
   <div
     class="collapse navbar-collapse flex-row justify-content-end"
     id="navbarSupportedContent"
   >
-    <form id="login_form" method="post" action="/login/" class="form-inline">
+    <li class="nav-item active">
+      <a class="nav-link" href="logout/"
+        >Logout <span class="sr-only">(current)</span></a
+      >
+    </li>
+  </div>
+  {% else %}
+  <div
+    class="collapse navbar-collapse flex-row justify-content-end"
+    id="navbarSupportedContent"
+  >
+    <form id="login_form" class="form-inline">
       {% csrf_token %}
       <span class="whiteText">Email: </span>
-      <input type="text" name="email" value="" size="20" />
+      <input type="text" name="email" value="" size="20" id="login_email" />
       <span class="whiteText">Password:</span>
       <input
         type="password"
@@ -27,8 +61,15 @@
         class="form-control mr-sm-2"
         value=""
         size="20"
+        id="login_password"
       />
-      <input type="submit" class="form-control mr-sm-2" value="Login" />
+      <input
+        type="button"
+        class="form-control mr-sm-2"
+        value="Login"
+        onclick="login()"
+      />
     </form>
   </div>
+  {% endif %}
 </nav>

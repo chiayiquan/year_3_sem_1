@@ -56,3 +56,10 @@ def register(request):
                                                         'profile_form': profile_form,
                                                         'registered': registered,
                                                         })
+
+def index(request):
+    user_form = UserForm()
+    profile_form = UserProfileForm()
+    return render(request,'friendbook/index.html',{'user_form': user_form,
+                                                        'profile_form': profile_form
+                                                        })
