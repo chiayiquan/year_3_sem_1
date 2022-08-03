@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "noImplicitReturns": true,
+        "noImplicitAny": true,
+        "noUnusedLocals": true,
+        "strictFunctionTypes": true,
+        "rootDir": "src",
+        "sourceMap": true,
+        "strict": true,
+        "target": "ES2019",
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "moduleResolution": "node"
+    },
+    "compileOnSave": true,
+    "include": [
+        "src/**/*",
+        "../specs/**/*",
+        "../db/**/*"
+    ]
+}
