@@ -1,5 +1,5 @@
 import express from "express";
-// import { addRoutesToExpressInstance } from "./routes";
+import { addRoutesToExpressInstance } from "./routes";
 import cors from "cors";
 
 const app = express();
@@ -15,6 +15,6 @@ app.use(cors(corsOpts));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// addRoutesToExpressInstance(app);
+addRoutesToExpressInstance(app);
 
 export default app;

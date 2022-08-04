@@ -5,18 +5,20 @@
         "noImplicitAny": true,
         "noUnusedLocals": true,
         "strictFunctionTypes": true,
+        "outDir": "build",
         "rootDir": "src",
         "sourceMap": true,
         "strict": true,
         "target": "ES2019",
         "esModuleInterop": true,
         "resolveJsonModule": true,
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "allowJs": true
     },
     "compileOnSave": true,
     "include": [
         "src/**/*",
-        "../specs/**/*",
-        "../db/**/*"
-    ]
+        "specs/**/*",
+        "db/**/*"
+    ],
 }
