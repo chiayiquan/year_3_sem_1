@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "522599487334",
+    "project_id": "plantogether",
+    "storage_bucket": "plantogether.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:522599487334:android:3d9a0ac3c41323a3f11aa7",
+        "android_client_info": {
+          "package_name": "com.md.plantogether"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "522599487334-8ovq20frv5b5a7he87uklhn58o4tbkil.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjuKvNqyxNGqkLUVjsCf-bS1eCar75HmE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "522599487334-8ovq20frv5b5a7he87uklhn58o4tbkil.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
