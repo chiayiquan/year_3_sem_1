@@ -1,6 +1,6 @@
-import { Schema, UserData } from "./model";
+import { Schema, UserData, toLoginType, LoginType } from "./model";
 import UserLib from "./lib";
 
-export { Schema, UserData };
+export { Schema, UserData, toLoginType, LoginType };
 
 export default UserLib;

@@ -15,6 +15,7 @@ type ResponseData = Readonly<{
 
 export function decode(data: any): User | Error {
   try {
+    console.log(data);
     return JD.object({
       id: JD.string,
       name: JD.string,

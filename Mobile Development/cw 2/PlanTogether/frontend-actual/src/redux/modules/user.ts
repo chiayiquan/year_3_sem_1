@@ -28,8 +28,29 @@ const userSlice = createSlice({
     setUserToState: (state, action: PayloadAction<User.User | null>) => {
       return { ...state, user: action.payload };
     },
+    setUserGetApiPromise: (state, action: PayloadAction<Api>) => {
+      return { ...state, promise: { ...state.promise, get: action.payload } };
+    },
+    setUserGetError: (state, action: PayloadAction<Error>) => {
+      return { ...state, error: { ...state.error, get: action.payload } };
+    },
+    setUserCreateApiPromise: (state, action: PayloadAction<Api>) => {
+      return {
+        ...state,
+        promise: { ...state.promise, create: action.payload },
+      };
+    },
+    setUserCreateError: (state, action: PayloadAction<Error>) => {
+      return { ...state, error: { ...state.error, create: action.payload } };
+    },
   },
 });
 
-export const { setUserToState } = userSlice.actions;
+export const {
+  setUserToState,
+  setUserGetApiPromise,
+  setUserGetError,
+  setUserCreateApiPromise,
+  setUserCreateError,
+} = userSlice.actions;
 export default userSlice.reducer;

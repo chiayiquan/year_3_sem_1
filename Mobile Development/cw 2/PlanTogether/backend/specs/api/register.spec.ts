@@ -18,6 +18,8 @@ const user = {
   name: "test",
   email: "test@example.com",
   password: "123456789",
+  handler: "tester",
+  loginType: "ACCOUNT",
 };
 
 describe("Test for register", function () {
@@ -42,7 +44,10 @@ describe("Test for register", function () {
     });
 
     it("test email should be stored lowercase", async () => {
-      await postRegisterApi({ ...user, email: "UPPERCASE@EXAMPLE.COM" }, 200);
+      await postRegisterApi(
+        { ...user, email: "UPPERCASE@EXAMPLE.COM", handler: "tester1" },
+        200
+      );
       const email = await Test.db
         .select("email")
         .from("users")
@@ -52,7 +57,10 @@ describe("Test for register", function () {
     });
 
     it("test password should be encrypted", async () => {
-      await postRegisterApi({ ...user, email: "test1@example.com" }, 200);
+      await postRegisterApi(
+        { ...user, email: "test1@example.com", handler: "tester2" },
+        200
+      );
       const password = await Test.db
         .select("password")
         .from("users")
@@ -63,6 +71,27 @@ describe("Test for register", function () {
 
     it("Test missing field", async () => {
       await postRegisterApi({ name: user.name, password: user.password }, 500);
+    });
+
+    it("Test unique handlers", async () => {
+      const response = await postRegisterApi(
+        { ...user, email: "test2@example.com" },
+        400
+      );
+      expect(response.body.error.code).toBe("HANDLER_EXIST");
+    });
+
+    it("Test accept google register", async () => {
+      const response = await postRegisterApi(
+        {
+          ...user,
+          email: "test3@example.com",
+          loginType: "GOOGLE",
+          handler: "tester3",
+        },
+        200
+      );
+      expect(response.body.data).toBe("User created");
     });
   });
 });

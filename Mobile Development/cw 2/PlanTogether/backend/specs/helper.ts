@@ -51,15 +51,18 @@ export async function createUser(
     password: "123456789",
     id: generateID(),
     createdAt: Date.now(),
+    handler: "unique_user",
+    loginType: "ACCOUNT",
     ...userData,
   };
-  const password = await User.hashPassword(user.password);
+  const password =
+    user.password != null && (await User.hashPassword(user.password));
   await db.insert({ ...user, password }).into("users");
-  const jwt = await createJWT(user.id);
+  const jwt = await createJWT(user.id, null);
   return { user, jwt };
 }
 
-export async function createJWT(id: string) {
-  const session = await Session.createSession(id);
+export async function createJWT(id: string, authToken: string | null) {
+  const session = await Session.createSession(id, authToken);
   return session && JWT.issue(session.id, session.userId);
 }

@@ -5,6 +5,7 @@ type Schema = Readonly<{
   id: string;
   userId: string;
   createdAt: number;
+  authToken: string | null;
 }>;
 
 async function insert(data: Schema) {
@@ -29,6 +30,7 @@ function decode(data: any[]): Schema[] {
       id: JD.string,
       userId: JD.string,
       createdAt: JD.number,
+      authToken: JD.nullable(JD.string),
     })
   ).verify(data);
 }

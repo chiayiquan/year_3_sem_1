@@ -5,7 +5,9 @@ import bcrypt from "bcrypt"; // we use bcrypt here to hash our password, it is a
 async function createUser(params: {
   name: string;
   email: string;
-  password: string;
+  password: string | null;
+  handler: string;
+  loginType: User.LoginType;
 }): Promise<User.Schema | null> {
   const userData: User.Schema = {
     ...params,
@@ -20,6 +22,10 @@ async function createUser(params: {
 
 async function checkEmailExist(email: string): Promise<boolean> {
   return User.checkEmail(email.trim().toLowerCase());
+}
+
+async function checkHandlerExist(handler: string): Promise<boolean> {
+  return User.checkHandler(handler.trim().toLowerCase());
 }
 
 async function hashPassword(password: string): Promise<string> {
@@ -51,6 +57,7 @@ function transformToUserData(
     email: userData.email,
     createdAt: userData.createdAt,
     jwt,
+    handler: userData.handler,
   };
 }
 
@@ -67,4 +74,5 @@ export default {
   getUserById,
   transformToUserData,
   getMultiple,
+  checkHandlerExist,
 };

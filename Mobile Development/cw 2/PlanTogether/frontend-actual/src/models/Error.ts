@@ -1,5 +1,6 @@
 import * as JD from "decoders";
 import { AxiosError } from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type Error = {
   code: string | null;
@@ -20,15 +21,15 @@ export const networkError = {
 };
 
 // decoder for errors
-export const decode = (axiosError: AxiosError): Error => {
+export const decode = async (axiosError: AxiosError): Promise<Error> => {
   try {
     const error: Error = JD.object({
       code: JD.string,
       message: JD.string,
-    }).verify(axiosError);
+    }).verify(axiosError?.response?.data.error);
 
     if (error.code === "INVALID_SESSION") {
-      localStorage.removeItem("user");
+      await AsyncStorage.removeItem("@user");
     }
     return error;
   } catch (error) {

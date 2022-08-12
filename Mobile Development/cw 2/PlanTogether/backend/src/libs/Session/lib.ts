@@ -1,11 +1,15 @@
 import * as Session from "./model";
 import { generateID } from "../../db";
 
-async function createSession(userId: string): Promise<Session.Schema | null> {
+async function createSession(
+  userId: string,
+  authToken: string | null
+): Promise<Session.Schema | null> {
   const session: Session.Schema = {
     id: generateID(),
     userId,
     createdAt: Date.now(),
+    authToken,
   };
   return Session.insert(session)
     .then(() => session)

@@ -7,6 +7,7 @@ exports.up = function (knex) {
     table.string("id", 32).notNullable().primary();
     table.string("userId", 32).notNullable();
     table.bigInteger("createdAt").unsigned().notNullable();
+    table.string("authToken").nullable();
   });
 };
 

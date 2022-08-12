@@ -5,7 +5,7 @@ import { StyleSheet, Text, View, Button, EventEmitter } from "react-native";
 import * as Google from "expo-auth-session/providers/google";
 import { Prompt, TokenResponse, refreshAsync } from "expo-auth-session";
 
-export default function App() {
+export default function Home() {
   const [user, setUser] = useState<TokenResponse>();
   const [code, setCode] = useState<string | null>(null);
   const [request, response, promptAsync] = Google.useAuthRequest({
