@@ -1,5 +1,6 @@
 import * as Session from "./model";
 import { generateID } from "../../db";
+import moment from "moment";
 
 async function createSession(
   userId: string,
@@ -8,7 +9,7 @@ async function createSession(
   const session: Session.Schema = {
     id: generateID(),
     userId,
-    createdAt: Date.now(),
+    createdAt: moment().unix(),
     authToken,
   };
   return Session.insert(session)

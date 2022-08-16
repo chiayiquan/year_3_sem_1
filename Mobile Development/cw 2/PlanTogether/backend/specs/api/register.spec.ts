@@ -43,6 +43,22 @@ describe("Test for register", function () {
       expect(response.body.error.code).toBe("EMAIL_EXIST");
     });
 
+    it("test empty name", async () => {
+      const response = await postRegisterApi(
+        { ...user, name: "", email: "test4@example.com" },
+        400
+      );
+      expect(response.body.error.code).toBe("EMPTY_NAME");
+    });
+
+    it("test empty handler", async () => {
+      const response = await postRegisterApi(
+        { ...user, handler: "", email: "test4@example.com" },
+        400
+      );
+      expect(response.body.error.code).toBe("EMPTY_HANDLER");
+    });
+
     it("test email should be stored lowercase", async () => {
       await postRegisterApi(
         { ...user, email: "UPPERCASE@EXAMPLE.COM", handler: "tester1" },
@@ -88,6 +104,18 @@ describe("Test for register", function () {
           email: "test3@example.com",
           loginType: "GOOGLE",
           handler: "tester3",
+        },
+        200
+      );
+      expect(response.body.data).toBe("User created");
+    });
+
+    it("Test google register with existing ACCOUNT loginType", async () => {
+      const response = await postRegisterApi(
+        {
+          ...user,
+          loginType: "GOOGLE",
+          handler: "tester4",
         },
         200
       );

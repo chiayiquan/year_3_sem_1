@@ -1,6 +1,7 @@
 import * as User from "./model";
 import { generateID } from "../../db";
 import bcrypt from "bcrypt"; // we use bcrypt here to hash our password, it is a one way meaning with the hash you cannot reverse it to the plaintext
+import moment from "moment";
 
 async function createUser(params: {
   name: string;
@@ -12,7 +13,7 @@ async function createUser(params: {
   const userData: User.Schema = {
     ...params,
     id: generateID(),
-    createdAt: Date.now(),
+    createdAt: moment().unix(),
     email: params.email.trim().toLowerCase(),
   };
   return User.insert(userData)
@@ -20,12 +21,15 @@ async function createUser(params: {
     .catch(() => null);
 }
 
-async function checkEmailExist(email: string): Promise<boolean> {
-  return User.checkEmail(email.trim().toLowerCase());
+async function checkEmailExist(
+  email: string,
+  loginType: User.LoginType
+): Promise<boolean> {
+  return User.checkEmailExisted(email.trim().toLowerCase(), loginType);
 }
 
 async function checkHandlerExist(handler: string): Promise<boolean> {
-  return User.checkHandler(handler.trim().toLowerCase());
+  return User.checkHandlerExisted(handler.trim());
 }
 
 async function hashPassword(password: string): Promise<string> {
@@ -39,8 +43,11 @@ async function comparePassword(
   return bcrypt.compare(password, hash);
 }
 
-async function getUserByEmail(email: string): Promise<User.Schema> {
-  return User.get({ email: email.trim().toLowerCase() });
+async function getUserByEmail(
+  email: string,
+  loginType: User.LoginType
+): Promise<User.Schema> {
+  return User.get({ email: email.trim().toLowerCase(), loginType });
 }
 
 async function getUserById(id: string): Promise<User.Schema> {
@@ -61,8 +68,8 @@ function transformToUserData(
   };
 }
 
-async function getMultiple(ids: string[]): Promise<User.Schema[]> {
-  return User.getMultiple(ids);
+async function getMultipleUserInfo(ids: string[]): Promise<User.UserInfo[]> {
+  return User.getMultipleUser(ids);
 }
 
 export default {
@@ -73,6 +80,6 @@ export default {
   getUserByEmail,
   getUserById,
   transformToUserData,
-  getMultiple,
+  getMultipleUserInfo,
   checkHandlerExist,
 };

@@ -13,6 +13,7 @@ export default function AuthNav() {
         <Stack.Screen
           name="Home"
           component={HomeScreen}
+          options={{ headerShown: false }}
           //   options={{ title: "Home" }}
         />
         {/* <Stack.Screen name="Details" component={DetailsScreen} /> */}

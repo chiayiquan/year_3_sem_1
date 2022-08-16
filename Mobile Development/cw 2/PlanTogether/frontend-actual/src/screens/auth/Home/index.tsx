@@ -1,11 +1,32 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, Button, EventEmitter } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  EventEmitter,
+  TouchableOpacity,
+} from "react-native";
 // import * as Google from "expo-google-app-auth";
 import * as Google from "expo-auth-session/providers/google";
-import { Prompt, TokenResponse, refreshAsync } from "expo-auth-session";
+import { Prompt, TokenResponse } from "expo-auth-session";
+import {
+  Agenda,
+  DateData,
+  AgendaSchedule,
+  AgendaEntry,
+} from "react-native-calendars";
+import { Card } from "@rneui/base";
+
+function timeToString(time: number): string {
+  const date = new Date(time);
+  return date.toISOString().split("T")[0];
+}
 
 export default function Home() {
+  const [items, setItems] = useState<AgendaSchedule>({});
+
   const [user, setUser] = useState<TokenResponse>();
   const [code, setCode] = useState<string | null>(null);
   const [request, response, promptAsync] = Google.useAuthRequest({
@@ -139,11 +160,82 @@ export default function Home() {
     }
   }
 
+  function loadItems(day: DateData) {
+    setTimeout(() => {
+      for (let i = -15; i < 10; i++) {
+        const time = day.timestamp + i * 24 * 60 * 60 * 1000;
+        const strTime = timeToString(time);
+
+        if (!items[strTime]) {
+          items[strTime] = [];
+
+          const numItems = Math.floor(Math.random() * 3 + 1);
+          for (let j = 0; j < numItems; j++) {
+            items[strTime].push({
+              name: "Item for " + strTime + " #" + j,
+              height: Math.max(50, Math.floor(Math.random() * 150)),
+              day: strTime,
+            });
+          }
+        }
+      }
+
+      const newItems: AgendaSchedule = {};
+      Object.keys(items).forEach((key) => {
+        newItems[key] = items[key];
+      });
+      setItems(newItems);
+    }, 1000);
+  }
+
+  function renderItem(item: AgendaEntry) {
+    return (
+      <TouchableOpacity>
+        <Card>
+          <View>
+            <Text>{item.name}</Text>
+          </View>
+        </Card>
+      </TouchableOpacity>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <Button disabled={!request} title="Login" onPress={() => promptAsync()} />
+      <Agenda
+        items={items}
+        loadItemsForMonth={(month) => {
+          console.log(month);
+          return loadItems(month);
+        }}
+        selected={"2022-08-14"}
+        renderItem={renderItem}
+        // renderItem={this.renderItem}
+        // renderEmptyDate={this.renderEmptyDate}
+        // rowHasChanged={this.rowHasChanged}
+        hideKnob={false}
+        showClosingKnob={true}
+        // markingType={"multi-dot"}
+        // markedDates={{
+        //   "2022-05-08": { textColor: "#43515c" },
+        //   "2022-05-09": { textColor: "#43515c" },
+        //   "2022-05-14": { startingDay: true, endingDay: true, color: "blue" },
+        //   "2022-05-21": { startingDay: true, color: "blue" },
+        //   "2022-05-22": { endingDay: true, color: "gray" },
+        //   "2022-05-24": { startingDay: true, color: "gray" },
+        //   "2022-05-25": { color: "gray" },
+        //   "2022-05-26": { endingDay: true, color: "gray" },
+        // }}
+        // monthFormat={'yyyy'}
+        // theme={{calendarBackground: 'red', agendaKnobColor: 'green'}}
+        //renderDay={(day, item) => (<Text>{day ? day.day: 'item'}</Text>)}
+        // hideExtraDays={false}
+        // showOnlySelectedDayItems
+        // reservationsKeyExtractor={this.reservationsKeyExtractor}
+      />
+      {/* <Button disabled={!request} title="Login" onPress={() => promptAsync()} />
       <Button title="Get List" onPress={() => getCalendarList()} />
-      <StatusBar style="auto" />
+      <StatusBar style="auto" /> */}
     </View>
   );
 }
@@ -151,8 +243,8 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    // backgroundColor: "#fff",
+    // alignItems: "center",
+    // justifyContent: "center",
   },
 });

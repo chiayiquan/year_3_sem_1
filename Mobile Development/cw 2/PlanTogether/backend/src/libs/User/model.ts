@@ -22,6 +22,13 @@ type UserData = Readonly<{
   handler: string;
 }>;
 
+type UserInfo = Readonly<{
+  id: string;
+  name: string;
+  email: string;
+  handler: string;
+}>;
+
 async function insert(userInfo: Schema) {
   return db.into("users").insert({ ...userInfo });
 }
@@ -33,12 +40,15 @@ async function update(
   return db.update(updateInfo).from("users").where(whereClause);
 }
 
-async function checkEmail(email: string): Promise<boolean> {
+async function checkEmailExisted(
+  email: string,
+  loginType: LoginType
+): Promise<boolean> {
   return db
     .select("email")
     .from("users")
-    .where({ email })
-    .then((row) => row.length === 0);
+    .where({ email, loginType })
+    .then((row) => row.length > 0);
 }
 
 async function get(whereClause: Partial<Schema>): Promise<Schema> {
@@ -49,16 +59,20 @@ async function get(whereClause: Partial<Schema>): Promise<Schema> {
     .then((rows) => decode(rows)[0]);
 }
 
-async function getMultiple(ids: string[]): Promise<Schema[]> {
-  return db.select().from("users").whereIn("id", ids).then(decode);
+async function getMultipleUser(ids: string[]): Promise<UserInfo[]> {
+  return db
+    .select(["id", "name", "email", "handler"])
+    .from("users")
+    .whereIn("id", ids)
+    .then(decodeUserInfo);
 }
 
-async function checkHandler(handler: string): Promise<boolean> {
+async function checkHandlerExisted(handler: string): Promise<boolean> {
   return db
     .select("handler")
     .from("users")
-    .where({ handler })
-    .then((row) => row.length === 0);
+    .where("handler", "ilike", handler)
+    .then((row) => row.length > 0);
 }
 
 function toLoginType(loginType: string): LoginType {
@@ -78,10 +92,21 @@ function decode(data: any[]): Schema[] {
       id: JD.string,
       name: JD.string,
       email: JD.string,
-      password: JD.string,
+      password: JD.nullable(JD.string),
       createdAt: JD.number,
       handler: JD.string,
       loginType: JD.string.transform((str) => toLoginType(str)),
+    })
+  ).verify(data);
+}
+
+function decodeUserInfo(data: any[]): UserInfo[] {
+  return JD.array(
+    JD.object({
+      id: JD.string,
+      name: JD.string,
+      email: JD.string,
+      handler: JD.string,
     })
   ).verify(data);
 }
@@ -90,11 +115,12 @@ export {
   Schema,
   UserData,
   LoginType,
+  UserInfo,
   insert,
   update,
-  checkEmail,
+  checkEmailExisted,
   get,
-  getMultiple,
+  getMultipleUser,
   toLoginType,
-  checkHandler,
+  checkHandlerExisted,
 };

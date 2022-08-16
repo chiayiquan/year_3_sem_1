@@ -7,14 +7,14 @@ import {
   TextInput,
 } from "react-native";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
-import * as UserSaga from "../../../redux/sagas/User";
+import * as UserSaga from "../../../redux/User";
 import globalStyle from "../../../style";
 import type { DefaultNavigationProps } from "../../../models/Navigation";
 import Divider from "../../../components/divider";
 import * as Google from "expo-auth-session/providers/google";
 import { SocialIcon } from "@rneui/themed";
 import env from "../../../env";
-import { Prompt } from "expo-auth-session";
+import * as UserRedux from "../../../redux/User";
 
 export default function Login({ navigation }: DefaultNavigationProps) {
   const [form, setForm] = useState({
@@ -28,7 +28,6 @@ export default function Login({ navigation }: DefaultNavigationProps) {
     expoClientId: env.expoClientId,
     iosClientId: env.iosClientId,
     androidClientId: env.androidClientId,
-
     scopes: [
       "openid",
       "https://www.googleapis.com/auth/calendar",
@@ -41,19 +40,13 @@ export default function Login({ navigation }: DefaultNavigationProps) {
   useEffect(() => {
     if (response?.type === "success") {
       const { authentication } = response;
-      console.log(response);
       if (authentication) {
-        (async () => {
-          const getUserReq = await fetch(
-            "https://www.googleapis.com/oauth2/v2/userinfo",
-            {
-              headers: {
-                Authorization: `Bearer ${authentication.accessToken}`,
-              },
-            }
-          );
-          console.log(await getUserReq.json());
-        })();
+        dispatch({
+          type: UserSaga.sagaActions.LOGIN_WITH_GOOGLE.type,
+          payload: {
+            authToken: authentication.accessToken,
+          },
+        });
       }
     }
   }, [response]);
@@ -67,13 +60,23 @@ export default function Login({ navigation }: DefaultNavigationProps) {
   function handleLogin() {
     dispatch({
       type: UserSaga.sagaActions.LOGIN.type,
-      payload: { email: form.email, password: form.password },
+      payload: { email: form.email, password: form.password, authToken: null },
     });
+  }
+
+  useEffect(() => {
+    if (user.registerGoogleData != null) {
+      navigation.navigate("Register");
+    }
+  }, [user.registerGoogleData]);
+
+  function navigateToRegister() {
+    dispatch(UserRedux.setInitialState());
+    navigation.navigate("Register");
   }
 
   return (
     <View style={styles.container}>
-      <Text>Login</Text>
       <TextInput
         style={styles.input}
         onChangeText={(text) => setForm((state) => ({ ...state, email: text }))}
@@ -118,7 +121,7 @@ export default function Login({ navigation }: DefaultNavigationProps) {
         onPress={() => promptAsync()}
       />
 
-      <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+      <TouchableOpacity onPress={navigateToRegister}>
         <Text style={{ color: "blue", paddingTop: 20 }}>
           Sign Up For An Account
         </Text>

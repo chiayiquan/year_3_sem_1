@@ -1,9 +1,7 @@
-type Api = Readonly<{
+export type Api = Readonly<{
   status: number | null;
   resolve: boolean;
 }>;
-
-export type { Api };
 
 export const newApiPromise: Api = {
   status: null,

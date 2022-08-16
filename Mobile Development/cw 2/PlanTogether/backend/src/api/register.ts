@@ -19,6 +19,8 @@ export const errors = {
   INVALID_EMAIL: "Email is invalid.",
   HANDLER_EXIST: "Handler is already being used.",
   INVALID_LOGIN_TYPE: "Does not support this login type.",
+  EMPTY_NAME: "Name cannot be empty.",
+  EMPTY_HANDLER: "Handler cannot be empty.",
 };
 
 type ResponseData = {
@@ -31,13 +33,19 @@ export default async function Register(
 ) {
   const params = await transformData(decodeParams(request.body));
 
+  if (params.name.length < 1)
+    return StandardReponse.fail(response, errors, "EMPTY_NAME");
+
+  if (params.handler.length < 1)
+    return StandardReponse.fail(response, errors, "EMPTY_HANDLER");
+
   if (!Regex.checkValidEmail(params.email))
     return StandardReponse.fail(response, errors, "INVALID_EMAIL");
 
-  if ((await User.checkEmailExist(params.email)) === false)
+  if (await User.checkEmailExist(params.email, params.loginType))
     return StandardReponse.fail(response, errors, "EMAIL_EXIST");
 
-  if ((await User.checkHandlerExist(params.handler)) === false)
+  if (await User.checkHandlerExist(params.handler))
     return StandardReponse.fail(response, errors, "HANDLER_EXIST");
 
   if (params.loginType === "UNKNOWN")

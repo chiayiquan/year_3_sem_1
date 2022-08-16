@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
+import { batch } from "react-redux";
+import { ActivityIndicator } from "react-native";
 import { useAppDispatch, useAppSelector } from "../redux/hook";
 import { NavigationContainer } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as UserRedux from "../redux/sagas/User";
+import * as UserRedux from "../redux/User";
 
 import AuthNav from "./authNav";
 import PublicNav from "./publicNav";
@@ -23,14 +25,23 @@ export default function Navigator() {
       //     jwt: "jwt",
       //   })
       // );
-      await AsyncStorage.removeItem("@user");
+      // await AsyncStorage.removeItem("@user");
     })();
-    dispatch({ type: UserRedux.sagaActions.FETCH_INIT_USER_SAGA });
+    batch(() => {
+      dispatch(UserRedux.setInitialLoadingState(true));
+      dispatch({ type: UserRedux.sagaActions.FETCH_INIT_USER_SAGA });
+    });
   }, []);
 
   return (
     <NavigationContainer>
-      {user.user != null ? <AuthNav /> : <PublicNav />}
+      {user.initialLoading ? (
+        <ActivityIndicator size="large" />
+      ) : user.user != null ? (
+        <AuthNav />
+      ) : (
+        <PublicNav />
+      )}
     </NavigationContainer>
   );
 }

@@ -9,11 +9,24 @@ export default function PublicNav() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
       }}
     >
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Register" component={RegisterScreen} />
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Register"
+        component={RegisterScreen}
+        options={{
+          title: "Register",
+          headerTitleAlign: "center",
+          headerBackVisible: true,
+          headerBackTitleVisible: true,
+        }}
+      />
     </Stack.Navigator>
   );
 }

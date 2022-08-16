@@ -31,11 +31,11 @@ describe("Test for login", function () {
         200
       );
 
-      const reponseData = response.body.data;
-      expect(reponseData.email).toBe(user.email);
-      expect(reponseData.name).toBe(user.name);
-      expect(reponseData.jwt).not.toBeNull();
-      expect(reponseData.id).toBe(user.id);
+      const responseData = response.body.data;
+      expect(responseData.email).toBe(user.email);
+      expect(responseData.name).toBe(user.name);
+      expect(responseData.jwt).not.toBeNull();
+      expect(responseData.id).toBe(user.id);
     });
 
     it("should be able to login with google", async () => {
@@ -53,12 +53,11 @@ describe("Test for login", function () {
         },
         200
       );
-      console.log(response.body);
-      const reponseData = response.body.data;
-      expect(reponseData.email).toBe(user.email);
-      expect(reponseData.name).toBe(user.name);
-      expect(reponseData.jwt).not.toBeNull();
-      expect(reponseData.id).toBe(user.id);
+      const responseData = response.body.data;
+      expect(responseData.email).toBe(user.email);
+      expect(responseData.name).toBe(user.name);
+      expect(responseData.jwt).not.toBeNull();
+      expect(responseData.id).toBe(user.id);
     });
 
     it("should not be able to login with invalid password", async () => {
