@@ -7,6 +7,7 @@ export type User = Readonly<{
   email: string;
   createdAt: number;
   jwt: string;
+  handler: string;
 }>;
 
 export type GoogleRegisterForm = Readonly<{
@@ -15,8 +16,14 @@ export type GoogleRegisterForm = Readonly<{
   authToken: string;
 }>;
 
+export type UserInfo = Readonly<{
+  id: string;
+  name: string;
+  email: string;
+  handler: string;
+}>;
+
 export function decode(data: any): User | Error {
-  console.log("data", data);
   try {
     return JD.object({
       id: JD.string,
@@ -24,6 +31,7 @@ export function decode(data: any): User | Error {
       email: JD.string,
       createdAt: JD.number,
       jwt: JD.string,
+      handler: JD.string,
     }).verify(data);
   } catch (error) {
     return {

@@ -2,8 +2,10 @@ import createSagaMiddleware from "redux-saga";
 import { watcherSaga } from "./rootSaga";
 import { configureStore } from "@reduxjs/toolkit";
 import devToolsEnhancer from "remote-redux-devtools";
+import env from "../env";
 
 import userReducer from "./User";
+import taskReducer from "./Task";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -12,10 +14,11 @@ const middleware = [sagaMiddleware];
 const store = configureStore({
   reducer: {
     user: userReducer,
+    task: taskReducer,
   },
   middleware,
   enhancers: [
-    devToolsEnhancer({ realtime: true, port: 8000, hostname: "192.168.1.10" }),
+    devToolsEnhancer({ realtime: true, port: 8000, hostname: env.hostName }),
   ],
 });
 

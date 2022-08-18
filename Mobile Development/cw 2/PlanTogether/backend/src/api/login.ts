@@ -76,7 +76,7 @@ export default async function Register(
         return StandardReponse.fail(response, errors, "GOOGLE_SESSION_EXPIRED");
 
       const user = await User.getUserByEmail(authData.email, params.loginType);
-      console.log(`user ${user}`);
+
       if (user == null) {
         const googleUserData = await Google.getUserData(params.authToken);
         if (googleUserData == null)
@@ -103,7 +103,7 @@ export default async function Register(
     return StandardReponse.fail(response, errors, "INVALID_ACCOUNT");
 
   const session = await Session.createSession(userData.id, params.authToken);
-  console.log(session);
+
   if (session == null) {
     return StandardReponse.fail(response, errors, "SESSION_ERROR");
   }

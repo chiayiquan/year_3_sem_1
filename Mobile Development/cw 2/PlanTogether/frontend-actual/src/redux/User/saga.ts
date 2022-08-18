@@ -10,6 +10,7 @@ import env from "../../env";
 
 export function* initUser() {
   const user: string | null = yield call(AsyncStorage.getItem, "@user") || null;
+
   const decodedUser = user == null ? null : User.decode(JSON.parse(user));
   yield all([
     put(

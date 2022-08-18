@@ -26,6 +26,8 @@ export default function Navigator() {
       //   })
       // );
       // await AsyncStorage.removeItem("@user");
+      // const storage = await AsyncStorage.getItem("@user");
+      // console.log(storage);
     })();
     batch(() => {
       dispatch(UserRedux.setInitialLoadingState(true));

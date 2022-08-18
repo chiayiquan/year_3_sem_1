@@ -1,5 +1,6 @@
 import { takeLatest } from "redux-saga/effects";
 import * as UserSaga from "./User";
+import * as TaskSaga from "./Task";
 
 export function* watcherSaga() {
   yield takeLatest(
@@ -16,4 +17,6 @@ export function* watcherSaga() {
     UserSaga.sagaActions.REGISTER_WITH_GOOGLE.type,
     UserSaga.registerWithGoogle
   );
+
+  yield takeLatest(TaskSaga.sagaActions.getTaskList, TaskSaga.getTask);
 }

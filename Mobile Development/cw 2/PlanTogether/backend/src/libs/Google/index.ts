@@ -1,3 +1,1 @@
-import GoogleLib from "./lib";
-
-export default GoogleLib;
+export { default } from "./lib";

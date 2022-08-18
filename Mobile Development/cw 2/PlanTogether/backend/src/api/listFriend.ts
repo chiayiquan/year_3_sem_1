@@ -65,7 +65,6 @@ export default async function ListTaskByDateRange(
     requestedDate: friend.requestedDate,
   }));
 
-  console.log(JSON.stringify(transformedData));
   return StandardReponse.success<ResponseData>(response, {
     data: transformedData,
   });

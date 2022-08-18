@@ -32,12 +32,16 @@ describe("Test for listFriend", function () {
         Test.generateFriends(user.id),
       ]);
 
-      console.log(multipleFriend);
-
       const response = await listFriendApi(jwt, 200);
-      expect(response.body.data).toMatchObject(
-        multipleFriend.flatMap((friend) => friend)
-      );
+      const flattenFriend = multipleFriend.flatMap((friend) => friend);
+
+      flattenFriend.forEach((friend) => {
+        expect(
+          response.body.data.filter(
+            (data: { [key: string]: string | number }) => friend.id === data.id
+          )[0]
+        ).toMatchObject(friend);
+      });
     });
   });
 });

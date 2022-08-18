@@ -1,4 +1,4 @@
-import { string, boolean } from "decoders";
+import { string } from "decoders";
 
 export const sagaActions = {
   FETCH_INIT_USER_SAGA: "FETCH_INIT_USER_SAGA",

@@ -1,6 +1,3 @@
-import { TaskData } from "./model";
-import TaskLib from "./lib";
+export { default } from "./lib";
 
-export { TaskData };
-
-export default TaskLib;
+export { TaskData } from "./model";

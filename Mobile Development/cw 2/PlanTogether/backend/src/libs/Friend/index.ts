@@ -1,5 +1,3 @@
-import FriendLib from "./lib";
+export { default } from "./lib";
 
 export { get, Schema, Status } from "./model";
-
-export default FriendLib;

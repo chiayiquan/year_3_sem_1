@@ -4,9 +4,11 @@ import {
   EXPO_CLIENT_ID,
   IOS_CLIENT_ID,
   ANDROID_CLIENT_ID,
+  HOST_NAME,
 } from "@env";
 
 export type Env = Readonly<{
+  hostName: string;
   backendUrl: string;
   expoClientId: string;
   iosClientId: string;
@@ -14,6 +16,7 @@ export type Env = Readonly<{
 }>;
 
 const devEnv: Env = {
+  hostName: HOST_NAME,
   backendUrl: DEV_BACKEND_URL,
   expoClientId: EXPO_CLIENT_ID,
   iosClientId: IOS_CLIENT_ID,
@@ -21,6 +24,7 @@ const devEnv: Env = {
 };
 
 const prodEnv: Env = {
+  hostName: HOST_NAME,
   backendUrl: DEV_BACKEND_URL,
   expoClientId: EXPO_CLIENT_ID,
   iosClientId: IOS_CLIENT_ID,
