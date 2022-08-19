@@ -5,7 +5,8 @@ import * as User from "../User";
 type TaskSchema = Readonly<{
   id: string;
   name: string;
-  datetime: number; // store as epoch
+  datetimeStart: number; // store as epoch
+  datetimeEnd: number;
   location: string | null;
   description: string | null;
   status: TaskStatus;
@@ -18,6 +19,7 @@ type ParticipantSchema = Readonly<{
   taskId: string;
   userId: string;
   status: ParticipantStatus;
+  readNotification: boolean;
 }>;
 
 type TaskData = Readonly<{
@@ -27,6 +29,7 @@ type TaskData = Readonly<{
     taskId: string;
     user: User.UserInfo;
     status: ParticipantStatus;
+    readNotification: boolean;
   }[];
 }>;
 
@@ -42,7 +45,9 @@ function getTaskByDateRange(
     .select("*")
     .from("tasks")
     .whereIn("id", taskIds)
-    .andWhereBetween("datetime", [dateRange[0], dateRange[1]])
+    .andWhereBetween("datetimeStart", [dateRange[0], dateRange[1]])
+    .orWhereIn("id", taskIds)
+    .andWhereBetween("datetimeEnd", [dateRange[0], dateRange[1]])
     .then((data) => decodeTask(data));
 }
 
@@ -67,7 +72,8 @@ function decodeTask(data: any[]): TaskSchema[] {
     JD.object({
       id: JD.string,
       name: JD.string,
-      datetime: JD.number,
+      datetimeStart: JD.number,
+      datetimeEnd: JD.number,
       location: JD.nullable(JD.string),
       description: JD.nullable(JD.string),
       status: JD.string.transform(transformToTaskStatus),
@@ -84,6 +90,7 @@ function decodeParticipant(data: any[]): ParticipantSchema[] {
       taskId: JD.string,
       userId: JD.string,
       status: JD.string.transform(transformToParticipantStatus),
+      readNotification: JD.boolean,
     })
   ).verify(data);
 }

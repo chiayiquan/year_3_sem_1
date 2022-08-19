@@ -36,7 +36,7 @@ export default async function ListTaskByDateRange(
     jwtResult.userId,
     params.dateRange
   );
-
+  console.log(taskList);
   return StandardReponse.success<ResponseData>(response, { data: taskList });
 }
 

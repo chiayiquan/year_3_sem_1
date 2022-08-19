@@ -50,7 +50,7 @@ function convertDateToUnix(date: string | moment.Moment): number {
 }
 
 function convertUnixToDate(unix: number): string {
-  return moment.unix(unix).local().format("YYYY-MM-DD HH:mm:ss");
+  return moment.unix(unix).local().format("YYYY-MM-DD HH:mm");
 }
 
 function getCurrentDate(): string {
@@ -60,6 +60,17 @@ function getCurrentDate(): string {
 function getLastDayOfMonth(date: string | moment.Moment = moment()): number {
   return parseInt(moment(date).endOf("month").format("DD"));
 }
+
+function getNumberOfDaysDifference(
+  firstDate: string,
+  secondDate: string
+): number {
+  return moment(firstDate).diff(moment(secondDate), "days");
+}
+
+function addDaysToDate(date: string, daysToAdd: number): string {
+  return moment(date).add(daysToAdd, "days").format("YYYY-MM-DD");
+}
 export default {
   createDateRange,
   convertDateToUnix,
@@ -68,4 +79,6 @@ export default {
   getFirstDayOfMonthDate,
   getLastDayOfMonthDate,
   getLastDayOfMonth,
+  getNumberOfDaysDifference,
+  addDaysToDate,
 };

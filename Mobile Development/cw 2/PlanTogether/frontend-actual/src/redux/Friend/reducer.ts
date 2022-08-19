@@ -1,10 +1,10 @@
-import * as Task from "../../models/Task";
+import * as Friend from "../../models/Friend";
 import { Api } from "../../models/Api";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { emptyError, Error } from "../../models/Error";
 
-type TaskState = {
-  task: Task.StateData;
+type FriendState = {
+  friend: Friend.Friend[];
   promise: {
     get: Api | null;
   };
@@ -13,26 +13,26 @@ type TaskState = {
   };
 };
 
-const initialState: TaskState = {
-  task: {},
+const initialState: FriendState = {
+  friend: [],
   promise: { get: null },
   error: { get: emptyError },
 };
 
-const taskSlice = createSlice({
-  name: "task",
+const friendSlice = createSlice({
+  name: "friend",
   initialState,
   reducers: {
     setInitialState: (state) => {
       return initialState;
     },
-    setTaskToState: (state, action: PayloadAction<Task.StateData>) => {
-      return { ...state, task: action.payload };
+    setFriendToState: (state, action: PayloadAction<Friend.Friend[]>) => {
+      return { ...state, friend: action.payload };
     },
-    setTaskGetApiPromise: (state, action: PayloadAction<Api>) => {
+    setFriendGetApiPromise: (state, action: PayloadAction<Api>) => {
       return { ...state, promise: { ...state.promise, get: action.payload } };
     },
-    setTaskGetError: (state, action: PayloadAction<Error>) => {
+    setFriendGetError: (state, action: PayloadAction<Error>) => {
       return { ...state, error: { ...state.error, get: action.payload } };
     },
   },
@@ -40,8 +40,8 @@ const taskSlice = createSlice({
 
 export const {
   setInitialState,
-  setTaskToState,
-  setTaskGetApiPromise,
-  setTaskGetError,
-} = taskSlice.actions;
-export default taskSlice.reducer;
+  setFriendToState,
+  setFriendGetApiPromise,
+  setFriendGetError,
+} = friendSlice.actions;
+export default friendSlice.reducer;

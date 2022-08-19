@@ -78,7 +78,8 @@ export async function createTask(
   const task = {
     id: taskId,
     name: "randomTask",
-    datetime: moment().unix(),
+    datetimeStart: moment().unix(),
+    datetimeEnd: moment().add(3, "hours").unix(),
     location: "random-place",
     description: "just some test word",
     status: "confirmed",
@@ -92,6 +93,7 @@ export async function createTask(
     taskId,
     userId: participantUserId,
     status: "accepted",
+    readNotification: false,
   }));
 
   await db.insert(task).into("tasks");
@@ -102,6 +104,7 @@ export async function createTask(
       id: participant.id,
       taskId: participant.taskId,
       status: participant.status,
+      readNotification: participant.readNotification,
       user: users.filter((user) => user.id === participant.userId)[0],
     })),
   };

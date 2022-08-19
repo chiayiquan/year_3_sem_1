@@ -108,7 +108,12 @@ describe("Test for listTaskByDateRange", function () {
 
       const responseData = response.body.data;
 
-      expect(responseData).toMatchObject(tasks);
+      tasks.forEach(({ task }) => {
+        const filteredTask = responseData.filter(
+          (obj: any) => task.id === obj.task.id
+        )[0];
+        expect(responseData).toContainEqual(filteredTask);
+      });
     });
 
     it("should return error when daterange is have 1 value or more than 2", async () => {

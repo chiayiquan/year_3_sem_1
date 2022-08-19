@@ -1,18 +1,7 @@
-import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import * as TaskRedux from "../../../redux/Task";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Button,
-  EventEmitter,
-  TouchableOpacity,
-} from "react-native";
-// import * as Google from "expo-google-app-auth";
-import * as Google from "expo-auth-session/providers/google";
-import { Prompt, TokenResponse } from "expo-auth-session";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import {
   Agenda,
   DateData,
@@ -24,18 +13,16 @@ import DateLib from "../../../utils/date";
 import * as TaskModel from "../../../models/Task";
 import moment from "moment";
 
-function timeToString(time: number): string {
-  const date = new Date(time);
-  return date.toISOString().split("T")[0];
-}
-
-export default function Home() {
+export default function Calendar() {
   const dispatch = useAppDispatch();
   const rangeMonth = 3;
   const user = useAppSelector((state) => state.user);
   const tasks = useAppSelector((state) => state.task);
   const [agendaItems, setAgendaItems] = useState<AgendaSchedule>({});
   const [dateRange, setDateRange] = useState<number[]>([]);
+  const [dateToRender, setDateToRender] = useState<string>(
+    moment().format("YYYY-MM-DD")
+  );
 
   // const [user, setUser] = useState<TokenResponse>();
   // const [code, setCode] = useState<string | null>(null);
@@ -85,17 +72,16 @@ export default function Home() {
   }
   const prevTaskState = usePrevious(tasks.task);
   useEffect(() => {
-    if (prevTaskState !== tasks.task) {
-      const schedules: AgendaSchedule = generateDays(
-        moment().format("YYYY-MM-DD"),
-        rangeMonth
-      );
-      console.log(schedules);
+    if (JSON.stringify(prevTaskState) !== JSON.stringify(tasks.task)) {
+      const schedules: AgendaSchedule = generateDays(dateToRender, rangeMonth);
+
       Object.keys(tasks.task).forEach((key) => {
+        // to prevent error if the generateDays did not generate this key
+        if (!schedules[key]) schedules[key] = [];
         tasks.task[key].forEach((task) => {
           schedules[key].push({
             name: JSON.stringify(task),
-            height: 20,
+            height: 30,
             day: key,
           });
         });
@@ -122,9 +108,7 @@ export default function Home() {
       );
       const numberOfDays: number = DateLib.getLastDayOfMonth(currentDate);
       [...new Array(numberOfDays).keys()].forEach((index) => {
-        schedule[
-          `${moment(currentDate).add(index, "days").format("YYYY-MM-DD")}`
-        ] = [];
+        schedule[DateLib.addDaysToDate(currentDate, index)] = [];
       });
     });
 
@@ -262,6 +246,7 @@ export default function Home() {
         })
       );
       setDateRange([firstDayToFetch, secondDayToFetch]);
+      setDateToRender(date.dateString);
     }
     // setTimeout(() => {
     //   for (let i = -15; i < 10; i++) {
@@ -288,16 +273,23 @@ export default function Home() {
   }
 
   function renderItem(item: AgendaEntry) {
-    const task = TaskModel.decodeStateDataEntry(JSON.parse(item.name));
+    const tasks = TaskModel.decodeStateDataEntry(JSON.parse(item.name));
     // console.log(task);
-    if ("code" in task) {
-      return <View>{task.message}</View>;
+    if ("code" in tasks) {
+      return <View>{tasks.message}</View>;
     }
+
+    const { task, participants } = tasks;
     return (
       <TouchableOpacity>
         <Card>
           <View>
-            <Text>{task.task.name}</Text>
+            <Text style={styles.taskTitle}>{task.name}</Text>
+            <Text>
+              Duration: {task.timeStart} - {task.timeEnd}
+            </Text>
+            <Text>Description: {task.description}</Text>
+            <Text>Participants: {participants.length}</Text>
           </View>
         </Card>
       </TouchableOpacity>
@@ -365,4 +357,9 @@ const styles = StyleSheet.create({
     // alignItems: "center",
     // justifyContent: "center",
   },
+  taskTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  taskBody: {},
 });

@@ -8,7 +8,8 @@ export type TaskStatus = "pending" | "confirmed";
 export type Task = Readonly<{
   id: string;
   name: string;
-  datetime: number; // stored as epoch
+  datetimeStart: number; // stored as epoch
+  datetimeEnd: number; // stored as epoch
   location: string | null;
   description: string | null;
   status: TaskStatus;
@@ -21,6 +22,7 @@ export type Participants = Readonly<{
   taskId: string;
   user: User.UserInfo;
   status: ParticipantStatus;
+  readNotification: boolean;
 }>;
 
 export type ApiData = Readonly<{
@@ -36,7 +38,8 @@ export type StateDataEntry = {
   task: {
     id: string;
     name: string;
-    time: string;
+    timeStart: string;
+    timeEnd: string;
     location: string | null;
     description: string | null;
     status: TaskStatus;
@@ -53,7 +56,8 @@ export function decodeApiResponse(data: any): ApiData[] | Error {
         task: JD.object({
           id: JD.string,
           name: JD.string,
-          datetime: JD.number,
+          datetimeStart: JD.number,
+          datetimeEnd: JD.number,
           location: JD.nullable(JD.string),
           description: JD.nullable(JD.string),
           status: JD.string.transform(transformToTaskStatus),
@@ -71,6 +75,7 @@ export function decodeApiResponse(data: any): ApiData[] | Error {
               handler: JD.string,
             }),
             status: JD.string.transform(transformToParticipantStatus),
+            readNotification: JD.boolean,
           })
         ),
       })
@@ -89,7 +94,8 @@ export function decodeStateDataEntry(data: any): StateDataEntry | Error {
       task: JD.object({
         id: JD.string,
         name: JD.string,
-        time: JD.string,
+        timeStart: JD.string,
+        timeEnd: JD.string,
         location: JD.nullable(JD.string),
         description: JD.nullable(JD.string),
         status: JD.string.transform(transformToTaskStatus),
@@ -107,6 +113,7 @@ export function decodeStateDataEntry(data: any): StateDataEntry | Error {
             handler: JD.string,
           }),
           status: JD.string.transform(transformToParticipantStatus),
+          readNotification: JD.boolean,
         })
       ),
     }).verify(data);

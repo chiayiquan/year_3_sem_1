@@ -18,11 +18,12 @@ async function getUserTaskListByDateRange(
         task: currentValue,
         participants: participants
           .filter(({ taskId }) => taskId === currentValue.id)
-          .map(({ id, taskId, userId, status }) => {
+          .map(({ id, taskId, userId, status, readNotification }) => {
             return {
               id,
               taskId,
               status,
+              readNotification,
               user: users.filter(({ id }) => userId === id)[0],
             };
           }),

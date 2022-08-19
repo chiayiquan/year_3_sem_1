@@ -9,6 +9,7 @@ type Schema = Readonly<{
   to: string;
   status: Status;
   requestedDate: number;
+  // readNotification: boolean;
 }>;
 
 async function get(userId: string): Promise<Schema[]> {
@@ -28,6 +29,7 @@ function decode(data: any[]): Schema[] {
       to: JD.string,
       status: JD.string.transform(toStatus),
       requestedDate: JD.number,
+      // readNotification: JD.boolean,
     })
   ).verify(data);
 }

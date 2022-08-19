@@ -6,6 +6,7 @@ import env from "../env";
 
 import userReducer from "./User";
 import taskReducer from "./Task";
+import friendReducer from "./Friend";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -15,6 +16,7 @@ const store = configureStore({
   reducer: {
     user: userReducer,
     task: taskReducer,
+    friend: friendReducer,
   },
   middleware,
   enhancers: [

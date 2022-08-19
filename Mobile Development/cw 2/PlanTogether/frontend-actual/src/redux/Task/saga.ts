@@ -35,22 +35,75 @@ export function* getTask({
     } else {
       const formattedTaskData = taskData.reduce(
         (accumulator: Task.StateData, currentValue: Task.ApiData) => {
-          const { datetime, createdAt, ...rest } = currentValue.task;
-          const [date, time]: string[] =
-            DateLib.convertUnixToDate(datetime).split(" ");
+          const { datetimeStart, createdAt, datetimeEnd, ...rest } =
+            currentValue.task;
+          const [dateStart, timeStart]: string[] =
+            DateLib.convertUnixToDate(datetimeStart).split(" ");
 
-          if (!accumulator[date]) {
-            accumulator[date] = [];
+          const [dateEnd, timeEnd]: string[] =
+            DateLib.convertUnixToDate(datetimeEnd).split(" ");
+
+          if (!accumulator[dateStart]) {
+            accumulator[dateStart] = [];
           }
 
-          accumulator[date].push({
-            task: {
-              ...rest,
-              time,
-              createdAt: DateLib.convertUnixToDate(createdAt),
-            },
-            participants: currentValue.participants,
-          });
+          if (dateStart === dateEnd)
+            accumulator[dateStart].push({
+              task: {
+                ...rest,
+                timeStart,
+                timeEnd,
+                createdAt: DateLib.convertUnixToDate(createdAt),
+              },
+              participants: currentValue.participants,
+            });
+          else {
+            accumulator[dateStart].push({
+              task: {
+                ...rest,
+                timeStart,
+                timeEnd: "23:59",
+                createdAt: DateLib.convertUnixToDate(createdAt),
+              },
+              participants: currentValue.participants,
+            });
+
+            const numberOfDays = DateLib.getNumberOfDaysDifference(
+              dateEnd,
+              dateStart
+            );
+
+            [...new Array(numberOfDays).keys()].forEach((index) => {
+              const currentDateFromStartDate = DateLib.addDaysToDate(
+                dateStart,
+                index + 1
+              );
+              if (!accumulator[currentDateFromStartDate]) {
+                accumulator[currentDateFromStartDate] = [];
+              }
+
+              if (currentDateFromStartDate === dateEnd)
+                accumulator[currentDateFromStartDate].push({
+                  task: {
+                    ...rest,
+                    timeStart: "00:00",
+                    timeEnd,
+                    createdAt: DateLib.convertUnixToDate(createdAt),
+                  },
+                  participants: currentValue.participants,
+                });
+              else
+                accumulator[currentDateFromStartDate].push({
+                  task: {
+                    ...rest,
+                    timeStart: "00:00",
+                    timeEnd: "23:59",
+                    createdAt: DateLib.convertUnixToDate(createdAt),
+                  },
+                  participants: currentValue.participants,
+                });
+            });
+          }
           return accumulator;
         },
         {}
