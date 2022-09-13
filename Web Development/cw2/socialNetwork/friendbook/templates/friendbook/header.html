@@ -1,3 +1,5 @@
+
+{%load static%}
 {% load bootstrap4 %}
 <!DOCTYPE html>
 <html lang="en">
@@ -13,7 +15,11 @@
     <link
       rel="stylesheet"
       type="text/css"
-      href="/static/css/friendbook.css"
+      href="{% static 'css/friendbook.css' %}"
     />
+    <link rel="stylesheet" href="{% static 'css/icons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/uikit.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
   </head>
   <body>

@@ -1,0 +1,16 @@
+{% extends "./base.html" %} {% block content %}
+
+<form>
+  {% csrf_token %} {{user_form.as_p}}
+  <p>
+    <label for="new_password"> New Password: </label>
+    <input type="password" name="new_password" id="new_password" />
+  </p>
+  <p>
+    <label for="confirm_new_password"> Confirm New Password: </label>
+    <input type="password" name="confirm_new_password" id="new_password" />
+  </p>
+
+  {{profile_form.as_p}}
+</form>
+{% endblock %}

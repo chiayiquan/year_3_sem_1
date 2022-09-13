@@ -1,5 +1,3 @@
 {
-    "python.analysis.extraPaths": [
-        "../cw_env/Lib/site-packages"
-    ]
+  "python.analysis.extraPaths": ["../cw_env/lib/python3.8/site-packages"]
 }

@@ -1,0 +1,28 @@
+{% extends "./base.html" %} {% block content %}
+<div class="flexRowCenter">
+  <form
+    action="/register/"
+    id="user_form"
+    method="post"
+    enctype="multipart/form-data"
+    class="form"
+  >
+    <h1>Register</h1>
+    <br />
+    {% csrf_token %} 
+    {{user_form.as_p}} 
+    {{profile_form.as_p}} 
+    {%for message in messages%}
+    <h5>{{message}}</h5>
+    {%endfor%}
+      {% if registered %}
+    <strong>Thank you for registering</strong>
+    {% else %}
+    <button type="submit">Register</button>
+    <a href="../login">Have an account? Login here</a>
+  
+  </form>
+
+  {% endif %}
+</div>
+{% endblock %}

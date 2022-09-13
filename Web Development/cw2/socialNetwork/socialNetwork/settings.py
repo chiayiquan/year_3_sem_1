@@ -65,6 +65,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'friendbook.context_processors.context_processors.profile_context_processor',
             ],
         },
     },
@@ -127,3 +128,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 DATE_FORMAT = 'j N, Y'
+
+# Base url to serve media files
+MEDIA_URL = '/media/'
+
+# Path where media is stored
+MEDIA_PATH = os.path.join(BASE_DIR, 'media/')
