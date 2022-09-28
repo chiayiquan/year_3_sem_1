@@ -1,16 +1,73 @@
-{% extends "./base.html" %} {% block content %}
+{% extends "./base.html" %} 
 
-<form>
-  {% csrf_token %} {{user_form.as_p}}
-  <p>
-    <label for="new_password"> New Password: </label>
-    <input type="password" name="new_password" id="new_password" />
-  </p>
-  <p>
-    <label for="confirm_new_password"> Confirm New Password: </label>
-    <input type="password" name="confirm_new_password" id="new_password" />
-  </p>
+{% block javascript %}
+<script>
+  (async function submitForm(){
+    const new_password=document.getElementById('new_password').value
+    const confirm_new_password=document.getElementById('confirm_new_password').value
+    if(new_password!==confirm_new_password) {
+      document.getElementById('passwordError').toggle('show')
+      return
+    }
 
-  {{profile_form.as_p}}
-</form>
+    const form = document.getElementById('profileForm')
+    const formData=Object.values(form).reduce((accumulator,currentValue)=>{
+      if(currentValue.name==='confirm_new_password'|| currentValue.name.length===0 ) return accumulator
+      accumulator[currentValue.name]=currentValue.value
+      return accumulator
+    },{})
+
+    const response=fetch('/setting/', {
+    method: 'POST',
+    headers: {
+      "X-CSRFToken": formData.csrfmiddlewaretoken,
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(formData)
+  })
+  return true
+  })()
+</script>
+{% endblock javascript %}
+
+{% block content %}
+
+<div class="settingForm">
+  <form action="../upload-profile-image/" method="POST" enctype="multipart/form-data" class="imageForm" id="imageForm">
+    {% csrf_token %} 
+    <img
+      src="{{ profile.profile_image.url }}"
+      class="header-avatar"
+      alt=""
+    />
+    <input type="file" name="profile_image" id="profile_image" accept="image/png, image/jpg, image/jpeg" onchange="document.getElementById('imageForm').submit()" />
+    {%for message in messages%}
+      {% if 'upload_profile_pic_failed' in message.tags %}
+          <h5>{{message}}</h5>
+      {%elif 'upload_profile_pic_success' in message.tags %}
+          <h5>{{message}}</h5>
+      {%else%}
+          <h5>{{message}}</h5>
+      {%endif%}
+    {%endfor%}
+  </form>
+  <form onSubmit="return submitForm()" method="POST" class="profileForm" id="profileForm">
+    {% csrf_token %} 
+    {{user_form.as_p}}
+    <p>
+      <label for="new_password"> New Password: </label>
+      <input type="password" name="new_password" id="new_password" />
+    </p>
+    <p>
+      <label for="confirm_new_password"> Confirm New Password: </label>
+      <input type="password" name="confirm_new_password" id="confirm_new_password" />
+    </p>
+    <label class='error' id='passwordError'>New password does not match confirm new password.</label>
+    {{profile_form.as_p}}
+
+    <button type="submit">Update Profile</button>
+  </form>
+</div>
+
 {% endblock %}

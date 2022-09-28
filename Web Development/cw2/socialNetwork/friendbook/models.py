@@ -2,24 +2,24 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+gender_choice=(
+            ("M", "Male"),
+            ("F", "Female"),
+            ("O", "Other"),
+        )
 # Create your models here.
-
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     date_of_birth = models.DateField(auto_now=False, auto_now_add=False)
     gender = models.CharField(
         max_length=1,
-        choices=(
-            ("M", "Male"),
-            ("F", "Female"),
-            ("O", "Other"),
-        ),
+        choices=gender_choice,
         null=False,
         blank=False
     )
     profile_image = models.ImageField(
-        upload_to='profile_images', default='default_picture.png')
+        upload_to='./friendbook/static/media/profile_images', default='./friendbook/static/media/default_picture.png')
     online_status = models.BooleanField(default=False)
 
 

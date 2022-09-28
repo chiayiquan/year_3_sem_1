@@ -28,16 +28,25 @@ class UserProfileForm(forms.ModelForm):
 
 
 class UserSettingForm(forms.ModelForm):
-    def __init__(self, userData, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
         super(UserSettingForm, self).__init__(*args, **kwargs)
         self.fields['password'] = forms.CharField(widget=forms.PasswordInput())
         self.fields['password'].label = "Current password"
-        self.fields['email'] = forms.CharField(widget=forms.TextInput(
-            attrs={'disabled': True}), initial=userData.email)
+        self.fields['password'].required = False
+        self.fields['email'] = forms.CharField(widget=forms.TextInput())
         self.fields['first_name'] = forms.CharField(widget=forms.TextInput(
-        ), initial=userData.first_name)
+        ))
         self.fields['last_name'] = forms.CharField(widget=forms.TextInput(
-        ), initial=userData.last_name)
+        ))
+        if user!=None and user:
+            if isinstance(user,User):
+                self.fields['email'].disabled='disabled'
+                self.fields['email'].initial=user.email
+                self.fields['first_name'].initial=user.first_name
+                self.fields['last_name'].initial=user.last_name
+
+
 
     class Meta:
         model = User
@@ -46,19 +55,22 @@ class UserSettingForm(forms.ModelForm):
 
 
 class UserSettingProfileForm(forms.ModelForm):
-    def __init__(self, profileData, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
+        profile = kwargs.pop('profile', None)
         super(UserSettingProfileForm, self).__init__(*args, **kwargs)
         years = range(1930, datetime.now().year)[::-1]
         self.fields['date_of_birth'] = forms.DateField(
-            widget=forms.SelectDateWidget(years=years), initial=profileData.date_of_birth)
-        self.base_fields['gender'].initial = profileData.gender
+            widget=forms.SelectDateWidget(years=years))
+        self.fields['gender']=forms.CharField(max_length=1,widget=forms.Select(choices= gender_choice))
 
-    profile_image = forms.ImageField(widget=forms.FileInput)
+        if profile is not None and profile:
+            if isinstance(profile,Profile):
+                self.fields['date_of_birth'].initial=profile.date_of_birth
+                self.fields['gender'].initial=profile.gender
 
     class Meta:
         model = Profile
         fields = [
             'date_of_birth',
             'gender',
-            'profile_image'
         ]
