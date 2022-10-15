@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import * as TaskRedux from "../../../redux/Task";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Modal } from "react-native";
 import {
   Agenda,
   DateData,
@@ -12,6 +12,8 @@ import { Card } from "@rneui/base";
 import DateLib from "../../../utils/date";
 import * as TaskModel from "../../../models/Task";
 import moment from "moment";
+import { Ionicons } from "@expo/vector-icons";
+import { Task } from "redux-saga";
 
 export default function Calendar() {
   const dispatch = useAppDispatch();
@@ -23,6 +25,10 @@ export default function Calendar() {
   const [dateToRender, setDateToRender] = useState<string>(
     moment().format("YYYY-MM-DD")
   );
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedTask, setSelectedTask] =
+    useState<TaskModel.StateDataEntry | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string>("");
 
   // const [user, setUser] = useState<TokenResponse>();
   // const [code, setCode] = useState<string | null>(null);
@@ -248,28 +254,6 @@ export default function Calendar() {
       setDateRange([firstDayToFetch, secondDayToFetch]);
       setDateToRender(date.dateString);
     }
-    // setTimeout(() => {
-    //   for (let i = -15; i < 10; i++) {
-    //     const time = day.timestamp + i * 24 * 60 * 60 * 1000;
-    //     const strTime = timeToString(time);
-    //     if (!items[strTime]) {
-    //       items[strTime] = [];
-    //       const numItems = Math.floor(Math.random() * 3 + 1);
-    //       for (let j = 0; j < numItems; j++) {
-    //         items[strTime].push({
-    //           name: "Item for " + strTime + " #" + j,
-    //           height: Math.max(50, Math.floor(Math.random() * 150)),
-    //           day: strTime,
-    //         });
-    //       }
-    //     }
-    //   }
-    //   const newItems: AgendaSchedule = {};
-    //   Object.keys(items).forEach((key) => {
-    //     newItems[key] = items[key];
-    //   });
-    //   setItems(newItems);
-    // }, 1000);
   }
 
   function renderItem(item: AgendaEntry) {
@@ -281,7 +265,13 @@ export default function Calendar() {
 
     const { task, participants } = tasks;
     return (
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          setSelectedDate(item.day);
+          setSelectedTask(tasks);
+          setModalVisible(true);
+        }}
+      >
         <Card>
           <View>
             <Text style={styles.taskTitle}>{task.name}</Text>
@@ -293,6 +283,88 @@ export default function Calendar() {
           </View>
         </Card>
       </TouchableOpacity>
+    );
+  }
+
+  function MoreInfoModal({
+    taskObj,
+    date,
+  }: {
+    taskObj: TaskModel.StateDataEntry | null;
+    date: string;
+  }) {
+    if (taskObj == null) {
+      return null;
+    }
+    const { task, participants } = taskObj;
+
+    return (
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginTop: 20,
+            marginBottom: 20,
+            paddingHorizontal: 10,
+          }}
+        >
+          <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+            {date} ({task.timeStart} to {task.timeEnd})
+          </Text>
+          <TouchableOpacity>
+            <Ionicons
+              name="close"
+              size={24}
+              color="black"
+              onPress={() => setModalVisible(false)}
+            />
+          </TouchableOpacity>
+        </View>
+
+        <View style={{ paddingHorizontal: 10, paddingTop: "2%" }}>
+          <Text style={{ fontSize: 18, fontWeight: "bold" }}>Task</Text>
+          <Text style={{ fontSize: 16 }}>{task.name}</Text>
+
+          <Text style={{ fontSize: 18, fontWeight: "bold" }}>Description</Text>
+          <Text style={{ fontSize: 16 }}>{task.description}</Text>
+
+          <Text style={{ fontSize: 18, fontWeight: "bold", paddingTop: "1%" }}>
+            Location:
+          </Text>
+          <Text style={{ fontSize: 16 }}>{task.location}</Text>
+
+          <Text style={{ fontSize: 18, fontWeight: "bold", paddingTop: "1%" }}>
+            Participants:
+          </Text>
+          {participants.map(({ user, status }) => {
+            return (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Text style={{ fontSize: 16 }}>
+                  {user.name}({user.handler})
+                </Text>
+
+                <Text style={{ fontSize: 16 }}>{status}</Text>
+              </View>
+            );
+          })}
+
+          <View>
+            <TouchableOpacity>
+              <Text>Complete</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     );
   }
 
@@ -346,6 +418,8 @@ export default function Calendar() {
       {/* <Button disabled={!request} title="Login" onPress={() => promptAsync()} />
       <Button title="Get List" onPress={() => getCalendarList()} />
       <StatusBar style="auto" /> */}
+
+      <MoreInfoModal taskObj={selectedTask} date={selectedDate} />
     </View>
   );
 }
@@ -362,4 +436,39 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   taskBody: {},
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
 });
