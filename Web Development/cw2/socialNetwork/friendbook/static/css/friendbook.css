@@ -120,9 +120,48 @@ form select {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  position: relative;
   padding: 2px;
 }
 
-.postDiv textarea {
+.postDiv form textarea {
   resize: none;
+}
+
+.fileArea {
+  width: 100%;
+  position: relative;
+  font-size: 18px;
+}
+.fileArea input[type="file"] {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.fileArea .fileDummy {
+  width: 100%;
+  padding: 50px 30px;
+  border: 2px dashed #ccc;
+  background-color: #fff;
+  text-align: center;
+  transition: background 0.3s ease-in-out;
+}
+
+.fileArea:hover .fileDummy {
+  border: 2px dashed #1abc9c;
+}
+.fileArea input[type="file"]:valid + .fileDummy {
+  border-color: #1abc9c;
+}
+.fileArea input[type="file"]:valid + .fileDummy .success {
+  display: inline-block;
+}
+.fileArea input[type="file"]:valid + .fileDummy .default {
+  display: none;
 }
