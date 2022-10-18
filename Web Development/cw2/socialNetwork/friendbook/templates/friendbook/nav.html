@@ -1,24 +1,4 @@
-{% load static%} {% block javascript %}
-<script>
-  {% comment %} function login() {
-    (async () => {
-      const email = document.getElementById("login_email").value;
-      const password = document.getElementById("login_password").value;
-
-      const response = await fetch("api/login/", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await response.json();
-      console.log(data);
-    })();
-  } {% endcomment %}
-</script>
-{% endblock javascript %}
+{% load static%}
 
 <header>
   <div class="header_inner">

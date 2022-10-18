@@ -134,7 +134,7 @@ def user_settings(request):
                                                        })
 
 @login_required(login_url='../login/')
-def uploadProfileImage(request):
+def upload_profile_image(request):
     if request.method == 'POST':
         if request.FILES.get('profile_image')!=None:
             image=request.FILES.get('profile_image')
@@ -152,13 +152,17 @@ def uploadProfileImage(request):
             
 
 @login_required(login_url='login/')
-def upload(request):
+def upload_post(request):
     if request.method == 'POST':
         user = request.user.username
-        image = request.FILES.get('image_upload')
+        images = request.FILES.getlist('images')
         caption = request.POST['caption']
 
-        new_post = Post.objects.create(user=user, image=image, caption=caption)
+        new_post = Post.objects.create(user=user, caption=caption)
+
+        for image in images:
+            post_image=PostImage.objects.create(image=image)
+            new_post.post_image.add(post_image)
         new_post.save()
 
     return redirect('/')

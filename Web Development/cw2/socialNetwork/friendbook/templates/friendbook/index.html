@@ -12,6 +12,7 @@
 {% block content %}
 
 <div class="container m-auto">
+       
 
                 <!--<h1 class="lg:text-2xl text-lg font-extrabold leading-none text-gray-900 tracking-tight mb-5"> Feed </h1>--->
 
@@ -19,6 +20,12 @@
 
                     <!-- left sidebar-->
                     <div class="space-y-5 flex-shrink-0 lg:w-7/12">
+                        <div >
+                            <form class="postDiv">
+                                <textarea rows=7 cols=70></textarea>
+                                <button>Post</button>
+                            </form>
+                        </div>
 
                         <!-- post 1-->
                         <div class="bg-white shadow rounded-md  -mx-2 lg:mx-0">
@@ -644,6 +651,7 @@
         </div>
 
     </div>
+</div>
 
 {% block scripts%}
     <script src="{% static 'js/tippy.all.min.js' %}"></script>  

@@ -115,3 +115,14 @@ form select {
 .error.show {
   display: block;
 }
+
+.postDiv {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 2px;
+}
+
+.postDiv textarea {
+  resize: none;
+}
