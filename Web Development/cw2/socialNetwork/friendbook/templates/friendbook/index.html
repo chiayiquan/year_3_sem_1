@@ -1,11 +1,27 @@
-{% extends "./base.html" %} {% load static %} {% block javascript %}
+{% extends "./base.html" %} 
+{% load static %} 
+{% block javascript %}
 <script>
-  function register() {
-    const email = document.getElementById("id_email").value;
-    const password = document.getElementById("id_password").value;
+  function fileDrag(event) {
+    console.log(event.target,'hide')
+    if(event.target.className === 'postDiv'){
+      console.log(true)
+    const fileArea = document.getElementById("fileArea");
+    fileArea.classList.remove('hidden')
+    }
+   
+  }
+
+  function hideFileArea(event){
+    console.log('hide')
+     if(event.target.className === 'posgDiv'){
+    const fileArea = document.getElementById("fileArea");
+    fileArea.classList.add('hidden')
+     }
   }
 </script>
-{% endblock javascript %} {% block content %}
+{% endblock javascript %} 
+{% block content %}
 
 <div class="container m-auto">
   <!--<h1 class="lg:text-2xl text-lg font-extrabold leading-none text-gray-900 tracking-tight mb-5"> Feed </h1>--->
@@ -13,12 +29,12 @@
   <div class="lg:flex justify-center lg:space-x-10 lg:space-y-0 space-y-5">
     <!-- left sidebar-->
     <div class="space-y-5 flex-shrink-0 lg:w-7/12">
-      <div class="postDiv">
+      <div class="postDiv" ondragenter="fileDrag(event)" ondragleave="hideFileArea(event)">
         <form>
-          <textarea rows="7" cols="70"></textarea>
+          <textarea rows="7" cols="70" ></textarea>
           <button>Post</button>
 
-          <div class="fileArea">
+          <div class="fileArea hidden" id="fileArea">
             <input type="file" multiple accept="image/*" />
             <div class="fileDummy">
               <span>Click here to select a file or drag and drop here</span>
@@ -28,9 +44,9 @@
       </div>
 
       <!-- post 1-->
-      <!-- <div class="bg-white shadow rounded-md -mx-2 lg:mx-0">-->
+      <div class="bg-white shadow rounded-md -mx-2 lg:mx-0">
       <!-- post header-->
-      <!--
+      
         <div class="flex justify-between items-center px-4 py-3">
           <div class="flex flex-1 items-center space-x-4">
             <a href="#">
@@ -244,13 +260,13 @@
             </div>
           </div>
         </div>
-      </div> -->
+      </div>
 
       <!-- post 2-->
 
-      <!-- <div class="bg-white shadow rounded-md -mx-2 lg:mx-0"> -->
+      <div class="bg-white shadow rounded-md -mx-2 lg:mx-0">
       <!-- post header-->
-      <!-- <div class="flex justify-between items-center px-4 py-3">
+      <div class="flex justify-between items-center px-4 py-3">
           <div class="flex flex-1 items-center space-x-4">
             <a href="#">
               <div
@@ -494,10 +510,10 @@
             </div>
           </div>
         </div>
-      </div> -->
+      </div>
 
       <!-- Load more-->
-      <!-- <div
+      <div
         class="flex justify-center mt-6"
         id="toggle"
         uk-toggle="target: #toggle ;animation: uk-animation-fade"
@@ -508,12 +524,12 @@
         >
           Load more ..</a
         >
-      </div> -->
+      </div>
 
       <!-- post 3-->
-      <!-- <div class="bg-white shadow rounded-md -mx-2 lg:mx-0" id="toggle" hidden> -->
+      <div class="bg-white shadow rounded-md -mx-2 lg:mx-0" id="toggle" hidden>
       <!-- post header-->
-      <!-- <div class="flex justify-between items-center px-4 py-3">
+      <div class="flex justify-between items-center px-4 py-3">
           <div class="flex flex-1 items-center space-x-4">
             <a href="#">
               <div
@@ -727,12 +743,12 @@
             </div>
           </div>
         </div>
-      </div> -->
+      </div>
 
       <!-- post 4-->
-      <!-- <div class="bg-white shadow rounded-md -mx-2 lg:mx-0" id="toggle" hidden> -->
+      <div class="bg-white shadow rounded-md -mx-2 lg:mx-0" id="toggle" hidden>
       <!-- post header-->
-      <!-- <div class="flex justify-between items-center px-4 py-3">
+      <div class="flex justify-between items-center px-4 py-3">
           <div class="flex flex-1 items-center space-x-4">
             <a href="#">
               <div
@@ -946,21 +962,21 @@
             </div>
           </div>
         </div>
-      </div> -->
+      </div>
 
       <!-- Load more-->
-      <!-- <div class="flex justify-center mt-6" id="toggle" hidden>
+      <div class="flex justify-center mt-6" id="toggle" hidden>
         <a
           href="#"
           class="bg-white font-semibold my-3 px-6 py-2 rounded-full shadow-md"
         >
           Load more ..</a
         >
-      </div> -->
+      </div>
     </div>
 
     <!-- right sidebar-->
-    <!-- <div class="lg:w-5/12">
+    <div class="lg:w-5/12">
       <div class="bg-white shadow-md rounded-md overflow-hidden">
         <div
           class="bg-gray-50 border-b border-gray-100 flex items-baseline justify-between py-4 px-6"
@@ -1056,7 +1072,7 @@
           </div>
         </div>
       </div>
-    </div> -->
+    </div>
   </div>
 </div>
 
@@ -1067,4 +1083,5 @@
 <script src="{% static 'js/simplebar.js' %}"></script>
 <script src="{% static 'js/custom.js' %}"></script>
 
-{%endblock%} {% endblock %}
+{%endblock%} 
+{% endblock %}
