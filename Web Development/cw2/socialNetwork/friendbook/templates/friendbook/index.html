@@ -23,19 +23,49 @@
     [...ev.dataTransfer.items].forEach((item, i) => {
       // If dropped items aren't files, reject them
       if (item.kind === 'file') {
-        const file = item.getAsFile();
-        console.log(`… file[${i}].name = ${file.name}`);
+        file = item.getAsFile()
+        readImage(file)
+        console.log(`… file[${i}].name = ${file.name}`)
       }
     });
   } else {
     // Use DataTransfer interface to access the file(s)
     [...ev.dataTransfer.files].forEach((file, i) => {
-      console.log(`… file[${i}].name = ${file.name}`);
+      readImage(file)
+      console.log(`… file[${i}].name = ${file.name}`)
     });
   }
 
-   const fileArea = document.getElementById("fileArea");
-    fileArea.classList.add("hidden");
+  const fileArea = document.getElementById("fileArea");
+  fileArea.classList.add("hidden");
+}
+
+const readImage = (file) => {
+   const reader = new FileReader();
+   reader.addEventListener('load', (event) => {
+    uploadedImage = event.target.result 
+    
+    const imageList = document.getElementById('imageList')
+    const img = createImage(file)
+    imageList.appendChild(img)
+   });
+   reader.readAsDataURL(file)
+}
+
+const createImage = (file)=>{
+    const div = document.createElement('div')
+
+    const img = new Image()  
+    img.src = uploadedImage
+
+    const span = document.createElement('span')
+    span.innerText = file.name
+
+    div.id = file.name  
+    div.appendChild(img)
+    div.appendChild(span)
+  
+    return div
 }
 </script>
 {% endblock javascript %}
@@ -65,6 +95,8 @@
             </div>
           </div>
         </form>
+
+        <div id="imageList" class="imageList"></div>
       </div>
 
       <!-- post 1-->
