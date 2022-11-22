@@ -43,30 +43,52 @@
 const readImage = (file) => {
    const reader = new FileReader();
    reader.addEventListener('load', (event) => {
-    uploadedImage = event.target.result 
+    const uploadedImage = event.target.result 
     
     const imageList = document.getElementById('imageList')
-    const img = createImage(file)
+    const img = createImage(file,uploadedImage)
     imageList.appendChild(img)
    });
    reader.readAsDataURL(file)
 }
 
-const createImage = (file)=>{
+const createImage = (file,uploadedImage)=>{
     const div = document.createElement('div')
 
     const img = new Image()  
     img.src = uploadedImage
 
-    const span = document.createElement('span')
-    span.innerText = file.name
+    const nameSpan = document.createElement('span')
+    nameSpan.id = 'title'
+    nameSpan.innerText = file.name
+
+    const deleteSpan = document.createElement('span')
+    deleteSpan.innerHTML = "&#10006;"
+    deleteSpan.classList.add('closeButton')
+    deleteSpan.onclick = ()=>document.getElementById(file.name).remove()
 
     div.id = file.name  
     div.appendChild(img)
-    div.appendChild(span)
+    div.appendChild(nameSpan)
+    div.appendChild(deleteSpan)
   
     return div
 }
+
+const submitPost = (event)=>{
+  event.preventDefault()
+  const images = document.getElementById('imageList')
+  console.log(images.childNodes)
+  
+
+  const imageData = [...images.childNodes].map(image=>
+  [...image.childNodes].map(img=>({
+    name:img.getElementById('title'),data:img.getElementsByTagName('img').getAttribute('src')
+  })))
+  console.log(imageData)
+  return '/'
+}
+
 </script>
 {% endblock javascript %}
 {% block content %}
@@ -86,7 +108,7 @@ const createImage = (file)=>{
       >
         <form>
           <textarea rows="7" cols="70" id="caption"></textarea>
-          <button>Post</button>
+          <button onclick="submitPost(event)">Post</button>
 
           <div class="fileArea hidden" id="fileArea">
             <input type="file" multiple accept="image/*" />

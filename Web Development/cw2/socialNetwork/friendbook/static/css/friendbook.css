@@ -197,3 +197,7 @@ form select {
   height: 6%;
   width: 6%;
 }
+
+.closeButton {
+  cursor: pointer;
+}
