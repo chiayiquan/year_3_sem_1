@@ -1,4 +1,4 @@
-const a = [2, 1, 9]; // change the value
+const a = [2, 4, 7]; // change the value
 
 const {
   calculateNormalization,

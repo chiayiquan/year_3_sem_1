@@ -1,8 +1,11 @@
 const firstMatrices = [
-  [9, 4],
-  [5, 5],
+  [0, 4],
+  [0, 4],
 ]; // change the value
-const secondMatrices = [[7], [6]]; // change the value
+const secondMatrices = [
+  [5, 1],
+  [0, 4],
+]; // change the value
 
 // check if matrices can be multiplied
 if (firstMatrices.some((arr) => arr.length !== secondMatrices.length))

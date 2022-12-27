@@ -1,7 +1,7 @@
 const time = 1; // change accordingly if is provided
 const timeStep = 0.1; // change accordingly if is provided
-const force = [300, 0, 0]; // change accordingly if is provided
-const mass = 50; // change accordingly if is provided
+const force = [0, 0, 30]; // change accordingly if is provided
+const mass = 60; // change accordingly if is provided
 
 let initialVector = [0, 0, 0]; // change accordingly if is provided
 let initialPosition = [0, 0, 0]; // change accordingly if is provided
