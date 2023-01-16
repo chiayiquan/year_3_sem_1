@@ -78,7 +78,15 @@ const createImage = (file,uploadedImage)=>{
 const submitPost = (event)=>{
   event.preventDefault()
   const images = document.getElementById('imageList')
-  console.log(images.childNodes)
+  const imgList=images.getElementsByTagName('img')
+
+  const imageData = []
+
+  for(img of imgList){
+    console.log(img.getAttribute('src'))
+    console.log(img.getAttribute('title'))
+  }
+  
   
 
   const imageData = [...images.childNodes].map(image=>
@@ -86,6 +94,12 @@ const submitPost = (event)=>{
     name:img.getElementById('title'),data:img.getElementsByTagName('img').getAttribute('src')
   })))
   console.log(imageData)
+
+  const formData = new FormData()
+  fetch('/upload-post/',{
+    method:'POST',
+    body: formData
+  })
   return '/'
 }
 
