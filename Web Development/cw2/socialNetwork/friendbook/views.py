@@ -155,9 +155,11 @@ def upload_profile_image(request):
 def upload_post(request):
     if request.method == 'POST':
         user = request.user.username
-        images = request.FILES.getlist('images')
+        images = request.FILES
+        #images = request.FILES.getlist('images')
         caption = request.POST['caption']
-
+        #https://stackoverflow.com/questions/35457777/multipart-form-parse-error-invalid-boundary-in-multipart-none
+        print('caption',caption)
         new_post = Post.objects.create(user=user, caption=caption)
 
         for image in images:
