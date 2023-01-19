@@ -1,4 +1,4 @@
-const a = [9, 0, 1]; // change the array value
+const a = [7, 4, 9]; // change the array value
 
 const { calculateMagnitude } = require("./calculation/calculateMagnitude");
 
