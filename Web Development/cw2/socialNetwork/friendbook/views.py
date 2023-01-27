@@ -1,4 +1,3 @@
-from distutils.command import check
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from .models import *
@@ -9,6 +8,10 @@ from django.contrib.auth.hashers import check_password,make_password
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
+import json
+import base64
+import uuid
+from django.core.files.base import ContentFile
 
 
 def user_login(request):
@@ -152,18 +155,22 @@ def upload_profile_image(request):
             
 
 @login_required(login_url='login/')
+#@parser_classes([MultiPartParser])
 def upload_post(request):
     if request.method == 'POST':
         user = request.user.username
-        images = request.FILES
-        #images = request.FILES.getlist('images')
-        caption = request.POST['caption']
-        #https://stackoverflow.com/questions/35457777/multipart-form-parse-error-invalid-boundary-in-multipart-none
-        print('caption',caption)
+        data=json.loads(request.body)
+        caption = data.get('caption')
+        images = data.get('images')
+
         new_post = Post.objects.create(user=user, caption=caption)
 
         for image in images:
-            post_image=PostImage.objects.create(image=image)
+            format, imgstr = image.split(';base64,') 
+            ext = format.split('/')[-1] 
+
+            file = ContentFile(base64.b64decode(imgstr), name=str(uuid.uuid4()) + ext)
+            post_image=PostImage.objects.create(image=file)
             new_post.post_image.add(post_image)
         new_post.save()
 

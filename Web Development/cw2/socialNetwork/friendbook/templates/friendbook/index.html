@@ -3,7 +3,6 @@
 {% block javascript %}
 <script>
   function fileDrag(event) {
-    console.log("Dragged");
     const fileArea = document.getElementById("fileArea");
     fileArea.classList.remove("hidden");
   }
@@ -14,8 +13,6 @@
   }
 
   function dropHandler(ev) {
-    console.log("File(s) dropped");
-
     // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
 
@@ -31,10 +28,7 @@
       });
     } else {
       // Use DataTransfer interface to access the file(s)
-      [...ev.dataTransfer.files].forEach((file, i) => {
-        readImage(file);
-        console.log(`… file[${i}].name = ${file.name}`);
-      });
+      [...ev.dataTransfer.files].forEach((file, i) => readImage(file));
     }
 
     const fileArea = document.getElementById("fileArea");
@@ -88,20 +82,20 @@
       imageData.push(img.getAttribute("src"));
     }
 
-    const formData = new FormData();
-
-    formData.append('caption',caption);
-    formData.append("images", imageData);
-
     fetch("/upload-post/", {
       method: "POST",
       headers: {
       "X-CSRFToken": document.getElementsByName('csrfmiddlewaretoken')[0].value,
       'Accept': 'application/json',
-      'Content-Type':'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW',
+      'Content-Type':'application/json'
     },
-      body: formData,
-    });
+      body: JSON.stringify({caption, images:imageData}),
+    }).then(data=>{
+      if(data.status===200){
+        document.getElementById('caption').value = "";
+        document.getElementById("imageList").innerHTML = "";
+      }
+    })
     return "/";
   };
 </script>

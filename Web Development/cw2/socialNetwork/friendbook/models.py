@@ -24,7 +24,7 @@ class Profile(models.Model):
     online_status = models.BooleanField(default=False)
 
 class PostImage(models.Model):
-    image = models.ImageField(upload_to='post_image')
+    image = models.ImageField(upload_to='./friendbook/static/media/post_image')
 
 class Post(models.Model):
     id = models.UUIDField(primary_key=True,default=uuid.uuid4)
