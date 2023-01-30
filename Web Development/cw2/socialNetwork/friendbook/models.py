@@ -8,6 +8,8 @@ gender_choice=(
             ("F", "Female"),
             ("O", "Other"),
         )
+
+request_status=('Accepted', 'Declined', 'Pending')
 # Create your models here.
 
 class Profile(models.Model):
@@ -41,3 +43,8 @@ class Post(models.Model):
 class PostImageLink(models.Model):
     post = models.ForeignKey(Post, on_delete=models.DO_NOTHING)
     post_image = models.ForeignKey(PostImage, on_delete=models.DO_NOTHING)
+
+class Friends(models.Model):
+    request_from = models.CharField(max_length=100)
+    request_to = models.CharField(max_length=100)
+    request_status = models.CharField(max_length=10,choices=request_status, null=False, blank=False)
