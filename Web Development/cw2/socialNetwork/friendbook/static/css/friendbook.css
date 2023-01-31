@@ -201,3 +201,30 @@ form select {
 .closeButton {
   cursor: pointer;
 }
+
+.profile {
+  display: flex;
+  flex-direction: row;
+}
+
+.profile .infoHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.profile .profilePicture {
+  width: 200px;
+  border-radius: 50%;
+}
+
+.profile .userInfo {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+}
+
+.profile .name {
+  font-size: 2rem;
+  font-weight: bold;
+}

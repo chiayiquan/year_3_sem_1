@@ -176,3 +176,5 @@ def upload_post(request):
 
     return redirect('/')
 
+def user_profile(request):
+    return render(request, 'friendbook/profile.html')

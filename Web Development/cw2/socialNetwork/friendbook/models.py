@@ -9,7 +9,7 @@ gender_choice=(
             ("O", "Other"),
         )
 
-request_status=('Accepted', 'Declined', 'Pending')
+request_status=( ('Accepted','Accepted'), ('Declined','Declined'), ('Pending','Pending'))
 # Create your models here.
 
 class Profile(models.Model):
