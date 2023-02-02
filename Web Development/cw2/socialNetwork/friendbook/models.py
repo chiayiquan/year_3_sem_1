@@ -45,6 +45,6 @@ class PostImageLink(models.Model):
     post_image = models.ForeignKey(PostImage, on_delete=models.DO_NOTHING)
 
 class Friends(models.Model):
-    request_from = models.CharField(max_length=100)
-    request_to = models.CharField(max_length=100)
+    request_from = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="from_user")
+    request_to = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="to_user")
     request_status = models.CharField(max_length=10,choices=request_status, null=False, blank=False)

@@ -11,6 +11,7 @@ from django.contrib import messages
 import json
 import base64
 import uuid
+import requests
 from django.core.files.base import ContentFile
 
 
@@ -176,5 +177,8 @@ def upload_post(request):
 
     return redirect('/')
 
-def user_profile(request):
-    return render(request, 'friendbook/profile.html')
+def user_profile(request, user):
+    data = requests.get('http://localhost:8000/api/get-post/'+user, params=request.GET)
+    user_profile = User.objects.get(username=user)
+    print(data.json())
+    return render(request, 'friendbook/profile.html',{'posts':data.json(), 'user_profile':user_profile})
