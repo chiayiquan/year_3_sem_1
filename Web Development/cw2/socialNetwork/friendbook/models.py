@@ -30,12 +30,15 @@ class PostImage(models.Model):
 
 class Post(models.Model):
     id = models.UUIDField(primary_key=True,default=uuid.uuid4)
-    user = models.CharField(max_length=100)
+    user = models.ForeignKey(Profile, on_delete=models.DO_NOTHING)
     caption = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
     number_of_likes = models.IntegerField(default=0)
     post_image = models.ManyToManyField(
         PostImage, through='PostImageLink', through_fields=('post', 'post_image'))
+
+    class Meta:
+        ordering = ['-created_at']
 
     def __str__(self):
         return self.user

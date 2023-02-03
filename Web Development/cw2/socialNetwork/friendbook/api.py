@@ -1,8 +1,8 @@
 from .models import *
 from .serializers import *
 # from rest_framework.decorators import api_view
-# from rest_framework.response import Response
-# from rest_framework import status
+from rest_framework.response import Response
+from rest_framework import status
 
 from django.db.models import Q
 from rest_framework import generics
@@ -13,7 +13,7 @@ class retrieve_post(generics.ListAPIView):
     serializer_class = PostSerializer
 
     def get_queryset(self):
-        return Post.objects.filter(user=self.kwargs['user'])
+        return Post.objects.filter(user=Profile.objects.get(user=User.objects.get(username=self.kwargs['email'])))
     
     # user = request.user
 
@@ -23,3 +23,12 @@ class retrieve_post(generics.ListAPIView):
     #     print(friends)
     #     # get post for the current user
     #     #posts = Post.objects.get()
+
+class retrieve_user(mixins.RetrieveModelMixin,generics.GenericAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    lookup_field = 'user__username'
+    lookup_url_kwarg = 'email'
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)

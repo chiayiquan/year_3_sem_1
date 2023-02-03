@@ -159,7 +159,7 @@ def upload_profile_image(request):
 #@parser_classes([MultiPartParser])
 def upload_post(request):
     if request.method == 'POST':
-        user = request.user.username
+        user = Profile.objects.get(user=User.objects.get(username=request.user.username))
         data=json.loads(request.body)
         caption = data.get('caption')
         images = data.get('images')
@@ -170,15 +170,16 @@ def upload_post(request):
             format, imgstr = image.split(';base64,') 
             ext = format.split('/')[-1] 
 
-            file = ContentFile(base64.b64decode(imgstr), name=str(uuid.uuid4()) + ext)
+            file = ContentFile(base64.b64decode(imgstr), name=str(uuid.uuid4()) +"." +ext)
             post_image=PostImage.objects.create(image=file)
             new_post.post_image.add(post_image)
         new_post.save()
 
     return redirect('/')
 
-def user_profile(request, user):
-    data = requests.get('http://localhost:8000/api/get-post/'+user, params=request.GET)
-    user_profile = User.objects.get(username=user)
-    print(data.json())
-    return render(request, 'friendbook/profile.html',{'posts':data.json(), 'user_profile':user_profile})
+def user_profile(request, email):
+    post_result = requests.get('http://localhost:8000/api/get-post/'+email, params=request.GET)
+    user_result = requests.get('http://localhost:8000/api/get-user/'+email, params=request.GET)
+    print(post_result.json())
+
+    return render(request, 'friendbook/profile.html',{'posts':post_result.json(), 'user_profile':user_result.json()})
