@@ -1,13 +1,13 @@
-{% extends "./base.html" %} 
+{% extends "./base.html" %}
 {% load static %} 
-{% load tz %}
-{% load custom_tags %}
+{% load tz %} 
+{% load custom_tags%} 
+
 {% block javascript %}
 <script>
 
 </script>
 {% endblock javascript %} 
-
 {% block content %}
 
 <div class="container">
@@ -19,7 +19,10 @@
         alt=""
       />
       <div class="userInfo">
-        <span class="name">{{user_profile.user.first_name}} {{user_profile.user.last_name}}</span>
+        <span class="name"
+          >{{user_profile.user.first_name}}
+          {{user_profile.user.last_name}}</span
+        >
         <span>Friends</span>
       </div>
     </div>
@@ -49,9 +52,7 @@
               </span>
             </a>
 
-            <span class="time">
-              {{post.created_at|format_date}}
-            </span>
+            <span class="time"> {{post.created_at|format_date}} </span>
           </div>
         </div>
         <div>
@@ -106,7 +107,7 @@
       </div>
 
       <div class="flex justify-between items-center px-2">
-          <span>{{post.caption}}</span>
+        <span>{{post.caption}}</span>
       </div>
 
       <div uk-lightbox>
@@ -114,7 +115,11 @@
         <div class="grid grid-cols-1 gap-2 p-2">
           {% for image in post.post_image %}
           <a href="{{image.image}}">
-            <img src="{{image.image}}" alt="" class="rounded-md w-full h-full"/>
+            <img
+              src="{{image.image}}"
+              alt=""
+              class="rounded-md w-full h-full"
+            />
           </a>
           {% endfor %}
         </div>
@@ -134,12 +139,8 @@
 
         {%else %}
         <div class="grid grid-cols-2 gap-2 p-2">
-          {% for image in post.post_image %}
-          {% if forloop.counter == 1 %}
-          <a
-            href="{{image.image}}"
-            class="col-span-2"
-          >
+          {% for image in post.post_image %} {% if forloop.counter == 1 %}
+          <a href="{{image.image}}" class="col-span-2">
             <img
               src="{{image.image}}"
               alt=""
@@ -157,33 +158,29 @@
           </a>
 
           {% elif forloop.counter == 3 %}
-          <a
-            href="{{image.image}}"
-            class="relative"
-          >
+          <a href="{{image.image}}" class="relative">
             <img
               src="{{image.image}}"
               alt=""
               class="rounded-md w-full h-full"
             />
-            <div
-              class="absolute bg-gray-900 bg-opacity-30 flex justify-center items-center text-white rounded-md inset-0 text-2xl"
-            >
-              + {{post.post_image|length|add:-3}} more
-            </div>
+            {% if post.post_image|length|add:-3 > 0%}
+              <div
+                class="absolute bg-gray-900 bg-opacity-30 flex justify-center items-center text-white rounded-md inset-0 text-2xl"
+              >
+                + {{post.post_image|length|add:-3}} more
+              </div>
+            {% endif %}
           </a>
           {% else %}
-            <a
-            href="{{image.image}}"
-            class="hidden"
-          >
+          <a href="{{image.image}}" class="hidden">
             <img
               src="{{image.image}}"
               alt=""
               class="rounded-md w-full h-full"
             />
           </a>
-          {% endif %}
+          {% endif %} 
           {% endfor %}
         </div>
         {% endif %}
@@ -225,7 +222,6 @@
               </svg>
             </div>
           </a>
-     
         </div>
         <div class="flex items-center space-x-3">
           <div class="flex items-center">
@@ -307,7 +303,7 @@
         </div>
       </div>
     </div>
-    {% endfor %}  
+    {% endfor %}
   </div>
 </div>
 
