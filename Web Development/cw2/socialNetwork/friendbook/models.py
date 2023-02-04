@@ -28,6 +28,14 @@ class Profile(models.Model):
 class PostImage(models.Model):
     image = models.ImageField(upload_to='./friendbook/static/media/post_image')
 
+class PostComment(models.Model):
+    comment = models.CharField(
+        max_length=10000,
+        null=False,
+        blank=False
+    )
+    posted_by = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+
 class Post(models.Model):
     id = models.UUIDField(primary_key=True,default=uuid.uuid4)
     user = models.ForeignKey(Profile, on_delete=models.DO_NOTHING)
@@ -36,12 +44,18 @@ class Post(models.Model):
     number_of_likes = models.IntegerField(default=0)
     post_image = models.ManyToManyField(
         PostImage, through='PostImageLink', through_fields=('post', 'post_image'))
+    comment = models.ManyToManyField(
+        PostComment, through='PostCommentLink', through_fields=('post', 'comment'))
 
     class Meta:
         ordering = ['-created_at']
 
     def __str__(self):
         return self.user
+
+class PostCommentLink(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.DO_NOTHING)
+    comment = models.ForeignKey(PostComment, on_delete=models.DO_NOTHING)
 
 class PostImageLink(models.Model):
     post = models.ForeignKey(Post, on_delete=models.DO_NOTHING)

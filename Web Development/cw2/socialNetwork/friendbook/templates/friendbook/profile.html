@@ -41,15 +41,18 @@
               />
             </div>
           </a>
-          <a href="/profile/{{post.user.user.username}}">
-            <span class="block capitalize font-semibold">
-              {{post.user.user.first_name}} {{post.user.user.last_name}}
-            </span>
-          </a>
 
-          <span>
-            {{post.created_at|format_date|localtime}}
-          </span>
+          <div class="postHeader">
+            <a href="/profile/{{post.user.user.username}}">
+              <span class="block capitalize font-semibold">
+                {{post.user.user.first_name}} {{post.user.user.last_name}}
+              </span>
+            </a>
+
+            <span class="time">
+              {{post.created_at|format_date}}
+            </span>
+          </div>
         </div>
         <div>
           <a href="#">

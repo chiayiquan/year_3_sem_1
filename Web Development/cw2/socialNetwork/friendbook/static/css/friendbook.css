@@ -228,3 +228,13 @@ form select {
   font-size: 2rem;
   font-weight: bold;
 }
+
+.postHeader {
+  display: flex;
+  flex-direction: column;
+}
+
+.postHeader .time {
+  font-size: 0.8rem;
+  color: #666;
+}
