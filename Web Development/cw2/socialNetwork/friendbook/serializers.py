@@ -22,8 +22,32 @@ class PostImageSerializer(serializers.ModelSerializer):
         model = PostImage
         fields = ['image']
 
+class PostCommentSerializer(serializers.ModelSerializer):
+    posted_by = ProfileSerializer()
+    class Meta:
+        model = PostComment
+        fields = ['comment','posted_by']
+
+class PostLikeSerializer(serializers.ModelSerializer):
+    liked_by = ProfileSerializer()
+    class Meta:
+        model = PostLike
+        fields = ['liked','liked_by']
+
+    def create(self):
+        post_id = self.initial_data.get('post_id')
+        username = self.initial_data.get('username')
+        
+        user_profile = Profile.objects.get(user = User.objects.get(username=username))
+        post = Post.objects.get(id=post_id)
+        print(post)
+        return None
+
+
 class PostSerializer(serializers.ModelSerializer):
     post_image = PostImageSerializer(many=True)
+    likes = PostLikeSerializer(many=True)
+    comment = PostCommentSerializer(many=True)
     user=ProfileSerializer()
 
     class Meta:
@@ -32,6 +56,7 @@ class PostSerializer(serializers.ModelSerializer):
                 "user",
                 "caption",
                 "created_at",
-                "number_of_likes",
-                "post_image"]
+                "likes",
+                "post_image",
+                "comment"]
 

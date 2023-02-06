@@ -34,14 +34,20 @@ class PostComment(models.Model):
         null=False,
         blank=False
     )
-    posted_by = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    posted_by = models.ForeignKey(Profile, on_delete=models.DO_NOTHING)
+
+class PostLike(models.Model):
+    liked = models.BooleanField()
+    liked_by = models.ForeignKey(Profile, on_delete=models.DO_NOTHING)
+
 
 class Post(models.Model):
     id = models.UUIDField(primary_key=True,default=uuid.uuid4)
     user = models.ForeignKey(Profile, on_delete=models.DO_NOTHING)
     caption = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
-    number_of_likes = models.IntegerField(default=0)
+    likes = models.ManyToManyField(
+        PostLike, through='PostLikeLink', through_fields=('post', 'likes'))
     post_image = models.ManyToManyField(
         PostImage, through='PostImageLink', through_fields=('post', 'post_image'))
     comment = models.ManyToManyField(
@@ -60,6 +66,10 @@ class PostCommentLink(models.Model):
 class PostImageLink(models.Model):
     post = models.ForeignKey(Post, on_delete=models.DO_NOTHING)
     post_image = models.ForeignKey(PostImage, on_delete=models.DO_NOTHING)
+
+class PostLikeLink(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.DO_NOTHING)
+    likes = models.ForeignKey(PostLike, on_delete=models.DO_NOTHING)
 
 class Friends(models.Model):
     request_from = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="from_user")

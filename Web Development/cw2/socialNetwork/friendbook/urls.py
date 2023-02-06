@@ -13,5 +13,6 @@ urlpatterns = [
     path('upload-profile-image/', views.upload_profile_image, name='uploadProfileImage' ),
 
     path('api/get-post/<str:email>/', api.retrieve_post.as_view(), name='getPost'),
-    path('api/get-user/<str:email>/', api.retrieve_user.as_view(), name='getUser')
+    path('api/get-user/<str:email>/', api.retrieve_user.as_view(), name='getUser'),
+    path('api/like-post/', api.like_post.as_view(), name="likePost"),
 ]

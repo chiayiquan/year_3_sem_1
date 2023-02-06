@@ -32,3 +32,10 @@ class retrieve_user(mixins.RetrieveModelMixin,generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
+
+class like_post(mixins.CreateModelMixin, generics.GenericAPIView):
+    queryset = PostLike.objects.all()
+    serializer_class = PostLikeSerializer
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)

@@ -28,3 +28,11 @@ def format_date(date_string):
         return str((date_time_difference.seconds // 60) % 60) + ' min'
     # any date_time_difference that is below 1 min from current time return just now
     return 'just now'
+
+@register.filter(name='check_if_liked')
+def check_if_liked(liked_list, username):
+    for like in liked_list:
+        print(like)
+        if like.get('liked_by').get('user').get('username')==username:
+            return like.get('liked')
+    return False
