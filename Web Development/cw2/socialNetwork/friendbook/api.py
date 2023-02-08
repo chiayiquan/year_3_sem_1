@@ -90,3 +90,54 @@ def post_comment(request):
     except Exception as err:
         return Response({'error':"Invalid post"}, status=status.HTTP_404_NOT_FOUND)
     
+@api_view(['POST'])
+def send_friend_request(request):
+    try:
+        request_from = Profile.objects.get(user=User.objects.get(username=request.user))
+        request_to = Profile.objects.get(user=User.objects.get(username=request.data.get('friendUsername')))
+
+        request_list = Friends.objects.filter(request_from=request_from, request_to=request_to) | Friends.objects.filter(request_from=request_to, request_to=request_from)
+        
+        if len(request_list)>0:
+            return Response({'data':'Friend request sent'},status=status.HTTP_200_OK)
+        
+        friend_request = Friends.objects.create(request_from=request_from, request_to=request_to, request_status='Pending' )
+        friend_request.save()
+
+        return Response({'data':'Friend request sent'},status=status.HTTP_200_OK)
+
+    except (Profile.DoesNotExist, User.DoesNotExist) as err:
+        return Response({'error':"Invalid user"}, status=status.HTTP_404_NOT_FOUND)   
+
+@api_view(['POST'])
+def reject_friend_request(request):
+    try:
+        request_from = Profile.objects.get(user=User.objects.get(username=request.user))
+        request_to = Profile.objects.get(user=User.objects.get(username=request.data.get('friendUsername')))
+
+        request_list = Friends.objects.filter(request_from=request_from, request_to=request_to) | Friends.objects.filter(request_from=request_to, request_to=request_from)
+
+        request_list.delete()
+
+        return Response({'data':'Friend has been removed'},status=status.HTTP_200_OK)
+
+    except (Profile.DoesNotExist, User.DoesNotExist) as err:
+        return Response({'error':"Invalid user"}, status=status.HTTP_404_NOT_FOUND)   
+
+@api_view(['POST'])
+def accept_friend_request(request):
+    try:
+        request_from = Profile.objects.get(user=User.objects.get(username=request.user))
+        request_to = Profile.objects.get(user=User.objects.get(username=request.data.get('friendUsername')))
+
+        request_list = Friends.objects.filter(request_from=request_from, request_to=request_to) | Friends.objects.filter(request_from=request_to, request_to=request_from)
+
+        if(len(request_list)==0):
+            return Response({'data':'Invalid request'},status=status.HTTP_404_NOT_FOUND)
+
+        request_list.first.request_status = 'Accepted'
+
+        return Response({'data':'Friend has been accepted'},status=status.HTTP_200_OK)
+
+    except (Profile.DoesNotExist, User.DoesNotExist) as err:
+        return Response({'error':"Invalid user"}, status=status.HTTP_404_NOT_FOUND)   

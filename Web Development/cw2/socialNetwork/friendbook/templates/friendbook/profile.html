@@ -39,13 +39,6 @@
     return false;
   }
 
-  /*document.getElementById("comment_box")
-    .addEventListener("keyup", function(event) {
-    event.preventDefault();
-    if (event.keyCode === 13) {
-        const csrfToken = document.getElementById(`${postId}-likeDiv`).querySelector('[name="csrfmiddlewaretoken"]')
-    }
-});*/
 
   function postComment(event,postId){
     if(event.keyCode===13){
@@ -112,9 +105,13 @@
         <span>Friends</span>
       </div>
     </div>
+
+    <div>
+      
+    </div>
   </div>
 
-  <div class="space-y-5 flex-shrink-0 lg:w-7/12">
+  <div class="space-y-5 mt-6 flex-shrink-0 lg:w-7/12">
     {% for post in posts %}
     <div class="bg-white shadow rounded-md -mx-2 lg:mx-0" id="{{post.id}}">
       <!-- post header-->
