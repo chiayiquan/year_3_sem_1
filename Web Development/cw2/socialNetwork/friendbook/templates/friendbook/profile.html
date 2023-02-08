@@ -4,7 +4,93 @@
 {% load custom_tags%} 
 
 {% block javascript %}
+<script src="{% static 'js/post.js' %}"></script>
 <script>
+ function likePost(event, postId){
+    const csrfToken = document.getElementById(`${postId}-likeDiv`).querySelector('[name="csrfmiddlewaretoken"]')
+    fetch('/api/like-post/',{
+      method: 'POST',
+      headers: {
+        "X-CSRFToken": csrfToken.value,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body:JSON.stringify({postId})
+    }).then(response=>response.json()).then(({data})=>{
+      const {liked, likeCount} = data
+      if(liked){
+        const likeBtn = document.getElementById(`${postId}-likeBtn`);
+        const likeText = document.getElementById(`${postId}-likeText`);
+        likeBtn.style.fill = "blue";
+        likeText.style.color = "blue";
+        const numOfLikeText = document.getElementById(`${postId}-likeCount`);
+        numOfLikeText.innerHTML = `Liked by <strong> ${likeCount} </strong>`;
+      }
+      else {
+         const likeBtn = document.getElementById(`${postId}-likeBtn`);
+        const likeText = document.getElementById(`${postId}-likeText`);
+        const numOfLikeText = document.getElementById(`${postId}-likeCount`);
+        likeBtn.style.fill = "black";
+        likeText.style.color = "black";
+        numOfLikeText.innerHTML =
+          likeCount > 0 ? `Liked by <strong> ${likeCount} </strong>` : "";
+      }
+    })
+    return false;
+  }
+
+  /*document.getElementById("comment_box")
+    .addEventListener("keyup", function(event) {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+        const csrfToken = document.getElementById(`${postId}-likeDiv`).querySelector('[name="csrfmiddlewaretoken"]')
+    }
+});*/
+
+  function postComment(event,postId){
+    if(event.keyCode===13){
+      const comment = document.getElementById(`${postId}-commentBox`).value
+
+      if(comment.split('').length>10000){
+        return false;
+      }
+
+      const csrfToken = document.getElementById(`${postId}-writeCommentSection`).querySelector('[name="csrfmiddlewaretoken"]')
+      fetch('/api/comment-post/',{
+      method: 'POST',
+      headers: {
+        "X-CSRFToken": csrfToken.value,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body:JSON.stringify({postId, comment})
+    }).then(response=>response.json()).then(({data})=>{
+        const commentsDiv = document.getElementById(`${postId}-comments`)
+        commentsDiv.innerHTML+=(`<div class="flex items-center">
+            <div class="w-10 h-10 rounded-full relative flex-shrink-0">
+              <img
+                src="${data.user_profile.profile_image}"
+                alt=""
+                class="absolute h-full rounded-full w-full"
+              />
+            </div>
+            <div
+              class="text-gray-700 py-2 px-3 rounded-md bg-gray-100 h-full relative lg:ml-5 ml-2 lg:mr-20"
+            >
+              <span><b>${data.user_profile.user.first_name} ${data.user_profile.user.last_name}</b></span>
+              <p class="leading-6">
+                ${data.comment}
+              </p>
+            </div>
+          </div>`)
+        
+          document.getElementById(`${postId}-commentBox`).value=""
+          document.getElementById(`${postId}-totalComment`).innerHTML = data.num_of_comments
+    })
+
+    }
+  }
+
 
 </script>
 {% endblock javascript %} 
@@ -30,7 +116,7 @@
 
   <div class="space-y-5 flex-shrink-0 lg:w-7/12">
     {% for post in posts %}
-    <div class="bg-white shadow rounded-md -mx-2 lg:mx-0">
+    <div class="bg-white shadow rounded-md -mx-2 lg:mx-0" id="{{post.id}}">
       <!-- post header-->
       <div class="flex justify-between items-center px-2 py-3">
         <div class="flex flex-1 items-center space-x-4">
@@ -187,11 +273,12 @@
       </div>
 
       <div class="py-3 px-4 space-y-3">
-        <div class="flex space-x-4 lg:font-bold">
-          <a href="#" class="flex items-center space-x-2">
+        <div class="flex lg:font-bold">
+          <div class="flex items-center" style="margin-left:-10px;" onclick="likePost(event,'{{post.id}}');" id="{{post.id}}-likeDiv">
+            {% csrf_token %} 
+            <div class="flex items-center p-2 rounded-full text-black buttonCursor">
             {% if user.is_authenticated %}
               {% if post.likes|check_if_liked:user.username %}
-              <div class="flex items-center p-2 rounded-full text-black">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
@@ -199,15 +286,14 @@
                 width="25"
                 height="25"
                 class=""
+                id="{{post.id}}-likeBtn"
               >
                 <path
                   d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"
                 />
               </svg>
-              <span style="color:blue; margin-top:5px; margin-left:2px;">Like</span>
-            </div>
+              <span style="color:blue; margin-top:5px; margin-left:2px;" id="{{post.id}}-likeText">Like</span>
             {% else %}
-            <div class="flex items-center p-2 rounded-full text-black">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
@@ -215,16 +301,15 @@
                 width="25"
                 height="25"
                 class=""
+                id="{{post.id}}-likeBtn"
               >
                 <path
                   d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"
                 />
               </svg>
-              <span style="margin-top:5px; margin-left:2px;">Like</span>
-            </div>
+              <span style="margin-top:5px; margin-left:2px;" id="{{post.id}}-likeText">Like</span>
             {% endif %}
             {% else %}
-            <div class="flex items-center p-2 rounded-full text-black">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
@@ -232,17 +317,19 @@
                 width="25"
                 height="25"
                 class=""
+                id="{{post.id}}-likeBtn"
               >
                 <path
                   d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"
                 />
               </svg>
-              <span style="margin-top:5px; margin-left:2px;">Like</span>
-            </div>
+              <span style="margin-top:5px; margin-left:2px;" id="{{post.id}}-likeText">Like</span>
             {% endif %}
-          </a>
-          <a href="#" class="flex items-center space-x-2">
-            <div class="p-2 rounded-full text-black">
+            </div>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div class="flex p-2 rounded-full text-black" style="margin-top:5px;">
+              <span id="{{post.id}}-totalComment">{{post.comment|length}}</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
@@ -258,17 +345,17 @@
                 />
               </svg>
             </div>
-          </a>
+          </div>
         </div>
         <div class="flex items-center space-x-3">
+          <div id = "{{post.id}}-likeCount">
           {% if post.likes|length > 0%}
-          <div class="">
             Liked by <strong> {{post.likes|length}} </strong>
-          </div>
           {% endif %}
+          </div>
         </div>
 
-        <div class="border-t pt-4 space-y-4">
+        <div class="border-t pt-4 space-y-4" id="{{post.id}}-comments">
           {% for comment in post.comment%}
           <div class="flex items-center">
             <div class="w-10 h-10 rounded-full relative flex-shrink-0">
@@ -290,11 +377,14 @@
           {% endfor %}
         </div>
 
-        <div class="bg-gray-100 bg-gray-100 rounded-full rounded-md relative">
+        <div class="bg-gray-100 bg-gray-100 rounded-full rounded-md relative" id="{{post.id}}-writeCommentSection">
+          {% csrf_token %} 
           <input
             type="text"
             placeholder="post a comment"
             class="bg-transparent max-h-10 shadow-none"
+            id="{{post.id}}-commentBox"
+            onkeyup="postComment(event, '{{post.id}}')"
           />
           <div
             class="absolute bottom-0 flex h-full items-center right-0 right-3 text-xl space-x-2"

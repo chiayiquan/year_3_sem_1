@@ -3,6 +3,7 @@
 {% block javascript %}
 <script>
   (async function submitForm(){
+    console.log('test')
     const new_password=document.getElementById('new_password').value
     const confirm_new_password=document.getElementById('confirm_new_password').value
     if(new_password!==confirm_new_password) {

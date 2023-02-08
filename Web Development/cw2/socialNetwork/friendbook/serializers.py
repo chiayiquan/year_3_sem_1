@@ -40,8 +40,12 @@ class PostLikeSerializer(serializers.ModelSerializer):
         
         user_profile = Profile.objects.get(user = User.objects.get(username=username))
         post = Post.objects.get(id=post_id)
-        print(post)
-        return None
+
+        # create a default like object
+        post_like = next(({**like, "liked":not like.liked} for like in post.like if like.liked_by == user_profile),PostLike.objects.create(liked=True, liked_by = user_profile)) 
+
+        post_like.save()
+        return post_like
 
 
 class PostSerializer(serializers.ModelSerializer):

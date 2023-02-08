@@ -69,7 +69,7 @@ class PostImageLink(models.Model):
 
 class PostLikeLink(models.Model):
     post = models.ForeignKey(Post, on_delete=models.DO_NOTHING)
-    likes = models.ForeignKey(PostLike, on_delete=models.DO_NOTHING)
+    likes = models.ForeignKey(PostLike, on_delete=models.CASCADE)
 
 class Friends(models.Model):
     request_from = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="from_user")

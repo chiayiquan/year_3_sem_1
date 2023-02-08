@@ -59,7 +59,7 @@
 
     const deleteSpan = document.createElement("span");
     deleteSpan.innerHTML = "&#10006;";
-    deleteSpan.classList.add("closeButton");
+    deleteSpan.classList.add("buttonCursor");
     deleteSpan.onclick = () => document.getElementById(file.name).remove();
 
     div.id = file.name;
