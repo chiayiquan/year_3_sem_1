@@ -9,11 +9,11 @@ urlpatterns = [
     path('logout/', views.user_logout, name='logout'),
     path('setting/', views.user_settings, name="setting"),
     path('profile/<str:email>/', views.user_profile, name="profile"),
-    path('upload-post/', views.upload_post, name="upload"),
     path('upload-profile-image/', views.upload_profile_image, name='uploadProfileImage' ),
 
     path('api/get-post/<str:email>/', api.retrieve_post.as_view(), name='getPost'),
     path('api/get-user/<str:email>/', api.retrieve_user.as_view(), name='getUser'),
     path('api/like-post/', api.like_post, name="likePost"),
     path('api/comment-post/',api.post_comment, name="commentPost"),
+    path('api/upload-post/', api.upload_post, name="upload"),
 ]

@@ -6,83 +6,7 @@
 {% block javascript %}
 <script src="{% static 'js/post.js' %}"></script>
 <script>
- function likePost(event, postId){
-    const csrfToken = document.getElementById(`${postId}-likeDiv`).querySelector('[name="csrfmiddlewaretoken"]')
-    fetch('/api/like-post/',{
-      method: 'POST',
-      headers: {
-        "X-CSRFToken": csrfToken.value,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body:JSON.stringify({postId})
-    }).then(response=>response.json()).then(({data})=>{
-      const {liked, likeCount} = data
-      if(liked){
-        const likeBtn = document.getElementById(`${postId}-likeBtn`);
-        const likeText = document.getElementById(`${postId}-likeText`);
-        likeBtn.style.fill = "blue";
-        likeText.style.color = "blue";
-        const numOfLikeText = document.getElementById(`${postId}-likeCount`);
-        numOfLikeText.innerHTML = `Liked by <strong> ${likeCount} </strong>`;
-      }
-      else {
-         const likeBtn = document.getElementById(`${postId}-likeBtn`);
-        const likeText = document.getElementById(`${postId}-likeText`);
-        const numOfLikeText = document.getElementById(`${postId}-likeCount`);
-        likeBtn.style.fill = "black";
-        likeText.style.color = "black";
-        numOfLikeText.innerHTML =
-          likeCount > 0 ? `Liked by <strong> ${likeCount} </strong>` : "";
-      }
-    })
-    return false;
-  }
 
-
-  function postComment(event,postId){
-    if(event.keyCode===13){
-      const comment = document.getElementById(`${postId}-commentBox`).value
-
-      if(comment.split('').length>10000){
-        return false;
-      }
-
-      const csrfToken = document.getElementById(`${postId}-writeCommentSection`).querySelector('[name="csrfmiddlewaretoken"]')
-      fetch('/api/comment-post/',{
-      method: 'POST',
-      headers: {
-        "X-CSRFToken": csrfToken.value,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body:JSON.stringify({postId, comment})
-    }).then(response=>response.json()).then(({data})=>{
-        const commentsDiv = document.getElementById(`${postId}-comments`)
-        commentsDiv.innerHTML+=(`<div class="flex items-center">
-            <div class="w-10 h-10 rounded-full relative flex-shrink-0">
-              <img
-                src="${data.user_profile.profile_image}"
-                alt=""
-                class="absolute h-full rounded-full w-full"
-              />
-            </div>
-            <div
-              class="text-gray-700 py-2 px-3 rounded-md bg-gray-100 h-full relative lg:ml-5 ml-2 lg:mr-20"
-            >
-              <span><b>${data.user_profile.user.first_name} ${data.user_profile.user.last_name}</b></span>
-              <p class="leading-6">
-                ${data.comment}
-              </p>
-            </div>
-          </div>`)
-        
-          document.getElementById(`${postId}-commentBox`).value=""
-          document.getElementById(`${postId}-totalComment`).innerHTML = data.num_of_comments
-    })
-
-    }
-  }
 
 
 </script>
@@ -111,9 +35,35 @@
     </div>
   </div>
 
-  <div class="space-y-5 mt-6 flex-shrink-0 lg:w-7/12">
+<div class="container m-auto">
+     {% if user.username == user_profile.user.username %}
+     <div class="space-y-5 mt-6 flex-shrink-0 lg:w-7/12">
+      <div
+        class="postDiv"
+        ondragenter="fileDrag(event)"
+        ondragleave="hideFileArea(event)"
+        ondragover="fileDrag(event)"
+        ondrop="dropHandler(event)"
+      >
+        <form id="uploadPostForm"> 
+          {% csrf_token %} 
+          <textarea rows="7" cols="70" id="caption"></textarea>
+          <button onclick="submitPost(event)">Post</button>
+
+          <div class="fileArea hidden" id="fileArea">
+            <input type="file" multiple accept="image/*" />
+            <div class="fileDummy">
+              <span>Click here to select a file or drag and drop here</span>
+            </div>
+          </div>
+        </form>
+
+        <div id="imageList" class="imageList"></div>
+      </div>
+      {% endif %}
+    <div id='feeds'>
     {% for post in posts %}
-    <div class="bg-white shadow rounded-md -mx-2 lg:mx-0" id="{{post.id}}">
+    <div class="bg-white shadow rounded-md -mx-2 lg:mx-0 mt-5" id="{{post.id}}">
       <!-- post header-->
       <div class="flex justify-between items-center px-2 py-3">
         <div class="flex flex-1 items-center space-x-4">
@@ -394,6 +344,6 @@
     </div>
     {% endfor %}
   </div>
+  </div>
 </div>
-
 {% endblock %}

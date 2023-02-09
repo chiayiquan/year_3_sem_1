@@ -9,10 +9,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
 import json
-import base64
 import uuid
 import requests
-from django.core.files.base import ContentFile
+
+from django.urls import reverse
 
 
 def user_login(request):
@@ -96,9 +96,6 @@ def user_settings(request):
         post_data=dict(request.POST.items())
         if len(post_data.get('password',''))>0:
                 if check_password(post_data.get('password',''),user.password):
-                    if len(post_data.get('new_password',''))==0:
-                        messages.info(request, 'New password cannot be empty.',extra_tags="user_profile_form_failure")
-                        return redirect('/setting/') 
                     post_data['password']=make_password(post_data.get('new_password',''))
                 else:
                     messages.info(request, 'Current password is incorrect.',extra_tags="user_profile_form_failure")
@@ -155,31 +152,12 @@ def upload_profile_image(request):
             return redirect('/setting/')
             
 
-@login_required(login_url='login/')
-#@parser_classes([MultiPartParser])
-def upload_post(request):
-    if request.method == 'POST':
-        user = Profile.objects.get(user=User.objects.get(username=request.user.username))
-        data=json.loads(request.body)
-        caption = data.get('caption')
-        images = data.get('images')
-
-        new_post = Post.objects.create(user=user, caption=caption)
-
-        for image in images:
-            format, imgstr = image.split(';base64,') 
-            ext = format.split('/')[-1] 
-
-            file = ContentFile(base64.b64decode(imgstr), name=str(uuid.uuid4()) +"." +ext)
-            post_image=PostImage.objects.create(image=file)
-            new_post.post_image.add(post_image)
-        new_post.save()
-
-    return redirect('/')
-
 def user_profile(request, email):
-    post_result = requests.get('http://localhost:8000/api/get-post/'+email, params=request.GET)
-    user_result = requests.get('http://localhost:8000/api/get-user/'+email, params=request.GET)
+    post_url = reverse('getPost', args=[email])
+    post_result = requests.get(request.build_absolute_uri(post_url), params=request.GET)
+
+    user_url = reverse('getUser', args=[email])
+    user_result = requests.get(request.build_absolute_uri(user_url), params=request.GET)
     print(post_result.json())
 
     return render(request, 'friendbook/profile.html',{'posts':post_result.json(), 'user_profile':user_result.json()})
