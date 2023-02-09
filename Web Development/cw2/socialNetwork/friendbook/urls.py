@@ -11,9 +11,12 @@ urlpatterns = [
     path('profile/<str:email>/', views.user_profile, name="profile"),
     path('upload-profile-image/', views.upload_profile_image, name='uploadProfileImage' ),
 
-    path('api/get-post/<str:email>/', api.retrieve_post.as_view(), name='getPost'),
-    path('api/get-user/<str:email>/', api.retrieve_user.as_view(), name='getUser'),
+    path('api/get-post/<str:email>/', api.RetrievePost.as_view(), name='getPost'),
+    path('api/get-user/<str:email>/', api.RetrieveUser.as_view(), name='getUser'),
+    path('api/upload-post/', api.upload_post, name="uploadPost"),
     path('api/like-post/', api.like_post, name="likePost"),
     path('api/comment-post/',api.post_comment, name="commentPost"),
-    path('api/upload-post/', api.upload_post, name="upload"),
+    path('api/sent-friend-request/', api.SendFriendRequest.as_view(), name="sendFriendRequest"),
+    path('api/reject-friend-request/', api.reject_friend_request, name="rejectFriendRequest"),
+    path('api/accept-friend-request/', api.accept_friend_request, name="acceptFriendRequest"),
 ]

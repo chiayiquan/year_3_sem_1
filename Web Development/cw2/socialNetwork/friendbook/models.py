@@ -72,6 +72,6 @@ class PostLikeLink(models.Model):
     likes = models.ForeignKey(PostLike, on_delete=models.CASCADE)
 
 class Friends(models.Model):
-    request_from = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="from_user")
-    request_to = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="to_user")
+    request_from = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, related_name="from_user")
+    request_to = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, related_name="to_user")
     request_status = models.CharField(max_length=10,choices=request_status, null=False, blank=False)

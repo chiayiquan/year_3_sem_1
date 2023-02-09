@@ -64,3 +64,12 @@ class PostSerializer(serializers.ModelSerializer):
                 "post_image",
                 "comment"]
 
+class FriendSerializer(serializers.ModelSerializer):
+    request_from = ProfileSerializer()
+    request_to = ProfileSerializer()
+
+    class Meta:
+        model = Friends
+        fields = ["request_from",
+                "request_to",
+                "request_status"]

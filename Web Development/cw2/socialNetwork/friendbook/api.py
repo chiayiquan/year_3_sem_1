@@ -10,14 +10,13 @@ from rest_framework import generics
 from rest_framework import mixins
 from django.core.exceptions import ObjectDoesNotExist
     
-from rest_framework.authentication import TokenAuthentication
 from django.core.files.base import ContentFile
 import base64
 
 from django.contrib.auth.hashers import check_password,make_password
 from django.contrib.auth import update_session_auth_hash
 
-class retrieve_post(generics.ListAPIView):
+class RetrievePost(generics.ListAPIView):
     serializer_class = PostSerializer
 
     def get_queryset(self):
@@ -32,7 +31,7 @@ class retrieve_post(generics.ListAPIView):
     #     # get post for the current user
     #     #posts = Post.objects.get()
 
-class retrieve_user(mixins.RetrieveModelMixin,generics.GenericAPIView):
+class RetrieveUser(mixins.RetrieveModelMixin,generics.GenericAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     lookup_field = 'user__username'
@@ -40,6 +39,36 @@ class retrieve_user(mixins.RetrieveModelMixin,generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
+
+
+class SendFriendRequest(mixins.CreateModelMixin,generics.GenericAPIView):
+    serializer_class = FriendSerializer
+
+    def post(self, request, *args, **kwargs):
+        request_from = None
+        request_to = None
+        print(request.data.get('friendUsername'), request.user)
+        if request.data.get('friendUsername') == request.user.username:
+            return Response({'error':"You cannot send friend request to yourself"},status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            request_from = Profile.objects.get(user=User.objects.get(username=request.user))
+            request_to = Profile.objects.get(user=User.objects.get(username=request.data.get('friendUsername')))
+
+        except Profile.DoesNotExist:
+            return Response({'error':"Invalid user"}, status=status.HTTP_404_NOT_FOUND) 
+        
+        friend_request, created = Friends.objects.get_or_create(
+            request_from=request_from,
+            request_to=request_to,
+            defaults={'request_status': 'Pending'}
+        )
+        if not created:
+            return Response({'error': "Friend request sent"}, status=status.HTTP_200_OK)
+
+        serializer = self.get_serializer(friend_request)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(['POST'])
 def upload_post(request):
@@ -132,40 +161,31 @@ def post_comment(request):
         return Response({'error':"Invalid post"}, status=status.HTTP_404_NOT_FOUND)  
     except Exception as err:
         return Response({'error':"Invalid post"}, status=status.HTTP_404_NOT_FOUND)
-    
-@api_view(['POST'])
-def send_friend_request(request):
-    try:
-        request_from = Profile.objects.get(user=User.objects.get(username=request.user))
-        request_to = Profile.objects.get(user=User.objects.get(username=request.data.get('friendUsername')))
 
-        request_list = Friends.objects.filter(request_from=request_from, request_to=request_to) | Friends.objects.filter(request_from=request_to, request_to=request_from)
-        
-        if len(request_list)>0:
-            return Response({'data':'Friend request sent'},status=status.HTTP_200_OK)
-        
-        friend_request = Friends.objects.create(request_from=request_from, request_to=request_to, request_status='Pending' )
-        friend_request.save()
 
-        return Response({'data':'Friend request sent'},status=status.HTTP_200_OK)
 
-    except (Profile.DoesNotExist, User.DoesNotExist) as err:
-        return Response({'error':"Invalid user"}, status=status.HTTP_404_NOT_FOUND)   
 
 @api_view(['POST'])
 def reject_friend_request(request):
+    request_from = None
+    request_to = None
+
     try:
         request_from = Profile.objects.get(user=User.objects.get(username=request.user))
         request_to = Profile.objects.get(user=User.objects.get(username=request.data.get('friendUsername')))
 
-        request_list = Friends.objects.filter(request_from=request_from, request_to=request_to) | Friends.objects.filter(request_from=request_to, request_to=request_from)
+    except (Profile.DoesNotExist, User.DoesNotExist) as err:
+        return Response({'error':"Invalid user"}, status=status.HTTP_404_NOT_FOUND) 
 
+    try:
+        request_list = Friends.objects.filter(Q(request_from=request_from, request_to=request_to) | Q(request_from=request_to, request_to=request_from))
         request_list.delete()
 
         return Response({'data':'Friend has been removed'},status=status.HTTP_200_OK)
+    except Friends.DoesNotExist:
+        return Response({'error':"Invalid request"}, status=status.HTTP_404_NOT_FOUND)
 
-    except (Profile.DoesNotExist, User.DoesNotExist) as err:
-        return Response({'error':"Invalid user"}, status=status.HTTP_404_NOT_FOUND)   
+      
 
 @api_view(['POST'])
 def accept_friend_request(request):
@@ -173,14 +193,9 @@ def accept_friend_request(request):
         request_from = Profile.objects.get(user=User.objects.get(username=request.user))
         request_to = Profile.objects.get(user=User.objects.get(username=request.data.get('friendUsername')))
 
-        request_list = Friends.objects.filter(request_from=request_from, request_to=request_to) | Friends.objects.filter(request_from=request_to, request_to=request_from)
-
-        if(len(request_list)==0):
-            return Response({'data':'Invalid request'},status=status.HTTP_404_NOT_FOUND)
-
-        request_list.first.request_status = 'Accepted'
-
-        return Response({'data':'Friend has been accepted'},status=status.HTTP_200_OK)
-
     except (Profile.DoesNotExist, User.DoesNotExist) as err:
-        return Response({'error':"Invalid user"}, status=status.HTTP_404_NOT_FOUND)   
+        return Response({'error':"Invalid user"}, status=status.HTTP_404_NOT_FOUND) 
+
+    Friends.objects.filter(Q(request_from=request_from, request_to=request_to) | Q(request_from=request_to, request_to=request_from)).update(request_status='Accepted')
+
+    return Response({'data':'Friend request has been accepted'},status=status.HTTP_200_OK)

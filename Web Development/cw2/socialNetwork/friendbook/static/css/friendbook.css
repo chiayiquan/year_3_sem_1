@@ -238,3 +238,45 @@ form select {
   font-size: 0.8rem;
   color: #666;
 }
+
+#addFriendButton {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: green;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 200px;
+}
+
+#rejectFriendButton {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 200px;
+}
+
+#acceptFriendButton {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #1e6dffbe;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 200px;
+}
