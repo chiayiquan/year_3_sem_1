@@ -32,7 +32,25 @@ def format_date(date_string):
 @register.filter(name='check_if_liked')
 def check_if_liked(liked_list, username):
     for like in liked_list:
-        print(like)
         if like.get('liked_by').get('user').get('username')==username:
             return like.get('liked')
     return False
+
+@register.filter(name='check_if_friend')
+def check_if_friend(friend_list, username):
+    print(friend_list)
+    for friend in friend_list.get('data'):
+        if friend.get('request_from').get('user').get('username')==username or friend.get('request_to').get('user').get('username')==username:
+            return (friend.get('request_status'), friend.get('request_from').get('user').get('username'))
+    return (False,None)
+
+@register.filter(name='get_accepted_friend')
+def get_accepted_friend(friend_list, username):
+    accepted_friend=[]
+    for friend in friend_list.get('data'):
+        if friend.get('request_status')=='Accepted':
+            if friend.get('request_from').get('user').get('username')==username:
+                accepted_friend.append(friend.get('request_to'))
+            else:
+                accepted_friend.append(friend.get('request_from'))
+    return accepted_friend

@@ -21,7 +21,6 @@ def user_login(request):
         password = request.POST['password']
         try:
             user = User.objects.get(email=email)
-            print(user)
             if check_password(password, user.password):
                 if user.is_active:
                     login(request, user)
@@ -158,6 +157,8 @@ def user_profile(request, email):
 
     user_url = reverse('getUser', args=[email])
     user_result = requests.get(request.build_absolute_uri(user_url), params=request.GET)
-    print(post_result.json())
 
-    return render(request, 'friendbook/profile.html',{'posts':post_result.json(), 'user_profile':user_result.json()})
+    get_friends_url = reverse('getFriendList', args=[email])
+    friend_list = requests.get(request.build_absolute_uri(get_friends_url), params=request.GET)
+
+    return render(request, 'friendbook/profile.html',{'posts':post_result.json(), 'user_profile':user_result.json(), 'friend_list':friend_list.json()})

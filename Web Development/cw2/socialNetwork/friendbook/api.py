@@ -47,7 +47,7 @@ class SendFriendRequest(mixins.CreateModelMixin,generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         request_from = None
         request_to = None
-        print(request.data.get('friendUsername'), request.user)
+
         if request.data.get('friendUsername') == request.user.username:
             return Response({'error':"You cannot send friend request to yourself"},status=status.HTTP_400_BAD_REQUEST)
 
@@ -69,6 +69,21 @@ class SendFriendRequest(mixins.CreateModelMixin,generics.GenericAPIView):
         serializer = self.get_serializer(friend_request)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class RetrieveFriendList(mixins.CreateModelMixin,generics.GenericAPIView):
+    serializer_class = FriendSerializer
+
+    def get(self, request, *args, **kwargs):
+        username=self.kwargs['email']
+        user_profile=None
+        try:
+            user_profile = Profile.objects.get(user = User.objects.get(username=username))
+        except ObjectDoesNotExist:
+            return Response({'error':"Invalid user"}, status=status.HTTP_404_NOT_FOUND)
+        
+        friend_list = Friends.objects.filter(Q(request_from=user_profile) | Q(request_to=user_profile))
+        return Response({'data':FriendSerializer(friend_list,many=True).data},status=status.HTTP_200_OK)
+    
 
 @api_view(['POST'])
 def upload_post(request):
@@ -140,7 +155,6 @@ def post_comment(request):
     comment = request.data.get('comment')
     user_profile = None
 
-    print(post_id)
     try: 
         user_profile = Profile.objects.get(user = User.objects.get(username=username))
     except ObjectDoesNotExist:
@@ -190,12 +204,16 @@ def reject_friend_request(request):
 @api_view(['POST'])
 def accept_friend_request(request):
     try:
-        request_from = Profile.objects.get(user=User.objects.get(username=request.user))
-        request_to = Profile.objects.get(user=User.objects.get(username=request.data.get('friendUsername')))
+        first_user = Profile.objects.get(user=User.objects.get(username=request.user))
+        second_user = Profile.objects.get(user=User.objects.get(username=request.data.get('friendUsername')))
 
     except (Profile.DoesNotExist, User.DoesNotExist) as err:
         return Response({'error':"Invalid user"}, status=status.HTTP_404_NOT_FOUND) 
 
-    Friends.objects.filter(Q(request_from=request_from, request_to=request_to) | Q(request_from=request_to, request_to=request_from)).update(request_status='Accepted')
+    friend_request = Friends.objects.filter(Q(request_from=first_user, request_to=second_user) | Q(request_from=second_user, request_to=first_user))
 
+    if friend_request.first().request_from.user == request.user:
+        return Response({'error':'You cannot accept request that you sent'}, status=status.HTTP_400_FORBIDDEN)
+
+    friend_request.update(request_status='Accepted')
     return Response({'data':'Friend request has been accepted'},status=status.HTTP_200_OK)

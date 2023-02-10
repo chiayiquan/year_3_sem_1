@@ -204,7 +204,7 @@ form select {
 
 .profile {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 }
 
 .profile .infoHeader {
