@@ -225,6 +225,14 @@ window.onclick = function(event) {
       </div>
     </div>
       {% endif %}
+
+    <!-- No Post Feeds-->
+    {% if posts|length == 0 %}
+      <div class="flex justify-center items-center">
+        <span style="color:#666;">No New Posts</span>
+      </div>
+    {% endif %}
+    
     <div id='feeds'>
     {% for post in posts %}
     <div class="bg-white shadow rounded-md -mx-2 lg:mx-0 mt-5" id="{{post.id}}">
@@ -520,7 +528,7 @@ window.onclick = function(event) {
     </div>
 
     {% for friend in friends %}
-    <div class="flex items-center">
+    <div class="flex items-center" style="padding:50px;">
       <div class="w-20 h-20 rounded-full relative flex-shrink-0 mr-1">
         <a href="/profile/{{friend.user.username}}">
           <img

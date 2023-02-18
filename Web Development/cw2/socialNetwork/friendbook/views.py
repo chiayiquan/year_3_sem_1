@@ -8,8 +8,6 @@ from django.contrib.auth.hashers import check_password,make_password
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
-import json
-import uuid
 import requests
 
 from django.urls import reverse
@@ -77,7 +75,10 @@ def user_register(request):
 
 @login_required(login_url='login/')
 def index(request):
-    return render(request, 'friendbook/index.html')
+    headers = {'Authorization': request.user.username}
+    post_url = reverse('getPost', args=["all"])
+    post_result = requests.get(request.build_absolute_uri(post_url),headers=headers, params=request.GET)
+    return render(request, 'friendbook/index.html',{'posts':post_result.json()})
 
 
 @login_required(login_url='login/')

@@ -13,23 +13,44 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.base import ContentFile
 import base64
 
-from django.contrib.auth.hashers import check_password,make_password
-from django.contrib.auth import update_session_auth_hash
-
 class RetrievePost(generics.ListAPIView):
     serializer_class = PostSerializer
 
     def get_queryset(self):
-        return Post.objects.filter(user=Profile.objects.get(user=User.objects.get(username=self.kwargs['email'])))
-    
-    # user = request.user
+        if self.kwargs['email'] == "all":
+            # if the request does not have the username, it should be an authentication token however,
+            # due to lack of time i did not research how to use authentication token 
+            if self.request.headers.get('Authorization') == None:
+                return Response({'error':'Invalid session'},status=status.HTTP_400_BAD_REQUEST)
+            
+            user = None
 
-    # if user.is_authenticated:
-    #     # get list of friends of the current user
-    #     friends = Friends.objects.filter(Q(request_from = user.id) | Q(request_to=user.id), requset_status='Accepted')
-    #     print(friends)
-    #     # get post for the current user
-    #     #posts = Post.objects.get()
+            try:
+                # get user object
+                user = Profile.objects.get(user=User.objects.get(username=self.request.headers.get('Authorization')))
+            except Profile.DoesNotExist:
+                return Response({'error':"Invalid user"}, status=status.HTTP_404_NOT_FOUND) 
+
+            # get friends that have accepted user request
+            friends = Friends.objects.filter(Q(request_from=user, request_status='Accepted') | Q(request_to=user, request_status='Accepted'))
+            
+            # get all the user object of friends
+            friend_list = [friend.request_to if friend.request_from==user else friend.request_from for friend in friends ]
+
+            # append current user object to list
+            friend_list.append(user)
+            
+            return Post.objects.filter(user__in=friend_list)
+        else:
+            return Post.objects.filter(user=Profile.objects.get(user=User.objects.get(username=self.kwargs['email'])))
+
+class SearchUser(generics.ListAPIView):
+    serializer_class = ProfileSerializer
+
+    def get_queryset(self):
+        search_value = self.kwargs['searchValue']
+        users = User.objects.filter(Q(first_name__icontains = search_value) | Q(last_name__icontains=search_value))
+        return Profile.objects.filter(user__in=users)
 
 class RetrieveUser(mixins.RetrieveModelMixin,generics.GenericAPIView):
     queryset = Profile.objects.all()

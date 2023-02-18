@@ -74,6 +74,8 @@ form select {
   flex-direction: row;
   justify-content: flex-start;
   margin-top: 50px;
+  width: 70%;
+  max-width: 1500px;
 }
 
 .imageForm {
@@ -85,7 +87,7 @@ form select {
 
 .imageForm img {
   border-radius: 100%;
-  max-width: 300px;
+  max-width: 200px;
   width: 100%;
 }
 
@@ -279,4 +281,89 @@ form select {
   cursor: pointer;
   width: 100%;
   max-width: 200px;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+  max-height: 600px;
+  height: 100%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.search-results {
+  position: absolute;
+  top: 4rem;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  z-index: 1;
+  padding: 1rem;
+  display: none;
+}
+
+.searchEntry:hover {
+  color: #fff;
+  background-color: #808080;
+  cursor: pointer;
+}
+
+.right-sidebar {
+  position: fixed;
+  top: 66px;
+  right: 0;
+  width: 300px;
+  height: 100%;
+  background-color: #f5f5f5;
+  border-left: 1px solid #ccc;
+}
+
+.friend-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.friend-list li {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.friend-list li:last-child {
+  border-bottom: none;
 }

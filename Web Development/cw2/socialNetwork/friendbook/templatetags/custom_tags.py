@@ -38,7 +38,6 @@ def check_if_liked(liked_list, username):
 
 @register.filter(name='check_if_friend')
 def check_if_friend(friend_list, username):
-    print(friend_list)
     for friend in friend_list.get('data'):
         if friend.get('request_from').get('user').get('username')==username or friend.get('request_to').get('user').get('username')==username:
             return (friend.get('request_status'), friend.get('request_from').get('user').get('username'))

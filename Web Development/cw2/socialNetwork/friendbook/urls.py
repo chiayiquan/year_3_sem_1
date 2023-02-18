@@ -19,5 +19,6 @@ urlpatterns = [
     path('api/sent-friend-request/', api.SendFriendRequest.as_view(), name="sendFriendRequest"),
     path('api/reject-friend-request/', api.reject_friend_request, name="rejectFriendRequest"),
     path('api/accept-friend-request/', api.accept_friend_request, name="acceptFriendRequest"),
-    path('api/get-friend-list/<str:email>', api.RetrieveFriendList.as_view(), name='getFriendList')
+    path('api/get-friend-list/<str:email>', api.RetrieveFriendList.as_view(), name='getFriendList'),
+    path('api/search-user/<str:searchValue>', api.SearchUser.as_view(), name='searchUser'),  
 ]

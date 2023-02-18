@@ -1,5 +1,53 @@
 {% load static%}
 
+{% block javascript %}
+  <script>
+
+
+    function searchUser(){
+      const searchInput = document.getElementById('searchInput');
+      let searchResult = document.getElementsByClassName('search-results')[0]
+      if(searchInput.value.trim().length == 0) {
+        console.log(searchResult)
+        searchResult.innerHTML = ''
+        searchResult.style.display = 'none';
+        return
+      } 
+      fetch('/api/search-user/' + searchInput.value).then(response => 
+        response.json()
+      ).then((data)=>{
+        if(data.length>0){
+          let htmlResult=''
+          data.forEach(({profile_image,user})=>{
+            htmlResult += `
+            <a href="/profile/${user.username}">
+              <div class="flex items-center searchEntry" style="padding:5px;">
+                <div class="w-10 h-10 rounded-full relative flex-shrink-0 mr-1">
+                  <img
+                    src="${profile_image}"
+                    alt=""
+                    class="absolute h-full rounded-full w-full"
+                  />
+                </div>
+                <span class="text-m ml-4 font-bold">
+                  ${user.first_name} ${user.last_name}
+                </span>
+              </div>
+            </a>  
+            `
+        })
+          searchResult.innerHTML = htmlResult
+          searchResult.style.display = 'block';
+        }
+        else{
+          searchResult.innerHTML = ''
+          searchResult.style.display = 'none';
+        }
+      
+      })
+    }
+  </script>
+{% endblock%}
 <header>
   <div class="header_inner">
     <div class="left-side">
@@ -16,7 +64,7 @@
 
       {% if user.is_authenticated %}
       <div class="header_search">
-        <input type="text" placeholder="Search for username.." />
+        <input type="text" placeholder="Search for name.." id="searchInput" oninput="searchUser()" />
         <div class="icon-search">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -32,7 +80,9 @@
             />
           </svg>
         </div>
+        <div class="search-results"></div>
       </div>
+
     </div>
     <div class="right-side lg:pr-4">
       <!-- Notification -->
@@ -143,6 +193,7 @@
         class="header_dropdown profile_dropdown border-t"
       >
         <ul>
+          <li><a href="/profile/{{user.username}}"> Account Profile </a></li>
           <li><a href="/setting"> Account setting </a></li>
           <li><a href="/logout"> Log Out</a></li>
         </ul>

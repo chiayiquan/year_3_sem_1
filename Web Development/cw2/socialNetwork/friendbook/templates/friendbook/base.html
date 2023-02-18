@@ -1,5 +1,6 @@
 {% include "./header.html" %} 
 {% include "./nav.html" %}
+{% load custom_tags %}
 
 <div class="container-fluid">
   <div class="row">
@@ -7,6 +8,24 @@
       {% block content %}Didn't render content{% endblock %}
     </div>
   </div>
+    <div class="right-sidebar">
+  <ul class="friend-list">
+    {% for friend in friends|get_accepted_friend:user.username %}
+      <div class="flex items-center searchEntry" style="padding:5px;">
+        <div class="w-10 h-10 rounded-full relative flex-shrink-0 mr-1">
+          <img
+            src="{{friend.profile_image}}"
+            alt=""
+            class="absolute h-full rounded-full w-full"
+          />
+        </div>
+        <span class="text-m ml-4 font-bold">
+          {{friend.user.first_name}} {{friend.user.last_name}}
+        </span>
+      </div> 
+    {% endfor %}
+  </ul>
+</div>
 </div>
 
 {% block javascript %} 
