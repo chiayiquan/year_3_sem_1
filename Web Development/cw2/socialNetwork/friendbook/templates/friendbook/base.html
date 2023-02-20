@@ -4,11 +4,11 @@
 
 <div class="container-fluid">
   <div class="row">
-    <div class="col-10 content">
+    <div class="col-9 content">
       {% block content %}Didn't render content{% endblock %}
     </div>
-  </div>
-  <div class="right-sidebar col-2">
+
+  <div class="right-sidebar col-3">
     <ul class="friend-list">
     {% if friends|length > 0%}
       {% for friend in friends|get_accepted_friend:user.username %}
@@ -28,6 +28,8 @@
     {% endif %}
     </ul>
   </div>
+
+ 
 </div>
 
 {% block javascript %} 

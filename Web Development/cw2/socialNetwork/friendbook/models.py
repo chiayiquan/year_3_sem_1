@@ -75,3 +75,25 @@ class Friends(models.Model):
     request_from = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, related_name="from_user")
     request_to = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, related_name="to_user")
     request_status = models.CharField(max_length=10,choices=request_status, null=False, blank=False)
+
+class ChatMessage(models.Model):
+    message = models.CharField(
+        max_length=10000,
+        null=False,
+        blank=False
+    )
+    message_from = models.ForeignKey(Profile, on_delete=models.DO_NOTHING)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        ordering = ['created_at']
+
+
+class Chats(models.Model):
+    first_user = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, related_name="first_user")
+    second_user = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, related_name="second_user")
+    chat_messages = models.ManyToManyField(ChatMessage, through='ChatMessageLink', through_fields=('chat', 'message'))
+
+class ChatMessageLink(models.Model):
+    chat = models.ForeignKey(Chats, on_delete=models.DO_NOTHING)
+    message = models.ForeignKey(ChatMessage, on_delete=models.DO_NOTHING)
