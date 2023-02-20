@@ -198,11 +198,11 @@ window.onclick = function(event) {
 
 
   <!-- post feeds -->
-  <div class="container m-auto">
+  <div class="container m-auto flex flex-col items-center">
      {% if user.username == user_profile.user.username %}
-     <div class="space-y-5 mt-6 flex-shrink-0 lg:w-9/12">
+     <div class="mt-6 flex-shrink-0 col-12">
       <div
-        class="postDiv"
+        class="postDiv space-y-5"
         ondragenter="fileDrag(event)"
         ondragleave="hideFileArea(event)"
         ondragover="fileDrag(event)"

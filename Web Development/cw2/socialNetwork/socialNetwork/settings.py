@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'friendbook.apps.FriendbookConfig',
     'rest_framework',
     'bootstrap4',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
