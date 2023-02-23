@@ -1,10 +1,10 @@
 const time = 1; // change accordingly if is provided
 const timeStep = 0.1; // change accordingly if is provided
-const force = [0, 0, 30]; // change accordingly if is provided
-const mass = 60; // change accordingly if is provided
+const force = [-9.81, -9.81, -9.81]; // change accordingly if is provided
+const mass = 10; // change accordingly if is provided
 
 let initialVector = [0, 0, 0]; // change accordingly if is provided
-let initialPosition = [0, 0, 0]; // change accordingly if is provided
+let initialPosition = [0, 100, 0]; // change accordingly if is provided
 const givenAcceleration = [0, 0, 0]; // change this if acceleration is provided
 
 const calculatedAcceleration = force.map((f) =>
