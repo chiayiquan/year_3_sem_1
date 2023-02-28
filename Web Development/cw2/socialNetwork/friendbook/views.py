@@ -163,3 +163,7 @@ def user_profile(request, email):
     friend_list = requests.get(request.build_absolute_uri(get_friends_url), params=request.GET)
 
     return render(request, 'friendbook/profile.html',{'posts':post_result.json(), 'user_profile':user_result.json(), 'friend_list':friend_list.json()})
+
+def chat(request, email=None):
+    if email == None:
+        return render(request, 'friendbook/chat.html')

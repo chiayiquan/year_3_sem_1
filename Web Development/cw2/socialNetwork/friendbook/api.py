@@ -238,3 +238,21 @@ def accept_friend_request(request):
 
     friend_request.update(request_status='Accepted')
     return Response({'data':'Friend request has been accepted'},status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def get_chat(request,chatUser):
+    try:
+        first_user = Profile.objects.get(user=User.objects.get(username=request.user))
+        second_user = Profile.objects.get(user=User.objects.get(username=chatUser))
+
+    except (Profile.DoesNotExist, User.DoesNotExist) as err:
+        return Response({'error':"Invalid user"}, status=status.HTTP_404_NOT_FOUND) 
+    print(first_user)
+    chat = Chats.objects.filter(Q(first_user=first_user, second_user=second_user) | Q(first_user=second_user, second_user=first_user))
+
+    if len(chat) == 0:
+        chat_obj = Chats.objects.create(first_user=first_user, second_user=second_user)
+        chat_obj.save()
+        return Response({'data':{'chat':ChatSerializer(chat_obj).data}}, status=status.HTTP_200_OK)
+        
+    return Response({'data':{'chat':ChatSerializer(chat.first()).data}}, status=status.HTTP_200_OK)

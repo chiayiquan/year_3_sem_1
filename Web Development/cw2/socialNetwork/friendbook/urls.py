@@ -9,7 +9,9 @@ urlpatterns = [
     path('logout/', views.user_logout, name='logout'),
     path('setting/', views.user_settings, name="setting"),
     path('profile/<str:email>/', views.user_profile, name="profile"),
-    path('upload-profile-image/', views.upload_profile_image, name='uploadProfileImage' ),
+    path('upload-profile-image/', views.upload_profile_image, name='uploadProfileImage'),
+    path('chat/', views.chat, name='chat'),
+    path('chat/<str:email>', views.chat, name='chat'),
 
     path('api/get-post/<str:email>/', api.RetrievePost.as_view(), name='getPost'),
     path('api/get-user/<str:email>/', api.RetrieveUser.as_view(), name='getUser'),
@@ -21,4 +23,5 @@ urlpatterns = [
     path('api/accept-friend-request/', api.accept_friend_request, name="acceptFriendRequest"),
     path('api/get-friend-list/<str:email>', api.RetrieveFriendList.as_view(), name='getFriendList'),
     path('api/search-user/<str:searchValue>', api.SearchUser.as_view(), name='searchUser'),  
+    path('api/get-chat/<str:chatUser>', api.get_chat, name="getChat")
 ]

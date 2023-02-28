@@ -1826,7 +1826,7 @@ header .uk-dropdown {
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 720px) {
   header {
     min-height: 67px !important;
     height: auto;

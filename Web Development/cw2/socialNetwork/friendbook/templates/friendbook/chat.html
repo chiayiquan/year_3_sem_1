@@ -1,0 +1,89 @@
+{% extends "./base.html" %}
+{% load static %} 
+{% load tz %} 
+{% load custom_tags%} 
+
+{% block javascript %}
+<script>
+
+    let chatSocket = null;
+
+    function setActiveFriend(element,friendEmail) {
+        getChat(friendEmail)
+
+        // remove the active class from all friends
+        const friends = document.querySelectorAll('#friendList');
+
+        for (let index = 0; index < friends.length; index++) {
+            friends[index].classList.remove('active');
+        }
+        
+        // add the active class to the selected friend
+        element.classList.add('active');
+    }
+    
+    function getChat(email){
+        fetch('/api/get-chat/'+email).then(response => 
+            response.json()
+        ).then(({data})=>{
+            if(data){
+                const roomName = data.chat.room_id
+                chatSocket = new WebSocket(`ws://${window.location.host}/ws/chat/${roomName}/`);
+            }
+            console.log(data)
+        })
+    }
+</script>
+{% endblock javascript %} 
+{% block content %}
+
+<div class="mt-4 ml-2 h-full">
+    <div class="flex h-full">
+		<!-- Friends list -->
+		<div class="chatFriendContainer">
+			<h2 class="text-lg font-medium mb-4">Friends</h2>
+			{% for friend in friends|get_accepted_friend:user.username %}
+            <div class="flex items-center searchEntry" id="friendList" style="padding:5px;" onclick="setActiveFriend(this,'{{friend.user.username}}')">
+                <div class="w-10 h-10 rounded-full relative flex-shrink-0 mr-1">
+                    <img
+                    src="{{friend.profile_image}}"
+                    alt=""
+                    class="absolute h-full rounded-full w-full"
+                    />
+                </div>
+                <span class="text-m ml-4 font-bold">
+                    {{friend.user.first_name}} {{friend.user.last_name}}
+                </span>
+            </div> 
+            {% endfor %}
+		</div>
+		<!-- Chatbox -->
+		<div class="ml-2 flex-1 overflow-y-scroll chatContainer">
+			<div class="rounded-lg shadow-lg p-4 h-full flex flex-col">
+				<h2 class="text-lg font-medium mb-4">Chat</h2>
+				<div class="flex flex-col chatMessageBox">
+                    <div class="chatBubbleLeft">
+                        <div class="flex items-center">
+                            <img class="w-6 h-6 rounded-full mr-2" src="https://picsum.photos/seed/1/50">
+                            <p class="bg-gray-100 rounded-lg px-4 py-2">Message 1</p>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-1">10:00 AM</p>
+                    </div>
+
+                    <div class="chatBubbleRight">
+                        <div class="flex items-center">
+                            <p class="bg-gray-100 rounded-lg px-4 py-2 mr-2">Message 1</p>
+                            <img class="w-6 h-6 rounded-full" src="https://picsum.photos/seed/1/50">
+                        </div>
+                        <p class="text-sm text-gray-500 mt-1 self-end">10:01 AM</p>
+                    </div>
+                </div>
+				<div class="mt-4 flex">
+					<input type="text" class="rounded-l-lg flex-1 py-2 px-4 border border-gray-300" placeholder="Type your message...">
+					<button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-r-lg">Send</button>
+				</div>
+			</div>
+		</div>
+    </div>
+</div>
+{% endblock %}

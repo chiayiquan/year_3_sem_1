@@ -1,6 +1,7 @@
 # Ignore
 node_modules/
 **/env/env/
+**/env/env1/
 cw_env/
 **/static/media
 

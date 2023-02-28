@@ -73,6 +73,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'socialNetwork.wsgi.application'
+ASGI_APPLICATION = 'socialNetwork.asgi.application'
 
 
 # Database
@@ -108,6 +109,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CHANNEL_LAYERS = {
+    "default":{
+        "BACKEND":"channels_redis.core.RedisChannelLayer",
+        "CONFIG":{
+            "hosts":[("127.0.0.1",6379)]
+        },
+    }
+}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -135,3 +145,21 @@ MEDIA_URL = '/media/'
 
 # Path where media is stored
 MEDIA_PATH = os.path.join(BASE_DIR, 'media/')
+
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'file': {
+#             'class': 'logging.FileHandler',
+#             'filename': 'logs/debug.log',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['file'],
+#             'level': 'DEBUG',
+#         },
+#     },
+# }

@@ -92,6 +92,7 @@ class ChatMessage(models.Model):
 class Chats(models.Model):
     first_user = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, related_name="first_user")
     second_user = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, related_name="second_user")
+    room_id = models.UUIDField(default=uuid.uuid4,null=False,blank=False)
     chat_messages = models.ManyToManyField(ChatMessage, through='ChatMessageLink', through_fields=('chat', 'message'))
 
 class ChatMessageLink(models.Model):

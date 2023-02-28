@@ -24,7 +24,7 @@
       //   +'/ws/L12app/'
       // );
 
-      chatSocket.onmessage = function (e) {
+      {% comment %} chatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
         document.querySelector("#chat-log").value += `${data.message}\n`;
       };
@@ -47,7 +47,7 @@
         chatSocket.send(JSON.stringify({ message }));
 
         messageInputDom.value = "";
-      };
+      }; {% endcomment %}
     </script>
   </body>
 </html>

@@ -73,3 +73,22 @@ class FriendSerializer(serializers.ModelSerializer):
         fields = ["request_from",
                 "request_to",
                 "request_status"]
+
+class ChatMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChatMessage
+        fields = ["message",
+                "message_from",
+                "created_at"]
+
+class ChatSerializer(serializers.ModelSerializer):
+    first_user = ProfileSerializer()
+    second_user = ProfileSerializer()
+    chat_messages = ChatMessageSerializer(many=True)
+
+    class Meta:
+        model = Chats
+        fields = ["first_user",
+                "second_user",
+                "room_id",
+                "chat_messages"]
