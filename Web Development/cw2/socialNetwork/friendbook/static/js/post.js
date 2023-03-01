@@ -1,8 +1,10 @@
+// show the fileArea div when file is dragged to the textbox
 function fileDrag(event) {
   const fileArea = document.getElementById("fileArea");
   fileArea.classList.remove("hidden");
 }
 
+// hide the fileArea div when the file mouse drag exit the textbox
 function hideFileArea(event) {
   const fileArea = document.getElementById("fileArea");
   fileArea.classList.add("hidden");
@@ -19,7 +21,6 @@ function dropHandler(ev) {
       if (item.kind === "file") {
         file = item.getAsFile();
         readImage(file);
-        console.log(`… file[${i}].name = ${file.name}`);
       }
     });
   } else {
@@ -27,57 +28,76 @@ function dropHandler(ev) {
     [...ev.dataTransfer.files].forEach((file, i) => readImage(file));
   }
 
+  // hide fileArea div
   const fileArea = document.getElementById("fileArea");
   fileArea.classList.add("hidden");
 }
 
 function readImage(file) {
+  // create a file reader
   const reader = new FileReader();
   reader.addEventListener("load", (event) => {
+    // set the base64 to a variable
     const uploadedImage = event.target.result;
 
+    // get the imageList div
     const imageList = document.getElementById("imageList");
+    // create a div with image, file name and a cross button
     const img = createImage(file, uploadedImage);
+    // append the div imageList
     imageList.appendChild(img);
   });
+
+  // read the file andtrigger the load function
   reader.readAsDataURL(file);
 }
 
 function createImage(file, uploadedImage) {
+  // create a div
   const div = document.createElement("div");
 
+  // create a img tag with the base64 loaded
   const img = new Image();
   img.src = uploadedImage;
 
+  // create a span with the file name
   const nameSpan = document.createElement("span");
   nameSpan.id = "title";
   nameSpan.innerText = file.name;
 
+  // create a cross button
   const deleteSpan = document.createElement("span");
   deleteSpan.innerHTML = "&#10006;";
   deleteSpan.classList.add("buttonCursor");
   deleteSpan.onclick = () => document.getElementById(file.name).remove();
 
+  // append all the element into a div
   div.id = file.name;
   div.appendChild(img);
   div.appendChild(nameSpan);
   div.appendChild(deleteSpan);
 
+  // return the div
   return div;
 }
 
 function submitPost(event) {
   event.preventDefault();
+  // get the caption value
   const caption = document.getElementById("caption").value;
+  // get the imageList div
   const images = document.getElementById("imageList");
+  // get all the element with img tag
   const imgList = images.getElementsByTagName("img");
 
   const imageData = [];
 
+  // loop through all the img element and get it's src(base64)
   for (img of imgList) {
     imageData.push(img.getAttribute("src"));
   }
 
+  // send a post request to upload the post
   fetch("/api/upload-post/", {
     method: "POST",
     headers: {
@@ -88,6 +108,7 @@ function submitPost(event) {
     body: JSON.stringify({ caption, images: imageData }),
   }).then((data) => {
     if (data.status === 200) {
+      // reset the value of caption and imageList
       document.getElementById("caption").value = "";
       document.getElementById("imageList").innerHTML = "";
 

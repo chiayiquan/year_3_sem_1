@@ -12,7 +12,6 @@ import requests
 
 from django.urls import reverse
 
-
 def user_login(request):
     if request.method == 'POST':
         email = request.POST['email']
@@ -55,8 +54,15 @@ def user_register(request):
                 profile.user = user
                 profile.save()
                 registered = True
+            
             except:
                 messages.info(request, 'User existed.')
+                return redirect('/register/')
+
+        elif not user_form.is_valid():
+            password_errors = user_form.errors.get('password')
+            for field, field_errors in user_form.errors.items():
+                messages.info(request, field_errors)
                 return redirect('/register/')
 
         else:
@@ -94,12 +100,18 @@ def user_settings(request):
         user_profile=Profile.objects.get(user_id=current_user.id)
         user = User.objects.get(username=current_user.email)
         post_data=dict(request.POST.items())
-        if len(post_data.get('password',''))>0:
-                if check_password(post_data.get('password',''),user.password):
-                    post_data['password']=make_password(post_data.get('new_password',''))
-                else:
-                    messages.info(request, 'Current password is incorrect.',extra_tags="user_profile_form_failure")
-                    return redirect('/setting/') 
+        password=post_data.get('password','')
+        new_password = post_data.get('new_password','')
+
+        if len(password)>0 and len(new_password)>0:
+            if len(new_password) < 8 or not re.search(r'[A-Z]', new_password) or not re.search(r'[a-z]', new_password) or not re.search(r'\d', new_password):
+                messages.info(request, 'Password must be at least 8 characters long, have 1 uppercase, lowercase and number.',extra_tags="user_profile_form_failure")
+                return redirect('/setting/') 
+            if check_password(password,user.password):
+                post_data['password']=make_password(new_password)
+            else:
+                messages.info(request, 'Current password is incorrect.',extra_tags="user_profile_form_failure")
+                return redirect('/setting/') 
 
         else:
             post_data['password']=user.password

@@ -5,8 +5,8 @@
 
 {% block javascript %}
 <script>
-
     let chatSocket = null;
+    let currentUsername = '{{user.username}}';
 
     function setActiveFriend(element,friendEmail) {
         getChat(friendEmail)
@@ -22,17 +22,119 @@
         element.classList.add('active');
     }
     
-    function getChat(email){
-        fetch('/api/get-chat/'+email).then(response => 
+    // get the selected user chat history and create a websocket connection
+    function getChat(friendEmail){
+        fetch('/api/get-chat/'+friendEmail).then(response => 
             response.json()
         ).then(({data})=>{
             if(data){
+                // room id from the api which queried from the database
                 const roomName = data.chat.room_id
-                chatSocket = new WebSocket(`ws://${window.location.host}/ws/chat/${roomName}/`);
+            
+                // setup websocket
+                initChatSocket(roomName);
+
+                // loop through the chat messages and display it in the chat box
+                data.chat.chat_messages.forEach(({created_at,message,message_from})=>{
+                    updateChatBox(created_at,message,message_from)
+                })
             }
-            console.log(data)
         })
     }
+
+    // display messages in the chatbox
+    function updateChatBox(created_at,message,message_from){
+        // get the chatMessageBox div using className, it will return an array and we want the first result of the array since there is only 1
+        let chatMessageBox = document.getElementsByClassName('chatMessageBox')[0]
+
+        // convert the utc datetime to user current timezone datetime
+        const localTime = new Date(created_at).toLocaleString()
+        let htmlStr = '';
+
+        // if the message is not from the current user, set the chat bubble to the left
+        // else the chat bubble will be from the right
+        if(message_from.user.username!==currentUsername){
+            htmlStr = `
+            <div class="chatBubbleLeft">
+                <div class="flex items-center">
+                    <img class="w-6 h-6 rounded-full mr-2" src="${message_from.profile_image}">
+                    <p class="bg-gray-100 rounded-lg px-4 py-2">${message}</p>
+                </div>
+                <p class="text-sm text-gray-500 mt-1">${localTime}</p>
+            </div>`;
+        }
+        else{
+            htmlStr=`   
+            <div class="chatBubbleRight">
+                <div class="flex items-center">
+                    <p class="bg-gray-100 rounded-lg px-4 py-2 mr-2">${message}</p>
+                    <img class="w-6 h-6 rounded-full" src="${message_from.profile_image}">
+                </div>
+                <p class="text-sm text-gray-500 mt-1 self-end">${localTime}</p>
+            </div>`;
+        }
+
+        // update the chatMessageBox dom
+        chatMessageBox.innerHTML+=htmlStr;
+    }
+
+    function initChatSocket(roomName) {
+        // setup a websocket connection
+        chatSocket = new WebSocket(`ws://${window.location.host}/ws/chat/${roomName}/`);
+
+        // check if chatSocket is not null as the page load the chatSocket is set to null until the user
+        // click on a friend which then will open the websocket for that particular room_id
+        if (chatSocket != null) {
+            // when receive a message from the websocket
+            chatSocket.onmessage = function(e) {
+                // destructure the data
+                const data = JSON.parse(e.data);
+                const { created_at, message, message_from } = data.message;
+
+                // update the chatbox to display the message
+                updateChatBox(created_at, message, message_from);
+            };
+
+            chatSocket.onclose = function(e) {
+                // when chatSocket closed, we will reconnect to the web socket every 5s
+                console.error("Chat socket closed unexpectedly");
+
+                setTimeout(() => {
+                    console.log('WebSocket reconnecting...');
+                    initChatSocket(roomName);
+                }, 5000);
+            };
+        }
+    }
+
+    // trigger when keydown for input field
+    function handleInputKeyDown(event){
+        // when enter is pressed
+         if (event.keyCode === 13) {
+            // get the sendMessageBtn and trigger it's click function
+            const sendMessageBtn = document.getElementById('sendMessageBtn');
+            sendMessageBtn.click();
+        }
+    }
+
+    // send message to websocket
+    function sendMessage(event){
+        // get the messageInput and it's value
+        const messageInput = document.getElementById('messageInput');
+        const message = messageInput.value;
+
+        // send the message to websocket if it's length is bigger than 0
+        if(message.trim().length>0){
+            if(chatSocket!=null){
+                chatSocket.send(JSON.stringify({
+                    'message': message,
+                }));
+                // set the messageInput to be empty string which "reset" the value of the input
+                messageInput.value = '';
+            }
+        }
+    }
+
 </script>
 {% endblock javascript %} 
 {% block content %}
@@ -62,25 +164,10 @@
 			<div class="rounded-lg shadow-lg p-4 h-full flex flex-col">
 				<h2 class="text-lg font-medium mb-4">Chat</h2>
 				<div class="flex flex-col chatMessageBox">
-                    <div class="chatBubbleLeft">
-                        <div class="flex items-center">
-                            <img class="w-6 h-6 rounded-full mr-2" src="https://picsum.photos/seed/1/50">
-                            <p class="bg-gray-100 rounded-lg px-4 py-2">Message 1</p>
-                        </div>
-                        <p class="text-sm text-gray-500 mt-1">10:00 AM</p>
-                    </div>
-
-                    <div class="chatBubbleRight">
-                        <div class="flex items-center">
-                            <p class="bg-gray-100 rounded-lg px-4 py-2 mr-2">Message 1</p>
-                            <img class="w-6 h-6 rounded-full" src="https://picsum.photos/seed/1/50">
-                        </div>
-                        <p class="text-sm text-gray-500 mt-1 self-end">10:01 AM</p>
-                    </div>
                 </div>
 				<div class="mt-4 flex">
-					<input type="text" class="rounded-l-lg flex-1 py-2 px-4 border border-gray-300" placeholder="Type your message...">
-					<button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-r-lg">Send</button>
+					<input type="text" class="rounded-l-lg flex-1 py-2 px-4 border border-gray-300" onkeydown="handleInputKeyDown(event)" id="messageInput" placeholder="Type your message...">
+					<button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-r-lg" id="sendMessageBtn" onclick="sendMessage(event)">Send</button>
 				</div>
 			</div>
 		</div>

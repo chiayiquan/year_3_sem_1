@@ -1,18 +1,39 @@
+from collections import OrderedDict
 from django import forms
 
 from .models import *
 from django.contrib.auth.models import User
 from datetime import datetime
 
+from django.core.exceptions import ValidationError
+import re
+
+def validate_password(password):
+    if len(password) < 8 or not re.search(r'[A-Z]', password) or not re.search(r'[a-z]', password) or not re.search(r'\d', password):
+        raise ValidationError('Password must be at least 8 characters long, have 1 uppercase, lowercase and number.', code='weak_password')
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
+    confirm_password = forms.CharField(widget=forms.PasswordInput())
 
     class Meta:
         model = User
-        fields = ['email', 'password', 'first_name',
+        fields = ['email', 'password', 'confirm_password', 'first_name',
                   'last_name', ]
-
+    
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
+        validate_password(password)
+        return password
+    
+    def clean_confirm_password(self):
+        password = self.cleaned_data.get('password')
+        confirm_password = self.cleaned_data.get('confirm_password')
+        print(confirm_password)
+        if password and password != confirm_password:
+            raise forms.ValidationError("Password and Confirm password don't match", code='password_not_match')
+        return confirm_password
+    
 
 class UserProfileForm(forms.ModelForm):
     years = range(1930, datetime.now().year)[::-1]

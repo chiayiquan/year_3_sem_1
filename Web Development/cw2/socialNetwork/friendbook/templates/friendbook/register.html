@@ -13,16 +13,17 @@
     {{user_form.as_p}} 
     {{profile_form.as_p}} 
     {%for message in messages%}
-    <h5>{{message}}</h5>
+    <span class="error show">{{message}}</span>
     {%endfor%}
-      {% if registered %}
-    <strong>Thank you for registering</strong>
-    {% else %}
-    <button type="submit">Register</button>
+    {% if registered %}
+    <span class="success" class="mb-3"><strong>Thank you for registering</strong></span>
+    {% endif %}
+
+    <button type="submit" class="mb-3">Register</button>
     <a href="../login">Have an account? Login here</a>
   
   </form>
 
-  {% endif %}
+  
 </div>
 {% endblock %}

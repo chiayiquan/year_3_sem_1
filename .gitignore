@@ -2,6 +2,7 @@
 node_modules/
 **/env/env/
 **/env/env1/
+actual_env/
 cw_env/
 **/static/media
 

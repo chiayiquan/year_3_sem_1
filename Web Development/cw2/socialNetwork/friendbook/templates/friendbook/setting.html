@@ -3,7 +3,6 @@
 {% block javascript %}
 <script>
   (async function submitForm(){
-    console.log('test')
     const new_password=document.getElementById('new_password').value
     const confirm_new_password=document.getElementById('confirm_new_password').value
     if(new_password!==confirm_new_password) {
@@ -45,11 +44,9 @@
     <input type="file" name="profile_image" id="profile_image" accept="image/png, image/jpg, image/jpeg" onchange="document.getElementById('imageForm').submit()" />
     {%for message in messages%}
       {% if 'upload_profile_pic_failed' in message.tags %}
-          <h5>{{message}}</h5>
+          <span class="error show">{{message}}</span>
       {%elif 'upload_profile_pic_success' in message.tags %}
-          <h5>{{message}}</h5>
-      {%else%}
-          <h5>{{message}}</h5>
+          <span class="success">{{message}}</span>
       {%endif%}
     {%endfor%}
   </form>
@@ -67,6 +64,13 @@
     <label class='error' id='passwordError'>New password does not match confirm new password.</label>
     {{profile_form.as_p}}
 
+    {%for message in messages%}
+      {% if 'user_profile_form_failure' in message.tags %}
+          <div class="error show mb-3">{{message}}</div>
+      {%elif 'user_profile_form_success' in message.tags %}
+          <div class="success mb-3">{{message}}</div>
+      {%endif%}
+    {%endfor%}
     <button type="submit">Update Profile</button>
   </form>
 </div>

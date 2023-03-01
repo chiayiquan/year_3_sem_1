@@ -75,6 +75,8 @@ class FriendSerializer(serializers.ModelSerializer):
                 "request_status"]
 
 class ChatMessageSerializer(serializers.ModelSerializer):
+    message_from = ProfileSerializer()
+    
     class Meta:
         model = ChatMessage
         fields = ["message",

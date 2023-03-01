@@ -15,10 +15,10 @@
       id="login_password"
     />
     {%for message in messages%}
-    <h5>{{message}}</h5>
+    <span class="error show">{{message}}</span>
     {%endfor%}
 
-    <button type="submit">Login</button>
+    <button type="submit" class="mb-3">Login</button>
     <a href="/register/">Sign up for an account</a>
   </form>
 </div>
