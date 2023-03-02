@@ -1,0 +1,800 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "",
+    "version": ""
+  },
+  "paths": {
+    "/api/get-post/{email}/": {
+      "get": {
+        "operationId": "retrievePost",
+        "description": "",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Post"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "api"
+        ]
+      }
+    },
+    "/api/get-user/{email}/": {
+      "get": {
+        "operationId": "retrieveProfile",
+        "description": "",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "api"
+        ]
+      }
+    },
+    "/api/get-friend-list/{email}": {
+      "get": {
+        "operationId": "retrieveFriend",
+        "description": "",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Friend"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "api"
+        ]
+      }
+    },
+    "/api/search-user/{searchValue}": {
+      "get": {
+        "operationId": "retrieveProfile",
+        "description": "",
+        "parameters": [
+          {
+            "name": "searchValue",
+            "in": "path",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "api"
+        ]
+      }
+    },
+    "/api/get-chat/{chatUser}": {
+      "get": {
+        "operationId": "retrieveget_chat",
+        "description": "",
+        "parameters": [
+          {
+            "name": "chatUser",
+            "in": "path",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "api"
+        ]
+      }
+    },
+    "/api/upload-post/": {
+      "post": {
+        "operationId": "createupload_post",
+        "description": "",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {}
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {}
+            },
+            "multipart/form-data": {
+              "schema": {}
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "api"
+        ]
+      }
+    },
+    "/api/like-post/": {
+      "post": {
+        "operationId": "createlike_post",
+        "description": "",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {}
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {}
+            },
+            "multipart/form-data": {
+              "schema": {}
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "api"
+        ]
+      }
+    },
+    "/api/comment-post/": {
+      "post": {
+        "operationId": "createpost_comment",
+        "description": "",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {}
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {}
+            },
+            "multipart/form-data": {
+              "schema": {}
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "api"
+        ]
+      }
+    },
+    "/api/sent-friend-request/": {
+      "post": {
+        "operationId": "createFriend",
+        "description": "",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Friend"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Friend"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Friend"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Friend"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "api"
+        ]
+      }
+    },
+    "/api/reject-friend-request/": {
+      "post": {
+        "operationId": "createreject_friend_request",
+        "description": "",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {}
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {}
+            },
+            "multipart/form-data": {
+              "schema": {}
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "api"
+        ]
+      }
+    },
+    "/api/accept-friend-request/": {
+      "post": {
+        "operationId": "createaccept_friend_request",
+        "description": "",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {}
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {}
+            },
+            "multipart/form-data": {
+              "schema": {}
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "api"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Post": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "user": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+                    "pattern": "^[\\w.@+-]+\\z",
+                    "maxLength": 150
+                  },
+                  "first_name": {
+                    "type": "string",
+                    "maxLength": 150
+                  },
+                  "last_name": {
+                    "type": "string",
+                    "maxLength": 150
+                  },
+                  "last_login": {
+                    "type": "string",
+                    "format": "date-time",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "username"
+                ]
+              },
+              "date_of_birth": {
+                "type": "string",
+                "format": "date"
+              },
+              "gender": {
+                "enum": [
+                  "M",
+                  "F",
+                  "O"
+                ],
+                "type": "string"
+              },
+              "profile_image": {
+                "type": "string",
+                "format": "binary"
+              },
+              "online_status": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "user",
+              "date_of_birth",
+              "gender"
+            ]
+          },
+          "caption": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "likes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "liked": {
+                  "type": "boolean"
+                },
+                "liked_by": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "username": {
+                          "type": "string",
+                          "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+                          "pattern": "^[\\w.@+-]+\\z",
+                          "maxLength": 150
+                        },
+                        "first_name": {
+                          "type": "string",
+                          "maxLength": 150
+                        },
+                        "last_name": {
+                          "type": "string",
+                          "maxLength": 150
+                        },
+                        "last_login": {
+                          "type": "string",
+                          "format": "date-time",
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "username"
+                      ]
+                    },
+                    "date_of_birth": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "gender": {
+                      "enum": [
+                        "M",
+                        "F",
+                        "O"
+                      ],
+                      "type": "string"
+                    },
+                    "profile_image": {
+                      "type": "string",
+                      "format": "binary"
+                    },
+                    "online_status": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "user",
+                    "date_of_birth",
+                    "gender"
+                  ]
+                }
+              },
+              "required": [
+                "liked",
+                "liked_by"
+              ]
+            }
+          },
+          "post_image": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "image": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "required": [
+                "image"
+              ]
+            }
+          },
+          "comment": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "comment": {
+                  "type": "string",
+                  "maxLength": 10000
+                },
+                "posted_by": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "username": {
+                          "type": "string",
+                          "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+                          "pattern": "^[\\w.@+-]+\\z",
+                          "maxLength": 150
+                        },
+                        "first_name": {
+                          "type": "string",
+                          "maxLength": 150
+                        },
+                        "last_name": {
+                          "type": "string",
+                          "maxLength": 150
+                        },
+                        "last_login": {
+                          "type": "string",
+                          "format": "date-time",
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "username"
+                      ]
+                    },
+                    "date_of_birth": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "gender": {
+                      "enum": [
+                        "M",
+                        "F",
+                        "O"
+                      ],
+                      "type": "string"
+                    },
+                    "profile_image": {
+                      "type": "string",
+                      "format": "binary"
+                    },
+                    "online_status": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "user",
+                    "date_of_birth",
+                    "gender"
+                  ]
+                }
+              },
+              "required": [
+                "comment",
+                "posted_by"
+              ]
+            }
+          }
+        },
+        "required": [
+          "user",
+          "caption",
+          "likes",
+          "post_image",
+          "comment"
+        ]
+      },
+      "Profile": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "username": {
+                "type": "string",
+                "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+                "pattern": "^[\\w.@+-]+\\z",
+                "maxLength": 150
+              },
+              "first_name": {
+                "type": "string",
+                "maxLength": 150
+              },
+              "last_name": {
+                "type": "string",
+                "maxLength": 150
+              },
+              "last_login": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+              }
+            },
+            "required": [
+              "username"
+            ]
+          },
+          "date_of_birth": {
+            "type": "string",
+            "format": "date"
+          },
+          "gender": {
+            "enum": [
+              "M",
+              "F",
+              "O"
+            ],
+            "type": "string"
+          },
+          "profile_image": {
+            "type": "string",
+            "format": "binary"
+          },
+          "online_status": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "user",
+          "date_of_birth",
+          "gender"
+        ]
+      },
+      "Friend": {
+        "type": "object",
+        "properties": {
+          "request_from": {
+            "type": "object",
+            "properties": {
+              "user": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+                    "pattern": "^[\\w.@+-]+\\z",
+                    "maxLength": 150
+                  },
+                  "first_name": {
+                    "type": "string",
+                    "maxLength": 150
+                  },
+                  "last_name": {
+                    "type": "string",
+                    "maxLength": 150
+                  },
+                  "last_login": {
+                    "type": "string",
+                    "format": "date-time",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "username"
+                ]
+              },
+              "date_of_birth": {
+                "type": "string",
+                "format": "date"
+              },
+              "gender": {
+                "enum": [
+                  "M",
+                  "F",
+                  "O"
+                ],
+                "type": "string"
+              },
+              "profile_image": {
+                "type": "string",
+                "format": "binary"
+              },
+              "online_status": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "user",
+              "date_of_birth",
+              "gender"
+            ]
+          },
+          "request_to": {
+            "type": "object",
+            "properties": {
+              "user": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+                    "pattern": "^[\\w.@+-]+\\z",
+                    "maxLength": 150
+                  },
+                  "first_name": {
+                    "type": "string",
+                    "maxLength": 150
+                  },
+                  "last_name": {
+                    "type": "string",
+                    "maxLength": 150
+                  },
+                  "last_login": {
+                    "type": "string",
+                    "format": "date-time",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "username"
+                ]
+              },
+              "date_of_birth": {
+                "type": "string",
+                "format": "date"
+              },
+              "gender": {
+                "enum": [
+                  "M",
+                  "F",
+                  "O"
+                ],
+                "type": "string"
+              },
+              "profile_image": {
+                "type": "string",
+                "format": "binary"
+              },
+              "online_status": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "user",
+              "date_of_birth",
+              "gender"
+            ]
+          },
+          "request_status": {
+            "enum": [
+              "Accepted",
+              "Declined",
+              "Pending"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_from",
+          "request_to",
+          "request_status"
+        ]
+      }
+    }
+  }
+}

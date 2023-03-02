@@ -23,7 +23,6 @@ class Profile(models.Model):
     )
     profile_image = models.ImageField(
         upload_to='./friendbook/static/media/profile_images', default='./friendbook/static/media/default_picture.png')
-    online_status = models.BooleanField(default=False)
 
 class PostImage(models.Model):
     image = models.ImageField(upload_to='./friendbook/static/media/post_image')

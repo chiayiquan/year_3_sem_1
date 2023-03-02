@@ -163,3 +163,7 @@ MEDIA_PATH = os.path.join(BASE_DIR, 'media/')
 #         },
 #     },
 # }
+
+SWAGGER_SETTINGS = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+}
