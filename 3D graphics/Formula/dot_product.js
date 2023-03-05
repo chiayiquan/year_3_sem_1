@@ -1,5 +1,5 @@
-const firstVector = [5, 4, 6]; // change this value
-const secondVector = [3, 0, 0]; // change this value
+const firstVector = [9, 2, 3]; // change this value
+const secondVector = [5, 1, 2]; // change this value
 
 console.log(
   `(${firstVector}).(${secondVector})= ${firstVector
