@@ -34,6 +34,7 @@ class PostComment(models.Model):
         blank=False
     )
     posted_by = models.ForeignKey(Profile, on_delete=models.DO_NOTHING)
+    created_at = models.DateTimeField(default=timezone.now)
 
 class PostLike(models.Model):
     liked = models.BooleanField()

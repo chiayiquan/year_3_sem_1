@@ -110,6 +110,7 @@ def index(request):
 
     # call api to retrieve all the post from friends and the current user
     post_result = requests.get(request.build_absolute_uri(post_url),headers=headers, params=request.GET)
+    print(post_result.json())
     return render(request, 'friendbook/index.html',{'posts':post_result.json()})
 
 

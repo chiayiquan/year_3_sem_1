@@ -6,7 +6,7 @@
 
     function searchUser(){
       const searchInput = document.getElementById('searchInput');
-      let searchResult = document.getElementsByClassName('search-results')[0]
+      let searchResult = document.getElementsByClassName('searchResults')[0]
       if(searchInput.value.trim().length == 0) {
         console.log(searchResult)
         searchResult.innerHTML = ''
@@ -80,14 +80,14 @@
             />
           </svg>
         </div>
-        <div class="search-results"></div>
+        <div class="searchResults"></div>
       </div>
 
     </div>
     <div class="right-side lg:pr-4">
       <!-- Chat -->
 
-      <a href="chat/" class="header-links-item">
+      <a href="../../chat/" class="header-links-item">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           xmlns:xlink="http://www.w3.org/1999/xlink"

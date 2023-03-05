@@ -26,7 +26,7 @@ class PostCommentSerializer(serializers.ModelSerializer):
     posted_by = ProfileSerializer()
     class Meta:
         model = PostComment
-        fields = ['comment','posted_by']
+        fields = ['comment','posted_by', 'created_at']
 
 class PostLikeSerializer(serializers.ModelSerializer):
     liked_by = ProfileSerializer()
@@ -35,15 +35,19 @@ class PostLikeSerializer(serializers.ModelSerializer):
         fields = ['liked','liked_by']
 
     def create(self):
+        # get the data from the request
         post_id = self.initial_data.get('post_id')
         username = self.initial_data.get('username')
         
+        # get the user
         user_profile = Profile.objects.get(user = User.objects.get(username=username))
+        # get the post
         post = Post.objects.get(id=post_id)
 
         # create a default like object
         post_like = next(({**like, "liked":not like.liked} for like in post.like if like.liked_by == user_profile),PostLike.objects.create(liked=True, liked_by = user_profile)) 
 
+        # save the like
         post_like.save()
         return post_like
 

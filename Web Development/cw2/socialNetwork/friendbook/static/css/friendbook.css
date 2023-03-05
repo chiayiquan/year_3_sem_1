@@ -291,6 +291,110 @@ form select {
   color: #666;
 }
 
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modalContent {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+  max-height: 600px;
+  height: 100%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.searchResults {
+  position: absolute;
+  top: 4rem;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  z-index: 1;
+  padding: 1rem;
+  display: none;
+}
+
+.searchEntry:hover {
+  color: #fff;
+  background-color: #808080;
+  cursor: pointer;
+}
+
+.chatContainer {
+  max-height: 768px;
+  min-height: 480px;
+  background-color: white;
+}
+
+.chatContainer .chatMessageBox {
+  max-height: 600px;
+  min-height: 600px;
+  overflow: auto;
+}
+
+.chatContainer .chatMessageBox .chatBubbleLeft {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.chatContainer .chatMessageBox .chatBubbleRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.chatFriendContainer {
+  max-width: 400px;
+  width: 100%;
+  height: 100%;
+  min-height: 768px;
+  max-height: 480px;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 10px;
+  overflow: auto;
+  padding: 10px;
+  background-color: white;
+}
+
+#friendList.active {
+  color: #fff;
+  background-color: gray;
+  cursor: pointer;
+}
+
 #addFriendButton {
   display: flex;
   align-items: center;
@@ -331,136 +435,4 @@ form select {
   cursor: pointer;
   width: 100%;
   max-width: 200px;
-}
-
-/* The Modal (background) */
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0, 0, 0); /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-}
-
-/* Modal Content */
-.modal-content {
-  background-color: #fefefe;
-  margin: auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 50%;
-  max-height: 600px;
-  height: 100%;
-}
-
-/* The Close Button */
-.close {
-  color: #aaaaaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.search-results {
-  position: absolute;
-  top: 4rem;
-  left: 0;
-  right: 0;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 0.5rem;
-  z-index: 1;
-  padding: 1rem;
-  display: none;
-}
-
-.searchEntry:hover {
-  color: #fff;
-  background-color: #808080;
-  cursor: pointer;
-}
-
-#friendList.active {
-  color: #fff;
-  background-color: gray;
-  cursor: pointer;
-}
-
-.right-sidebar {
-  position: fixed;
-  top: 66px;
-  right: 0;
-  width: 100%;
-  max-width: 250px;
-  /* width: 66px; */
-  height: 100%;
-  background-color: #f5f5f5;
-  border-left: 1px solid #ccc;
-}
-
-.friend-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.friend-list li {
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
-}
-
-.friend-list li:last-child {
-  border-bottom: none;
-}
-
-.chatContainer {
-  max-height: 768px;
-  min-height: 480px;
-  /* overflow: auto; */
-  background-color: white;
-}
-
-.chatContainer .chatMessageBox {
-  max-height: 600px;
-  min-height: 600px;
-  overflow: auto;
-}
-
-.chatContainer .chatMessageBox .chatBubbleLeft {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.chatContainer .chatMessageBox .chatBubbleRight {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.chatFriendContainer {
-  max-width: 400px;
-  width: 100%;
-  height: 100%;
-  min-height: 768px;
-  max-height: 480px;
-  border-style: solid;
-  border-width: 1px;
-  border-radius: 10px;
-  overflow: auto;
-  padding: 10px;
-  background-color: white;
 }

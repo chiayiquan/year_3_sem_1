@@ -144,11 +144,11 @@ class RetrieveFriendList(mixins.CreateModelMixin,generics.GenericAPIView):
 @api_view(['POST'])
 def upload_post(request):
     user = None
-    
+
     # get the current user
     try:
         user = Profile.objects.get(user=User.objects.get(username=request.user))
-    
+
     # if user doesn't exist return 404 error
     except (Profile.DoesNotExist, User.DoesNotExist) as err:
         return Response({'error':"Invalid user"}, status=status.HTTP_404_NOT_FOUND)
@@ -156,10 +156,10 @@ def upload_post(request):
     # get the caption and images(list of base64) from the request
     caption = request.data.get('caption')
     images = request.data.get('images')
-
+    
     # create a Post object with the user and caption
-    new_post = Post(user=user, caption=caption)
-
+    new_post = Post.objects.create(user=user, caption=caption)
+ 
     # loop through the images
     for image in images:
         # split the base64 into format and the base64 data
@@ -172,13 +172,15 @@ def upload_post(request):
             file = ContentFile(base64.b64decode(imgstr), name=str(uuid.uuid4()) +"." +ext)
         # if file cannot be save/base64 is invalid, return error 400
         except binascii.Error:
+            new_post.delete()
             return Response({'error':'Incorrect padding in base64 string'},status=status.HTTP_400_BAD_REQUEST)
         
         # once the file is saved to the local disk, create a PostImage object and set the file as image field value 
         post_image=PostImage.objects.create(image=file)
+
         # add the post_image into the post
         new_post.post_image.add(post_image)
-    
+        
     # once all the image are saved and added to the post, save the post object
     new_post.save()
     

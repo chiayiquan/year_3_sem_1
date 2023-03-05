@@ -118,9 +118,11 @@ function submitPost(event) {
 }
 
 function likePost(event, postId) {
+  // get csrf token from the like div of the post
   const csrfToken = document
     .getElementById(`${postId}-likeDiv`)
     .querySelector('[name="csrfmiddlewaretoken"]');
+  // send a post request to the like-post api with postId
   fetch("/api/like-post/", {
     method: "POST",
     headers: {
@@ -132,20 +134,26 @@ function likePost(event, postId) {
   })
     .then((response) => response.json())
     .then(({ data }) => {
+      // liked = boolean
+      // likeCount = total number of like for this post
       const { liked, likeCount } = data;
       if (liked) {
+        // if the user like the post, make the like button blue filling
         const likeBtn = document.getElementById(`${postId}-likeBtn`);
         const likeText = document.getElementById(`${postId}-likeText`);
         likeBtn.style.fill = "blue";
         likeText.style.color = "blue";
+        // get the likeCount element and display the value of likeCount
         const numOfLikeText = document.getElementById(`${postId}-likeCount`);
         numOfLikeText.innerHTML = `Liked by <strong> ${likeCount} </strong>`;
       } else {
+        // if the user un-like the liked post, make the like button to default filling
         const likeBtn = document.getElementById(`${postId}-likeBtn`);
         const likeText = document.getElementById(`${postId}-likeText`);
         const numOfLikeText = document.getElementById(`${postId}-likeCount`);
         likeBtn.style.fill = "black";
         likeText.style.color = "black";
+        // if likeCount is 0, set the text to empty
         numOfLikeText.innerHTML =
           likeCount > 0 ? `Liked by <strong> ${likeCount} </strong>` : "";
       }
@@ -154,16 +162,21 @@ function likePost(event, postId) {
 }
 
 function postComment(event, postId) {
+  // if the key entered is "enter" key
   if (event.keyCode === 13) {
     const comment = document.getElementById(`${postId}-commentBox`).value;
 
+    // if comment has more than 10000 char then return
     if (comment.split("").length > 10000) {
       return false;
     }
 
+    // get the csrf token in the comment section of the post
     const csrfToken = document
       .getElementById(`${postId}-writeCommentSection`)
       .querySelector('[name="csrfmiddlewaretoken"]');
+
+    // send a post request to comment-post endpoint
     fetch("/api/comment-post/", {
       method: "POST",
       headers: {
@@ -175,6 +188,7 @@ function postComment(event, postId) {
     })
       .then((response) => response.json())
       .then(({ data }) => {
+        // get the comment div and add the new comment into the comment section for that post
         const commentsDiv = document.getElementById(`${postId}-comments`);
         commentsDiv.innerHTML += `<div class="flex items-center">
             <div class="w-10 h-10 rounded-full relative flex-shrink-0">
@@ -187,14 +201,21 @@ function postComment(event, postId) {
             <div
               class="text-gray-700 py-2 px-3 rounded-md bg-gray-100 h-full relative lg:ml-5 ml-2 lg:mr-20"
             >
-              <span><b>${data.user_profile.user.first_name} ${data.user_profile.user.last_name}</b></span>
+              <span><b>${data.user_profile.user.first_name} ${
+          data.user_profile.user.last_name
+        }</b></span>
               <p class="leading-6">
                 ${data.comment}
+              </p>
+              <p class="time">
+                ${formatDate(comment.created_at)}
               </p>
             </div>
           </div>`;
 
+        // Clear the comment text box
         document.getElementById(`${postId}-commentBox`).value = "";
+        // Update the total comment value
         document.getElementById(`${postId}-totalComment`).innerHTML =
           data.num_of_comments;
       });
@@ -202,9 +223,13 @@ function postComment(event, postId) {
 }
 
 function formatDate(dateString) {
+  // get current datetime
   const currentDateTime = new Date();
+  // JS Date can convert utc datetime to local time without the need to use additional function
+  // Get the date differences
   const dateTimeDifference = currentDateTime - new Date(dateString);
 
+  // convert the datetime difference to days,hours and minutes
   const daysDifference = Math.floor(dateTimeDifference / (1000 * 60 * 60 * 24));
   const hoursDifference = Math.floor(
     (dateTimeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
@@ -213,12 +238,17 @@ function formatDate(dateString) {
     (dateTimeDifference % (1000 * 60 * 60)) / (1000 * 60)
   );
 
+  // if is shorter than 7 days and at least 1 day long add a d behind the string
   if (daysDifference < 7 && daysDifference > 0) return `${daysDifference} d`;
+  // if is bigger than 7 days, show the datetime and convert it to locale
   else if (daysDifference > 7)
     return `${new Date(dateString).toLocaleDateString()} ${new Date(
       dateString
     ).toLocaleTimeString()}`;
+  // if is at least an hour long, display the hours difference with h behind the string
   else if (hoursDifference > 0) return `${hoursDifference} h`;
+  // if is at least a minute long, display the minute difference with min behind the string
   else if (minutesDifference > 0) return `${minutesDifference} min`;
+  // if is less than a min just display just now
   else return "just now";
 }

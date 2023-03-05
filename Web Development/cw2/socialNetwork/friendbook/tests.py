@@ -7,7 +7,7 @@ from rest_framework.test import APIRequestFactory, APITestCase
 from django.contrib.auth.models import User
 from .model_factories import * 
 from .serializers import *
-
+from django.conf import settings
 
 
 # Create your tests here.
@@ -26,6 +26,7 @@ def tearDown():
     Profile.objects.all().delete()
     User.objects.all().delete()
 
+########################## API Test Case ##########################
 class UploadPostTest(APITestCase):
     url = reverse('uploadPost')
 
@@ -457,3 +458,216 @@ class GetChatTest(APITestCase):
         response = self.client.get(reverse(self.url, kwargs={
             'chatUser': 'non_existent_email@example.com'}), format='json')
         self.assertEqual(response.status_code, 404)
+
+########################## Serializer Test Case ##########################
+
+class UserSerializerTest(APITestCase):
+    user = None
+    user_serializer = None
+
+    def setUp(self):
+        self.user = UserFactory.create()
+        self.user_serializer = UserSerializer(
+            instance=self.user)
+
+    def tearDown(self):
+        tearDown()
+
+    def test_user_serializer_has_correct_field(self):
+        data = self.user_serializer.data
+        self.assertEqual(set(data.keys()), set(
+            ['username', 'first_name', 'last_name']))
+
+    def test_user_serializer_has_correct_data(self):
+        data = self.user_serializer.data
+        self.assertEqual(data.get('username'), self.user.username)
+        self.assertEqual(data.get('first_name'), self.user.first_name)
+        self.assertEqual(data.get('last_name'), self.user.last_name)
+
+class ProfileSerializerTest(APITestCase):
+    profile = None
+    profile_serializer = None
+
+    def setUp(self):
+        self.profile = ProfileFactory.create()
+        self.profile_serializer = ProfileSerializer(
+            instance=self.profile)
+
+    def tearDown(self):
+        tearDown()
+
+    def test_profile_serializer_has_correct_field(self):
+        data = self.profile_serializer.data
+        self.assertEqual(set(data.keys()), set(
+            ["user",
+            "date_of_birth",
+            "gender",
+            "profile_image"]))
+
+    def test_profile_serializer_has_correct_data(self):
+        data = self.profile_serializer.data
+        self.assertEqual(data.get('user').get('username'), self.profile.user.username)
+        self.assertEqual(data.get('user').get('first_name'), self.profile.user.first_name)
+        self.assertEqual(data.get('user').get('last_name'), self.profile.user.last_name)
+        self.assertEqual(data.get('date_of_birth'), self.profile.date_of_birth.strftime('%Y-%m-%d'))
+        self.assertEqual(data.get('gender'), self.profile.gender)
+        self.assertEqual(data.get('profile_image'), f"{settings.MEDIA_URL}{self.profile.profile_image.name.split('./')[1]}")
+
+class PostImageSerializerTest(APITestCase):
+    post_image = None
+    post_image_serializer = None
+
+    def setUp(self):
+        self.post_image = PostImageFactory.create()
+        self.post_image_serializer = PostImageSerializer(
+            instance=self.post_image)
+
+    def tearDown(self):
+        tearDown()
+
+    def test_post_image_serializer_has_correct_field(self):
+        data = self.post_image_serializer.data
+        self.assertEqual(set(data.keys()), set(
+            ["image"]))
+
+    def test_post_image_serializer_has_correct_data(self):
+        data = self.post_image_serializer.data
+        self.assertEqual(data.get('image'), f"{settings.MEDIA_URL}{self.post_image.image.name}")
+
+class PostCommentSerializerTest(APITestCase):
+    post_comment = None
+    post_comment_serializer = None
+
+    def setUp(self):
+        self.post_comment = PostCommentFactory.create()
+        self.post_comment_serializer = PostCommentSerializer(
+            instance=self.post_comment)
+
+    def tearDown(self):
+        tearDown()
+
+    def test_post_comment_serializer_has_correct_field(self):
+        data = self.post_comment_serializer.data
+        self.assertEqual(set(data.keys()), set(
+             ['comment','posted_by', 'created_at']))
+
+    def test_post_comment_serializer_has_correct_data(self):
+        data = self.post_comment_serializer.data
+        self.assertEqual(data.get('comment'), self.post_comment.comment)
+        self.assertEqual(data.get('created_at'), f"{self.post_comment.created_at.replace(tzinfo=None).isoformat()}Z")
+        self.assertEqual(data.get('posted_by').get('user').get('username'), self.post_comment.posted_by.user.username)
+
+class PostLikeSerializerTest(APITestCase):
+    post_like = None
+    post_like_serializer = None
+
+    def setUp(self):
+        self.post_like = PostLikeFactory.create()
+        self.post_like_serializer = PostLikeSerializer(
+            instance=self.post_like)
+
+    def tearDown(self):
+        tearDown()
+
+    def test_post_like_serializer_has_correct_field(self):
+        data = self.post_like_serializer.data
+        self.assertEqual(set(data.keys()), set(
+             ['liked','liked_by']))
+
+    def test_post_like_serializer_has_correct_data(self):
+        data = self.post_like_serializer.data
+        self.assertEqual(data.get('liked'), self.post_like.liked)
+        self.assertEqual(data.get('liked_by').get('user').get('username'), self.post_like.liked_by.user.username)
+
+class PostSerializerTest(APITestCase):
+    post = None
+    post_serializer = None
+
+    def setUp(self):
+        self.post = PostFactory.create()
+        self.post_serializer = PostSerializer(
+            instance=self.post)
+
+    def tearDown(self):
+        tearDown()
+
+    def test_post_serializer_has_correct_field(self):
+        data = self.post_serializer.data
+        self.assertEqual(set(data.keys()), set(
+             ["id","user","caption","created_at","likes","post_image","comment"]))
+
+    def test_post_serializer_has_correct_data(self):
+        data = self.post_serializer.data
+        self.assertEqual(data.get('id'), str(self.post.id))
+        self.assertEqual(data.get('user').get('user').get('username'), self.post.user.user.username)
+        self.assertEqual(data.get('caption'), self.post.caption)
+        self.assertEqual(data.get('created_at'), f"{self.post.created_at.replace(tzinfo=None).isoformat()}Z")
+
+class FriendSerializerTest(APITestCase):
+    friend = None
+    friend_serializer = None
+
+    def setUp(self):
+        self.friend = FriendsFactory.create()
+        self.friend_serializer = FriendSerializer(
+            instance=self.friend)
+
+    def tearDown(self):
+        tearDown()
+
+    def test_friend_serializer_has_correct_field(self):
+        data = self.friend_serializer.data
+        self.assertEqual(set(data.keys()), set(
+             ["request_from","request_to","request_status"]))
+
+    def test_friend_serializer_has_correct_data(self):
+        data = self.friend_serializer.data
+        self.assertEqual(data.get('request_from').get('user').get('username'), self.friend.request_from.user.username)
+        self.assertEqual(data.get('request_to').get('user').get('username'), self.friend.request_to.user.username)
+        self.assertEqual(data.get('request_status'), self.friend.request_status)
+
+class ChatMessageSerializerTest(APITestCase):
+    chat_message = None
+    chat_message_serializer = None
+
+    def setUp(self):
+        self.chat_message = ChatMessageFactory.create()
+        self.chat_message_serializer = ChatMessageSerializer(
+            instance=self.chat_message)
+
+    def tearDown(self):
+        tearDown()
+
+    def test_chat_message_serializer_has_correct_field(self):
+        data = self.chat_message_serializer.data
+        self.assertEqual(set(data.keys()), set(
+             ["message","message_from","created_at"]))
+
+    def test_chat_message_serializer_has_correct_data(self):
+        data = self.chat_message_serializer.data
+        self.assertEqual(data.get('message'), self.chat_message.message)
+        self.assertEqual(data.get('message_from').get('user').get('username'), self.chat_message.message_from.user.username)
+        self.assertEqual(data.get('created_at'), f"{self.chat_message.created_at.replace(tzinfo=None).isoformat()}Z")
+
+class ChatSerializerTest(APITestCase):
+    chat = None
+    chat_serializer = None
+
+    def setUp(self):
+        self.chat = ChatsFactory.create()
+        self.chat_serializer = ChatSerializer(
+            instance=self.chat)
+
+    def tearDown(self):
+        tearDown()
+
+    def test_chat_serializer_has_correct_field(self):
+        data = self.chat_serializer.data
+        self.assertEqual(set(data.keys()), set(
+             ["first_user","second_user","room_id","chat_messages"]))
+
+    def test_chat_serializer_has_correct_data(self):
+        data = self.chat_serializer.data
+        self.assertEqual(data.get('first_user').get('user').get('username'), self.chat.first_user.user.username)
+        self.assertEqual(data.get('second_user').get('user').get('username'), self.chat.second_user.user.username)
+        self.assertEqual(data.get('room_id'), str(self.chat.room_id))

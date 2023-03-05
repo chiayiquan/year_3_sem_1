@@ -76,6 +76,10 @@
 
         // update the chatMessageBox dom
         chatMessageBox.innerHTML+=htmlStr;
+
+        // set the chatMessageBox scrollTop to the scrollHeight which it will always 
+        // scroll down to show the latest message
+        chatMessageBox.scrollTop = chatMessageBox.scrollHeight;
     }
 
     function initChatSocket(roomName) {
