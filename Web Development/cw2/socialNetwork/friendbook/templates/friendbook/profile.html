@@ -125,11 +125,13 @@ window.onclick = function(event) {
 
   <!-- Add friend status -->
   {% if user_profile.user.username != user.username and user.is_authenticated %}
+    <div id="friendRequest">
+      {% csrf_token %} 
     {% with friend=friend_list|check_if_friend:user.username %}
       {% with status=friend.0 request_from=friend.1 %}
         {% if status != False%}
           {% if status == "Accepted" %}
-                <div class="flex flex-row-reverse">
+                <div class="flex flex-row-reverse"> 
                   <button id="rejectFriendButton" onclick="rejectFriend('{{user_profile.user.username}}')">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                             fill='currentColor'
@@ -211,6 +213,7 @@ window.onclick = function(event) {
           {% endif %}
         {% endwith %}
       {% endwith %}
+      </div>
     {% endif %}
 </div>
   <!-- End add friend status -->
