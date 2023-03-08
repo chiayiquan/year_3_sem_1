@@ -7,6 +7,8 @@ from django.urls import reverse
 
 def profile_context_processor(request):
     if(request.user.id != None):
+        if(request.user.username=='admin'):
+            return{}
         user_profile_data = Profile.objects.get(user_id=request.user.id)
 
         get_friends_url = reverse('getFriendList', args=[request.user.username])

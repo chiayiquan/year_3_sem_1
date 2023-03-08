@@ -24,6 +24,9 @@ class Profile(models.Model):
     profile_image = models.ImageField(
         upload_to='./friendbook/static/media/profile_images', default='./friendbook/static/media/default_picture.png')
 
+    def __str__(self):
+        return self.user.username
+
 class PostImage(models.Model):
     image = models.ImageField(upload_to='./friendbook/static/media/post_image')
 
@@ -36,10 +39,15 @@ class PostComment(models.Model):
     posted_by = models.ForeignKey(Profile, on_delete=models.DO_NOTHING)
     created_at = models.DateTimeField(default=timezone.now)
 
+    def __str__(self):
+        return self.posted_by.user.username
+
 class PostLike(models.Model):
     liked = models.BooleanField()
     liked_by = models.ForeignKey(Profile, on_delete=models.DO_NOTHING)
 
+    def __str__(self):
+        return self.liked_by.user.username
 
 class Post(models.Model):
     id = models.UUIDField(primary_key=True,default=uuid.uuid4)
@@ -57,7 +65,7 @@ class Post(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return self.user
+        return self.user.user.username
 
 class PostCommentLink(models.Model):
     post = models.ForeignKey(Post, on_delete=models.DO_NOTHING)
