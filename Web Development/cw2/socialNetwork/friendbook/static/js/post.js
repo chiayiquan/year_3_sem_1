@@ -48,7 +48,7 @@ function readImage(file) {
     imageList.appendChild(img);
   });
 
-  // read the file andtrigger the load function
+  // read the file and trigger the load function
   reader.readAsDataURL(file);
 }
 
