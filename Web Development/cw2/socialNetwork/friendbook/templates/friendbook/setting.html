@@ -38,7 +38,7 @@
     {% csrf_token %} 
     <img
       src="{{ profile.profile_image.url }}"
-      class="header-avatar"
+      class="profilePicture"
       alt=""
     />
     <input type="file" name="profile_image" id="profile_image" accept="image/png, image/jpg, image/jpeg" onchange="document.getElementById('imageForm').submit()" />

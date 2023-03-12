@@ -112,11 +112,14 @@ class SendFriendRequest(mixins.CreateModelMixin, generics.GenericAPIView):
         except (Profile.DoesNotExist, User.DoesNotExist) as err:
             return Response({'error': "Invalid user"}, status=status.HTTP_404_NOT_FOUND)
 
+        # query where request_from or request_to is current user
+        # and request_from or request_to is the recipient user
+        query_filter =  Q(request_from=request_from, request_to=request_to) | Q(
+                request_from=request_to, request_to=request_from)
+
         # get the request or create a new request object
-        friend_request, created = Friends.objects.get_or_create(
-            Q(request_from=request_from, request_to=request_to) | Q(
-                request_from=request_to, request_to=request_from),
-            defaults={'request_status': 'Pending'}
+        friend_request, created = Friends.objects.filter(query_filter).get_or_create(
+            defaults={'request_from': request_from, 'request_to': request_to, 'request_status': 'Pending'}
         )
 
         # if is not created, meaning friend request already existed, return status 200
