@@ -1,4 +1,3 @@
-from email import message
 import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
@@ -38,25 +37,8 @@ class ChatConsumer(WebsocketConsumer):
         # get the current user
         user = self.scope['user'].username
 
-        # send the data to chat_message function
-        async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name,
-            {
-                'type': 'chat_message',
-                'message': message,
-                'room_name' : room_name,
-                "user":user
-            }
-        )
-
-    def chat_message(self, event):
-        # get the message, username and room_name which is passed from receive function
-        message = event['message']
-        username = event['user']
-        room_name = event['room_name']
-
         # get the user
-        user=Profile.objects.get(user=User.objects.get(username=username))
+        user=Profile.objects.get(user=User.objects.get(username=user))
 
         # get the chat with the current room_name
         chat = Chats.objects.get(room_id=room_name)
@@ -65,7 +47,21 @@ class ChatConsumer(WebsocketConsumer):
         chat.chat_messages.add(chat_message)
         chat.save()
 
+        # send the data to chat_message function
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            {
+                'type': 'chat_message',
+                'chat_message': ChatMessageSerializer(chat_message).data,
+            }
+        )
+
+    def chat_message(self, event):
+        # get the message, username and room_name which is passed from receive function
+        chat_message = event['chat_message']
+        
+
         # broadcast the message to the group
         self.send(text_data=json.dumps({
-            'message':ChatMessageSerializer(chat_message).data
+            'message':chat_message
         }))

@@ -34,6 +34,10 @@
                 // setup websocket
                 initChatSocket(roomName);
 
+                // remove all existing chat messages
+                let chatMessageBox = document.getElementsByClassName('chatMessageBox')[0]
+                chatMessageBox.innerHTML = ''
+
                 // loop through the chat messages and display it in the chat box
                 data.chat.chat_messages.forEach(({created_at,message,message_from})=>{
                     updateChatBox(created_at,message,message_from)
